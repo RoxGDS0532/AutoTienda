@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Superama</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #bbbfd8da;">
+    <div class="container-fluid" style="background-color: #bbbfd8da;">
+      <a class="navbar-brand" href="#">
+        <img src="assets/SUPERAMA.png" alt="logo" width="80" height="80" class="d-inline-block align-top me-2">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">SUPERAMA</a>
+          </li>
+        </ul>
+        <button type="button" class="btn btn-success ms-auto" style="background-color: #18246a">Iniciar Sesión</button>
+      </div>
+    </div>
+  </nav>
+  
+
+  <div class="container mt-4">
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <input type="text" class="form-control" placeholder="Escanear código de barras" #codigoBarras>
+      </div>
+      <div class="col-md-6">
+        <button class="btn btn-primary btn-block" (click)="agregarProducto(codigoBarras.value)">Agregar Producto</button>
+      </div>
+    </div>
+
+    <h3 class="mb-4">Carrito de Compras</h3>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio Unitario</th>
+          <th>Subtotal</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of carrito">
+          <td>{{ item.nombre }}</td>
+          <td>{{ item.cantidad }}</td>
+          <td>{{ item.precio | currency }}</td>
+          <td>{{ item.precio * item.cantidad | currency }}</td>
+          <td>
+            <button class="btn btn-danger" (click)="eliminarProducto(item.codigo)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>Total: {{ total | currency }}</h4>
+
+    <h3 class="mt-4">Método de Pago</h3>
+
+    <button class="btn btn-success btn-block" (click)="procesarPago()">Procesar Pago</button>
+
+    <div *ngIf="facturaGenerada" class="mt-4">
+      <h3>Factura generada</h3>
+      <p>Gracias por su compra</p>
+    </div>
+  </div>
+
+  </body>
+</html>

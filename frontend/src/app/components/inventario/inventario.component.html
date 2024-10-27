@@ -1,50 +1,42 @@
-<!-- Barra de navegación -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
+<nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #19246dda;">
+  <div class="container-fluid" style="background-color: #04092cda;">
     <a class="navbar-brand" href="#">
-      <img src="https://via.placeholder.com/50" alt="Logo" width="40" height="40" class="d-inline-block align-text-top">
-      InventarioApp
+      <img src="assets/SUPERAMA_Logo.png" alt="logo" width="80" height="80" class="d-inline-block align-top" style="margin-right: 0px;">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Inventario</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Pedidos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Contactos</a>
+          <a class="nav-link active custom-font" aria-current="page" href="#">SUPERAMA</a>
         </li>
       </ul>
+      <a href="login" style="cursor: pointer; color: white; font-size: 1.5rem; padding: 15px;">
+        <i class="fas fa-user"></i>
+      </a>
     </div>
   </div>
 </nav>
 
 <!-- Sección de Inventario -->
-<section class="py-5">
+<section class="py-5 bg-light">
   <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="mb-0">Inventario de Productos</h2>
-      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProductModal">Agregar Producto</button>
+      <h2 class="mb-0 fw-bold text-dark">Inventario de Productos</h2>
+      <button class="btn btn-success shadow-sm" data-bs-toggle="modal" data-bs-target="#addProductModal">Agregar Producto</button>
     </div>
 
     <div class="row">
-      <!-- Producto -->
+      <!-- Producto A -->
       <div class="col-md-4 col-lg-3 mb-4">
         <div class="card shadow-sm">
-          <img src="https://via.placeholder.com/300" class="card-img-top" alt="Producto A">
+          <img src="https://via.placeholder.com/300" class="card-img-top rounded-top" alt="Producto A">
           <div class="card-body">
-            <h5 class="card-title">Producto A</h5>
-            <p class="card-text">Categoría: Electrónica</p>
-            <p class="card-text">Precio: $500</p>
-            <p class="card-text">Stock: 20</p>
+            <h5 class="card-title text-dark">Producto A</h5>
+            <p class="card-text text-secondary">Categoría: Electrónica</p>
+            <p class="card-text text-secondary">Precio: <span class="text-success fw-bold">$500</span></p>
+            <p class="card-text text-secondary">Stock: 20</p>
             <div class="d-flex justify-content-between">
               <button class="btn btn-warning btn-sm">Editar</button>
               <button class="btn btn-danger btn-sm">Eliminar</button>
@@ -53,15 +45,15 @@
         </div>
       </div>
 
-      <!-- Más productos... -->
+      <!-- Producto B -->
       <div class="col-md-4 col-lg-3 mb-4">
         <div class="card shadow-sm">
-          <img src="https://via.placeholder.com/300" class="card-img-top" alt="Producto B">
+          <img src="https://via.placeholder.com/300" class="card-img-top rounded-top" alt="Producto B">
           <div class="card-body">
-            <h5 class="card-title">Producto B</h5>
-            <p class="card-text">Categoría: Ropa</p>
-            <p class="card-text">Precio: $35</p>
-            <p class="card-text">Stock: 100</p>
+            <h5 class="card-title text-dark">Producto B</h5>
+            <p class="card-text text-secondary">Categoría: Ropa</p>
+            <p class="card-text text-secondary">Precio: <span class="text-success fw-bold">$35</span></p>
+            <p class="card-text text-secondary">Stock: 100</p>
             <div class="d-flex justify-content-between">
               <button class="btn btn-warning btn-sm">Editar</button>
               <button class="btn btn-danger btn-sm">Eliminar</button>
@@ -69,14 +61,12 @@
           </div>
         </div>
       </div>
-
-      <!-- Más productos pueden añadirse aquí -->
     </div>
   </div>
 
   <!-- Modal para agregar productos -->
   <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="addProductModalLabel">Agregar Producto</h5>
@@ -100,10 +90,9 @@
               <label for="productQuantity" class="form-label">Cantidad</label>
               <input type="number" class="form-control" id="productQuantity" required>
             </div>
-            <button type="submit" class="btn btn-primary">Agregar</button>
+            <button type="submit" class="btn btn-primary w-100">Agregar</button>
           </form>
         </div>
       </div>
     </div>
   </div>
-</section>

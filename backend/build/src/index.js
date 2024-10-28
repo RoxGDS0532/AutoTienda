@@ -22,6 +22,7 @@ class Server {
     }
     routes() {
         this.app.use('/producto', productoRoutes_1.default);
+        this.app.use('/proveedor', productoRoutes_1.default);
     }
     start() {
         console.log('Iniciando el servidor...');

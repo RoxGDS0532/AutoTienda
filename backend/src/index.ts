@@ -21,6 +21,7 @@ class Server{
     }
     routes() : void{
         this.app.use('/producto', productoRoutes)
+        this.app.use('/proveedor', productoRoutes)
         
     }
     start() : void{

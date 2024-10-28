@@ -1,8 +1,9 @@
-import { Router, Request, Response } from "express";
+import { Router} from "express";
 import productoController from "../controllers/productoControllers";
 
 class ProductoRoutes{
     public router:Router=Router();
+
     constructor(){
         this.config();
     }

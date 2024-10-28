@@ -33,4 +33,4 @@ class ProductoController{
     }
 }
 const productoController = new ProductoController();
-export default productoController;
+export default productoController; 

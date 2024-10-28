@@ -1,86 +1,96 @@
 nav {
-    margin: 0;
-    padding: 0;
-  }
+  margin: 0;
+  padding: 0;
+}
 
-  .nav-link.active {
-    color: white !important;
-    font-size: 1.5rem;
-    font-family: 'Lobster', cursive;
-  }
-  
+.nav-link.active {
+  color: white !important;
+  font-size: 1.5rem;
+  font-family: 'Lobster', cursive;
+}
+
 body {
-    font-family: 'Roboto', sans-serif;
-  }
-  .navbar {
-    background-color: #006f3d;
-  }
-  .navbar-brand img {
-    width: 80px;
-    height: 80px;
-  }
-  /* Sección de inventario */
-  .card {
-    border: none;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
+  font-family: 'Roboto', sans-serif;
+}
 
-  .card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  }
+.navbar {
+  background-color: #19246d; /* Color azul fuerte */
+}
 
-  .card-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-  }
+.navbar-brand img {
+  width: 80px;
+  height: 80px;
+}
 
-  .btn {
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
+/* Sección de inventario */
+.card {
+  border: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-  .btn-warning {
-    background-color: #f39c12;
-    border: none;
-  }
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
 
-  .btn-warning:hover {
-    background-color: #e67e22;
-  }
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
 
-  .btn-danger {
-    background-color: #e74c3c;
-    border: none;
-  }
+.btn {
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
 
-  .btn-danger:hover {
-    background-color: #c0392b;
-  }
+.btn-warning {
+  background-color: #ffc107; /* Color de botón de advertencia */
+  border: none;
+}
 
-  /* Modal */
-  .modal-header {
-    background-color: #007bff;
-    color: white;
-  }
+.btn-warning:hover {
+  background-color: #e67e22;
+}
 
-  .form-label {
-    font-weight: 600;
-    color: #34495e;
-  }
+.btn-danger {
+  background-color: #dc3545; /* Color de botón de peligro */
+  border: none;
+}
 
-  .btn-primary {
-    background-color: #2980b9;
-    border: none;
-  }
+.btn-danger:hover {
+  background-color: #c0392b;
+}
 
-  .btn-primary:hover {
-    background-color: #3498db;
-  }
+.btn-success {
+  background-color: #28a745; /* Color de botón de éxito */
+  border: none;
+}
 
-  .card {
-    border: none;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background-color: #909396; /* Color de fondo para prueba */
-  }
+/* Modal */
+.modal-header {
+  background-color: #007bff; /* Color azul fuerte */
+  color: white;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #34495e;
+}
+
+.btn-primary {
+  background-color: #2980b9; /* Color del botón primario */
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #3498db;
+}
+
+.modal-header {
+  border-bottom: 1px solid #ddd;
+}
+
+.modal-body {
+  border-radius: 0 0 1rem 1rem;
+}

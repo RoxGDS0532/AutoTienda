@@ -8,12 +8,12 @@ import * as bootstrap from 'bootstrap';
 
 
 interface Producto {
-  id?: number;
-  nombre: string;
-  categoria: string;
-  precio: number;
-  cantidad: number;
-  stock:number;
+  Id?: number;
+  Nombre: string;
+  Categoria: string;
+  Precio: number;
+  Cantidad: number;
+  Stock:number;
 }
 
 @Component({
@@ -27,11 +27,11 @@ interface Producto {
 export class InventarioComponent implements OnInit {
   productos: Producto[] = [];
   nuevoProducto: Producto = {
-    nombre: '',
-    categoria: '',
-    precio: 0,
-    cantidad: 0,
-    stock:0
+    Nombre: '',
+    Categoria: '',
+    Precio: 0,
+    Cantidad: 0,
+    Stock:0
   };
 
   constructor(private productoService: ProductoService) {}
@@ -58,7 +58,7 @@ export class InventarioComponent implements OnInit {
     this.productoService.agregarProducto(this.nuevoProducto).subscribe({
       next: (producto) => {
         this.productos.push(producto);
-        this.nuevoProducto = { nombre: '', categoria: '', precio: 0, cantidad: 0, stock: 0 };
+        this.nuevoProducto = { Nombre: '', Categoria: '', Precio: 0, Cantidad: 0, Stock: 0 };
 
         // Cerrar el modal usando Bootstrap
         const modalElement = document.getElementById('addProductModal');
@@ -81,7 +81,7 @@ export class InventarioComponent implements OnInit {
   eliminarProducto(id: number): void {
     this.productoService.eliminarProducto(id).subscribe({
       next: () => {
-        this.productos = this.productos.filter(producto => producto.id !== id);
+        this.productos = this.productos.filter(producto => producto.Id !== id);
       },
       error: (error) => {
         console.error('Error al eliminar producto:', error);

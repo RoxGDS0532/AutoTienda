@@ -4,12 +4,12 @@ import { Observable } from 'rxjs';
 
 // Modelo de Producto
 export interface Producto {
-  id?: number;
-  nombre: string;
-  categoria: string;
-  precio: number;
-  cantidad: number;
-  stock:number;
+  Id?: number;
+  Nombre: string;
+  Categoria: string;
+  Precio: number;
+  Cantidad: number;
+  Stock:number;
 }
 
 @Injectable({
@@ -31,8 +31,8 @@ export class ProductoService {
   }
 
   // Actualizar un producto existente
-  actualizarProducto(id: number, producto: Producto): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, producto);
+  actualizarProducto(Id: number, Producto: Producto): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${Id}`, Producto);
   }
 
   // Eliminar un producto

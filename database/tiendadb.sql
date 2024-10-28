@@ -8,7 +8,7 @@ CREATE TABLE Usuarios (
     Nombre VARCHAR(100) NOT NULL,
     Correo VARCHAR(100) NOT NULL UNIQUE,
     Contrasena VARCHAR(255) NOT NULL,
-    Rol ENUM('Encargado', 'Administrador') NOT NULL  -- Agregado para los roles
+    Rol ENUM('Encargado', 'Administrador') NOT NULL  
 );
 
 -- Tabla Productos
@@ -18,7 +18,7 @@ CREATE TABLE Productos (
     Categoria VARCHAR(50) NOT NULL,
     Precio DECIMAL(10, 2) NOT NULL,
     Cantidad INT NOT NULL,
-    Stock INT NOT NULL  -- Agregado para la cantidad en stock
+    Stock INT NOT NULL  
 );
 
 -- Tabla Proveedores
@@ -77,6 +77,6 @@ CREATE TABLE Ventas (
 CREATE TABLE Pagos (
     IdPago INT AUTO_INCREMENT PRIMARY KEY,
     FechaPago DATE NOT NULL,
-    TipoPago ENUM('Efectivo', 'Tarjeta', 'Transferencia') NOT NULL,
+    TipoPago ENUM('Efectivo', 'Transferencia') NOT NULL,
     CantidadTotal DECIMAL(10, 2) NOT NULL
 );

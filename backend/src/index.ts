@@ -20,14 +20,16 @@ class Server{
         this.app.use(express.urlencoded({extended : false}));
     }
     routes() : void{
-        this.app.use('/', productoRoutes)
+        this.app.use('/api/producto', productoRoutes)
         
     }
     start() : void{
-        this.app.listen(this.app.get('port'),()=>{
+        console.log('Iniciando el servidor...');
+        this.app.listen(this.app.get('port'), () => {
             console.log('Server on port', this.app.get('port'));
         });
     }
+    
 }
 const server = new Server();
 server.start();

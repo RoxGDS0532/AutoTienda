@@ -1,52 +1,33 @@
-// Importar dependencias
-const express = require('express');
-const mysql = require('mysql');
-const cors = require('cors');
-const bodyParser = require('body-parser');
+import express,{Application} from 'express';
+import productoRoutes from './routes/productoRoutes'
+import morgan from 'morgan';
+import cors from 'cors';
 
-// Configuración de la aplicación
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
 
-// Configuración de la base de datos MySQL
-const db = mysql.createConnection({
-    host: 'localhost',  
-    user: 'root',
-    password: 'root',
-    database: 'tienda_db' 
-});
+class Server{
+    public app: Application;
+    constructor(){
+        this.app = express();
+        this.config();
+        this.routes();
 
-// Conectar a MySQL
-db.connect((err) => {
-    if (err) {
-        console.log('Error conectando a la base de datos:', err);
-        return;
     }
-    console.log('Conectado a la base de datos MySQL');
-});
-
-// Ruta para obtener todos los productos
-app.get('/api/productos', (req, res) => {
-    const sql = 'SELECT * FROM productos';
-    db.query(sql, (err, result) => {
-        if (err) throw err;
-        res.json(result);
-    });
-});
-
-// Ruta para agregar un nuevo producto
-app.post('/api/productos', (req, res) => {
-    const nuevoProducto = req.body;
-    const sql = 'INSERT INTO productos SET ?';
-    db.query(sql, nuevoProducto, (err, result) => {
-        if (err) throw err;
-        res.json({ message: 'Producto agregado', id: result.insertId });
-    });
-});
-
-// Iniciar el servidor
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
+    config() : void{
+        this.app.set('port',process.env.PORT || 3000);
+        this.app.use(morgan('dev'));
+        this.app.use(cors());
+        this.app.use(express.json());
+        this.app.use(express.urlencoded({extended : false}));
+    }
+    routes() : void{
+        this.app.use('/', productoRoutes)
+        
+    }
+    start() : void{
+        this.app.listen(this.app.get('port'),()=>{
+            console.log('Server on port', this.app.get('port'));
+        });
+    }
+}
+const server = new Server();
+server.start();

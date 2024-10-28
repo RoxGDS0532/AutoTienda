@@ -1,20 +1,20 @@
-import { Router} from "express";
-import proveedorController from "../controllers/proveedorControllers";
+import { Router } from "express";
+import proveedorController from "../controllers/proveedorControllers"; // Verifica que esta ruta sea correcta
 
-class ProveedorRoutes{
-    public router:Router=Router();
+class ProveedorRoutes {
+    public router: Router = Router();
 
-    constructor(){
+    constructor() {
         this.config();
     }
-    
-    config():void{
-        this.router.get('/',proveedorController.list);
-        this.router.post('/',proveedorController.create);
-        this.router.delete('/:Id',proveedorController.delete);
-        this.router.put('/:Id',proveedorController.update);
+
+    config(): void {
+        this.router.get('/', proveedorController.list.bind(proveedorController)); // Usar bind
+        this.router.post('/', proveedorController.create.bind(proveedorController)); // Usar bind
+        this.router.delete('/:Id', proveedorController.delete.bind(proveedorController)); // Usar bind
+        this.router.put('/:Id', proveedorController.update.bind(proveedorController)); // Usar bind
     }
 }
-const proveedorRoutes=new ProveedorRoutes();
+
+const proveedorRoutes = new ProveedorRoutes();
 export default proveedorRoutes.router;
-    

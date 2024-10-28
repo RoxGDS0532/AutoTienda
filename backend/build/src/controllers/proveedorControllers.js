@@ -12,45 +12,60 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = __importDefault(require("../../database"));
+const database_1 = __importDefault(require("../../database")); // Asegúrate de que esta ruta sea correcta
 class ProveedorController {
-    list(req, resp) {
+    list(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            //pool.query('DESCRIBE productos')
-            //resp.json('productos');
-            const proveedor = yield database_1.default.query('select * from proveedores');
-            resp.json(proveedor);
+            const proveedor = yield database_1.default.query('SELECT * FROM proveedores');
+            res.json(proveedor);
         });
     }
-    create(req, resp) {
+    create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(req.body);
-            yield database_1.default.query('INSERT INTO proveedores set ?', [req.body]);
-            resp.json({ message: 'proveedor saved' });
+            yield database_1.default.query('INSERT INTO proveedores SET ?', [req.body]);
+            res.json({ message: 'Proveedor guardado' });
         });
     }
-    delete(req, resp) {
+    delete(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { Id } = req.params;
-            yield database_1.default.query('delete from proveedores where Id=?', [Id]);
-            resp.json({ message: 'elimino proveedores' });
+            yield database_1.default.query('DELETE FROM proveedores WHERE Id = ?', [Id]);
+            res.json({ message: 'Proveedor eliminado' });
         });
     }
-    update(req, resp) {
+    update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            yield database_1.default.query('UPDATE proveedores SET ? WHERE Id = ?', [req.body, id]);
-            resp.json({ message: 'Updating a proveedores' });
-        });
-    }
-    getOne(req, resp) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            const proveedor = yield database_1.default.query('select * from proveedores where Id = ?', [id]);
-            if (proveedor.length > 0) {
-                return resp.json(proveedor[0]);
+            const { Id } = req.params;
+            const { Nombre, Contacto, Telefono, Email } = req.body;
+            // Validación de campos
+            if (!Nombre || !Contacto || !Telefono || !Email) {
+                res.status(400).json({ message: 'Todos los campos son requeridos' });
+                return; // Asegúrate de retornar aquí para no continuar
             }
-            resp.status(404).json({ text: 'the a proveedores doesnt exist' });
+            try {
+                const result = yield database_1.default.query('UPDATE Proveedores SET Nombre = ?, Contacto = ?, Telefono = ?, Email = ? WHERE Id = ?', [Nombre, Contacto, Telefono, Email, Id]);
+                // Verificar si se actualizó algún registro
+                if (result.affectedRows === 0) {
+                    res.status(404).json({ message: 'Proveedor no encontrado o no actualizado' });
+                    return; // Asegúrate de retornar aquí para no continuar
+                }
+                res.json({ message: 'Proveedor actualizado exitosamente' });
+            }
+            catch (error) {
+                console.error(error);
+                res.status(500).json({ message: 'Error al actualizar proveedor', error });
+            }
+        });
+    }
+    getOne(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const proveedor = yield database_1.default.query('SELECT * FROM proveedores WHERE Id = ?', [id]);
+            if (proveedor.length > 0) {
+                return res.json(proveedor[0]);
+            }
+            return res.status(404).json({ message: 'El proveedor no existe' });
         });
     }
 }

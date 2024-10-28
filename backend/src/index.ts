@@ -20,7 +20,7 @@ class Server{
         this.app.use(express.urlencoded({extended : false}));
     }
     routes() : void{
-        this.app.use('/api/producto', productoRoutes)
+        this.app.use('/producto', productoRoutes)
         
     }
     start() : void{

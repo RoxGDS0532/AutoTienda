@@ -1,11 +1,9 @@
+<!-- Barra de navegación -->
 <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #19246dda;">
   <div class="container-fluid" style="background-color: #04092cda;">
     <a class="navbar-brand" href="#">
-      <img src="assets/SUPERAMA_Logo.png" alt="logo" width="80" height="80" class="d-inline-block align-top" style="margin-right: 0px;">
+      <img src="assets/SUPERAMA_Logo.png" alt="logo" width="80" height="80" class="d-inline-block align-top">
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
@@ -28,35 +26,18 @@
     </div>
 
     <div class="row">
-      <!-- Producto A -->
-      <div class="col-md-4 col-lg-3 mb-4">
+      <!-- Muestra la lista de productos -->
+      <div *ngFor="let producto of productos" class="col-md-4 col-lg-3 mb-4">
         <div class="card shadow-sm">
-          <img src="https://via.placeholder.com/300" class="card-img-top rounded-top" alt="Producto A">
+          <img src="https://via.placeholder.com/300" class="card-img-top rounded-top" alt="Producto">
           <div class="card-body">
-            <h5 class="card-title text-dark">Producto A</h5>
-            <p class="card-text text-secondary">Categoría: Electrónica</p>
-            <p class="card-text text-secondary">Precio: <span class="text-success fw-bold">$500</span></p>
-            <p class="card-text text-secondary">Stock: 20</p>
+            <h5 class="card-title text-dark">{{ producto.nombre }}</h5>
+            <p class="card-text text-secondary">Categoría: {{ producto.categoria }}</p>
+            <p class="card-text text-secondary">Precio: <span class="text-success fw-bold">${{ producto.precio }}</span></p>
+            <p class="card-text text-secondary">Stock: {{ producto.cantidad }}</p>
             <div class="d-flex justify-content-between">
-              <button class="btn btn-warning btn-sm">Editar</button>
-              <button class="btn btn-danger btn-sm">Eliminar</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Producto B -->
-      <div class="col-md-4 col-lg-3 mb-4">
-        <div class="card shadow-sm">
-          <img src="https://via.placeholder.com/300" class="card-img-top rounded-top" alt="Producto B">
-          <div class="card-body">
-            <h5 class="card-title text-dark">Producto B</h5>
-            <p class="card-text text-secondary">Categoría: Ropa</p>
-            <p class="card-text text-secondary">Precio: <span class="text-success fw-bold">$35</span></p>
-            <p class="card-text text-secondary">Stock: 100</p>
-            <div class="d-flex justify-content-between">
-              <button class="btn btn-warning btn-sm">Editar</button>
-              <button class="btn btn-danger btn-sm">Eliminar</button>
+              <button class="btn btn-warning btn-sm" (click)="editarProducto(producto)" data-bs-toggle="modal" data-bs-target="#addProductModal">Editar</button>
+              <button class="btn btn-danger btn-sm" (click)="eliminarProducto(producto.id!)">Eliminar</button>
             </div>
           </div>
         </div>
@@ -64,7 +45,7 @@
     </div>
   </div>
 
-  <!-- Modal para agregar productos -->
+  <!-- Modal para agregar o editar productos -->
   <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -73,26 +54,27 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form>
+          <form (submit)="nuevoProducto.id ? actualizarProducto() : agregarProducto()">
             <div class="mb-3">
               <label for="productName" class="form-label">Nombre del Producto</label>
-              <input type="text" class="form-control" id="productName" required>
+              <input type="text" class="form-control" id="productName" [(ngModel)]="nuevoProducto.nombre" name="nombre" required>
             </div>
             <div class="mb-3">
               <label for="productCategory" class="form-label">Categoría</label>
-              <input type="text" class="form-control" id="productCategory" required>
+              <input type="text" class="form-control" id="productCategory" [(ngModel)]="nuevoProducto.categoria" name="categoria" required>
             </div>
             <div class="mb-3">
               <label for="productPrice" class="form-label">Precio</label>
-              <input type="number" class="form-control" id="productPrice" required>
+              <input type="number" class="form-control" id="productPrice" [(ngModel)]="nuevoProducto.precio" name="precio" required>
             </div>
             <div class="mb-3">
               <label for="productQuantity" class="form-label">Cantidad</label>
-              <input type="number" class="form-control" id="productQuantity" required>
+              <input type="number" class="form-control" id="productQuantity" [(ngModel)]="nuevoProducto.cantidad" name="cantidad" required>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Agregar</button>
+            <button type="submit" class="btn btn-primary w-100">{{ nuevoProducto.id ? 'Actualizar' : 'Agregar' }}</button>
           </form>
         </div>
       </div>
     </div>
   </div>
+</section>

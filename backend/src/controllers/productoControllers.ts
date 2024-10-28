@@ -18,11 +18,37 @@ class ProductoController{
         await pool.query('delete from productos where Id=?',[Id]);
         resp.json({message : 'elimino producto'})
     }
-    public async update(req:Request, resp:Response){
-        const{id}=req.params;
-        await pool.query('UPDATE productos SET ? WHERE Id = ?',[req.body,id])
-        resp.json({message: 'Updating a producto'});
+
+    public async update(req: Request, res: Response): Promise<void> {
+        const { Id } = req.params;
+        const { Nombre, Categoria, Precio, Cantidad, Stock } = req.body;
+    
+        // Validación de campos
+        if (!Nombre || !Categoria || Precio === undefined || !Cantidad || Stock === undefined) {
+            res.status(400).json({ message: 'Todos los campos son requeridos' });
+            return; // Asegúrate de retornar aquí para no continuar
+        }
+    
+        try {
+            const result = await pool.query(
+                'UPDATE productos SET Nombre = ?, Categoria = ?, Precio = ?, Cantidad = ?, Stock = ? WHERE Id = ?',
+                [Nombre, Categoria, Precio, Cantidad, Stock, Id]
+            );
+    
+            // Verificar si se actualizó algún registro
+            if (result.affectedRows === 0) {
+                res.status(404).json({ message: 'Producto no encontrado o no actualizado' });
+                return; // Asegúrate de retornar aquí para no continuar
+            }
+    
+            res.json({ message: 'Producto actualizado exitosamente' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Error al actualizar producto', error });
+        }
     }
+    
+
     public async getOne(req:Request, resp:Response){
         const{id}=req.params; 
         const producto=await pool.query('select * from productos where Id = ?',[id]);

@@ -36,11 +36,28 @@ class ProductoController {
             resp.json({ message: 'elimino producto' });
         });
     }
-    update(req, resp) {
+    update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            yield database_1.default.query('UPDATE productos SET ? WHERE Id = ?', [req.body, id]);
-            resp.json({ message: 'Updating a producto' });
+            const { Id } = req.params;
+            const { Nombre, Categoria, Precio, Cantidad, Stock } = req.body;
+            // Validación de campos
+            if (!Nombre || !Categoria || Precio === undefined || !Cantidad || Stock === undefined) {
+                res.status(400).json({ message: 'Todos los campos son requeridos' });
+                return; // Asegúrate de retornar aquí para no continuar
+            }
+            try {
+                const result = yield database_1.default.query('UPDATE productos SET Nombre = ?, Categoria = ?, Precio = ?, Cantidad = ?, Stock = ? WHERE Id = ?', [Nombre, Categoria, Precio, Cantidad, Stock, Id]);
+                // Verificar si se actualizó algún registro
+                if (result.affectedRows === 0) {
+                    res.status(404).json({ message: 'Producto no encontrado o no actualizado' });
+                    return; // Asegúrate de retornar aquí para no continuar
+                }
+                res.json({ message: 'Producto actualizado exitosamente' });
+            }
+            catch (error) {
+                console.error(error);
+                res.status(500).json({ message: 'Error al actualizar producto', error });
+            }
         });
     }
     getOne(req, resp) {

@@ -17,6 +17,43 @@
   </div>
 </nav>
 
+<!-- Modal para agregar productos -->
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addProductModalLabel">Agregar Producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="agregarProducto()">
+          <div class="mb-3">
+            <label for="productName" class="form-label">Nombre del Producto</label>
+            <input type="text" [(ngModel)]="nuevoProducto.nombre" name="productName" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="productCategory" class="form-label">Categoría</label>
+            <input type="text" [(ngModel)]="nuevoProducto.categoria" name="productCategory" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="productPrice" class="form-label">Precio</label>
+            <input type="number" [(ngModel)]="nuevoProducto.precio" name="productPrice" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="productQuantity" class="form-label">Cantidad</label>
+            <input type="number" [(ngModel)]="nuevoProducto.cantidad" name="productQuantity" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="productStock" class="form-label">Stock</label>
+            <input type="number" [(ngModel)]="nuevoProducto.stock" name="productStock" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Agregar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Sección de Inventario -->
 <section class="py-5 bg-light">
   <div class="container">
@@ -26,53 +63,18 @@
     </div>
 
     <div class="row">
-      <!-- Muestra la lista de productos -->
-      <div *ngFor="let producto of productos" class="col-md-4 col-lg-3 mb-4">
+      <div class="col-md-4 col-lg-3 mb-4" *ngFor="let producto of productos">
         <div class="card shadow-sm">
-          <img src="https://via.placeholder.com/300" class="card-img-top rounded-top" alt="Producto">
           <div class="card-body">
             <h5 class="card-title text-dark">{{ producto.nombre }}</h5>
             <p class="card-text text-secondary">Categoría: {{ producto.categoria }}</p>
             <p class="card-text text-secondary">Precio: <span class="text-success fw-bold">${{ producto.precio }}</span></p>
-            <p class="card-text text-secondary">Stock: {{ producto.cantidad }}</p>
+            <p class="card-text text-secondary">Cantidad: {{ producto.cantidad }}</p>
             <div class="d-flex justify-content-between">
-              <button class="btn btn-warning btn-sm" (click)="editarProducto(producto)" data-bs-toggle="modal" data-bs-target="#addProductModal">Editar</button>
+              <button class="btn btn-warning btn-sm">Editar</button>
               <button class="btn btn-danger btn-sm" (click)="eliminarProducto(producto.id!)">Eliminar</button>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal para agregar o editar productos -->
-  <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addProductModalLabel">Agregar Producto</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form (submit)="nuevoProducto.id ? actualizarProducto() : agregarProducto()">
-            <div class="mb-3">
-              <label for="productName" class="form-label">Nombre del Producto</label>
-              <input type="text" class="form-control" id="productName" [(ngModel)]="nuevoProducto.nombre" name="nombre" required>
-            </div>
-            <div class="mb-3">
-              <label for="productCategory" class="form-label">Categoría</label>
-              <input type="text" class="form-control" id="productCategory" [(ngModel)]="nuevoProducto.categoria" name="categoria" required>
-            </div>
-            <div class="mb-3">
-              <label for="productPrice" class="form-label">Precio</label>
-              <input type="number" class="form-control" id="productPrice" [(ngModel)]="nuevoProducto.precio" name="precio" required>
-            </div>
-            <div class="mb-3">
-              <label for="productQuantity" class="form-label">Cantidad</label>
-              <input type="number" class="form-control" id="productQuantity" [(ngModel)]="nuevoProducto.cantidad" name="cantidad" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">{{ nuevoProducto.id ? 'Actualizar' : 'Agregar' }}</button>
-          </form>
         </div>
       </div>
     </div>

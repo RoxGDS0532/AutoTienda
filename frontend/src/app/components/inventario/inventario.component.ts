@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms'; // Import FormsModule here
 import { CommonModule } from '@angular/common';
+import { ProductoService } from '../../services/producto.service';
+import * as bootstrap from 'bootstrap';
 
 
 
@@ -11,6 +13,7 @@ interface Producto {
   categoria: string;
   precio: number;
   cantidad: number;
+  stock:number;
 }
 
 @Component({
@@ -18,58 +21,71 @@ interface Producto {
   standalone: true,
   imports: [FormsModule, HttpClientModule, CommonModule],
   templateUrl: './inventario.component.html',
-  styleUrl: './inventario.component.css'
+  styleUrl: './inventario.component.css',
+  providers: [ProductoService]
 })
 export class InventarioComponent implements OnInit {
   productos: Producto[] = [];
-  nuevoProducto: Producto = { nombre: '', categoria: '', precio: 0, cantidad: 0 };
-  apiUrl = 'http://localhost:3000/producto'; // Cambia la URL según corresponda
+  nuevoProducto: Producto = {
+    nombre: '',
+    categoria: '',
+    precio: 0,
+    cantidad: 0,
+    stock:0
+  };
 
-  constructor(private http: HttpClient) {}
+  constructor(private productoService: ProductoService) {}
 
   ngOnInit(): void {
     this.obtenerProductos();
   }
 
   obtenerProductos(): void {
-    this.http.get<Producto[]>(this.apiUrl).subscribe(
-      (data) => (this.productos = data),
-      (error) => console.error('Error al obtener productos:', error)
-    );
-  }
-
-  agregarProducto(): void {
-    this.http.post(this.apiUrl, this.nuevoProducto).subscribe(
-      () => {
-        this.obtenerProductos(); // Refresca la lista
-        this.nuevoProducto = { nombre: '', categoria: '', precio: 0, cantidad: 0 }; // Limpia el formulario
+    this.productoService.obtenerProductos().subscribe({
+      next: (data) => {
+        console.log('Datos recibidos:', data); // Registra para verificar la estructura de los datos
+        this.productos = data; // Suponiendo que los datos son un array de Productos
       },
-      (error) => console.error('Error al agregar producto:', error)
-    );
+      error: (error) => {
+        console.error('Error al obtener productos:', error);
+      }
+    });
   }
+  
 
-  editarProducto(producto: Producto): void {
-    this.nuevoProducto = { ...producto }; // Carga los datos en el formulario para editar
-  }
+  // Método para agregar un producto
+  agregarProducto(): void {
+    this.productoService.agregarProducto(this.nuevoProducto).subscribe({
+      next: (producto) => {
+        this.productos.push(producto);
+        this.nuevoProducto = { nombre: '', categoria: '', precio: 0, cantidad: 0, stock: 0 };
 
-  actualizarProducto(): void {
-    if (this.nuevoProducto.id) {
-      this.http.put(`${this.apiUrl}/${this.nuevoProducto.id}`, this.nuevoProducto).subscribe(
-        () => {
-          this.obtenerProductos();
-          this.nuevoProducto = { nombre: '', categoria: '', precio: 0, cantidad: 0 }; // Limpia el formulario
-        },
-        (error) => console.error('Error al actualizar producto:', error)
-      );
-    }
+        // Cerrar el modal usando Bootstrap
+        const modalElement = document.getElementById('addProductModal');
+        if (modalElement) {
+          const modalInstance = bootstrap.Modal.getInstance(modalElement);
+          if (modalInstance) {
+            modalInstance.hide();
+          }
+        } else {
+          console.error('El elemento del modal no se encontró');
+        }
+      },
+      error: (error) => {
+        console.error('Error al agregar producto:', error);
+      }
+    });
   }
+  
 
   eliminarProducto(id: number): void {
-    if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
-      this.http.delete(`${this.apiUrl}/${id}`).subscribe(
-        () => this.obtenerProductos(),
-        (error) => console.error('Error al eliminar producto:', error)
-      );
-    }
+    this.productoService.eliminarProducto(id).subscribe({
+      next: () => {
+        this.productos = this.productos.filter(producto => producto.id !== id);
+      },
+      error: (error) => {
+        console.error('Error al eliminar producto:', error);
+      }
+    });
   }
 }

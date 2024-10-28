@@ -14,20 +14,20 @@
             </div>
             <!-- Username input -->
             <div class="form-outline mb-4">
-              <input type="text" id="username" formControlName="username" class="form-control form-control-lg"
+              <input type="text" id="correo" formControlName="correo" class="form-control form-control-lg"
                      placeholder="Ingresa tu nombre de usuario" />
-              <label class="form-label" for="username">Nombre de Usuario</label>
-              <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="text-danger">
+              <label class="form-label" for="correo">Correo</label>
+              <div *ngIf="loginForm.get('correo')?.invalid && loginForm.get('correo')?.touched" class="text-danger">
                 El nombre de usuario es requerido.
               </div>
             </div>
   
             <!-- Password input -->
             <div class="form-outline mb-4">
-              <input type="password" id="password" formControlName="password" class="form-control form-control-lg"
+              <input type="password" id="password" formControlName="contrasena" class="form-control form-control-lg"
                      placeholder="Ingresa tu contraseña" />
-              <label class="form-label" for="password">Contraseña</label>
-              <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-danger">
+              <label class="form-label" for="contrasena">Contraseña</label>
+              <div *ngIf="loginForm.get('contrasena')?.invalid && loginForm.get('contrasena')?.touched" class="text-danger">
                 La contraseña es requerida.
               </div>
             </div>

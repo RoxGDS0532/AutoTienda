@@ -2,7 +2,8 @@ import express,{Application} from 'express';
 import productoRoutes from './routes/productoRoutes'
 import morgan from 'morgan';
 import cors from 'cors';
-
+import proveedorRoutes from './routes/proveedorRoutes'
+import usuariosRoutes from './routes/usuariosRoutes'
 
 class Server{
     public app: Application;
@@ -21,7 +22,8 @@ class Server{
     }
     routes() : void{
         this.app.use('/producto', productoRoutes)
-        this.app.use('/proveedor', productoRoutes)
+        this.app.use('/proveedor', proveedorRoutes)
+        this.app.use('/usuario',usuariosRoutes)
         
     }
     start() : void{

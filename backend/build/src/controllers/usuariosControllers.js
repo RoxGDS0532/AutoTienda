@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../../database"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 class UsuariosController {
     list(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -22,9 +23,15 @@ class UsuariosController {
     }
     create(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(req.body);
-            yield database_1.default.query('INSERT INTO usuarios set ?', [req.body]);
-            resp.json({ message: 'usuarios saved' });
+            try {
+                const { Nombre, Correo, Contrasena, Rol } = req.body;
+                const hashedPassword = yield bcrypt_1.default.hash(Contrasena, 10);
+                yield database_1.default.query('INSERT INTO Usuarios SET ?', [{ Nombre, Correo, Contrasena: hashedPassword, Rol }]);
+                resp.json({ message: 'Usuario guardado' });
+            }
+            catch (error) {
+                resp.status(500).json({ message: 'Error al guardar el usuario', error });
+            }
         });
     }
     delete(req, resp) {
@@ -49,6 +56,30 @@ class UsuariosController {
                 return resp.json(usuarios[0]);
             }
             resp.status(404).json({ text: 'the a usuarios doesnt exist' });
+        });
+    }
+    login(req, resp) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { Correo, Contrasena } = req.body;
+            // Agrega logs para ver qué valores se están recibiendo
+            console.log(`Correo: ${Correo}`);
+            console.log(`Contrasena: ${Contrasena}`);
+            const result = yield database_1.default.query('SELECT * FROM Usuarios WHERE Correo = ?', [Correo]);
+            if (result.length > 0) {
+                const user = result[0];
+                // Comparar las contraseñas directamente
+                console.log(`Contraseña en base de datos: ${user.Contrasena}`); // Verifica qué hay en la base de datos
+                console.log(`Contraseña proporcionada: ${Contrasena}`); // Contraseña proporcionada
+                if (Contrasena === user.Contrasena) {
+                    resp.json({ message: 'Login successful', user });
+                }
+                else {
+                    resp.status(401).json({ message: 'Invalid email or password' });
+                }
+            }
+            else {
+                resp.status(401).json({ message: 'Invalid email or password 2' });
+            }
         });
     }
 }

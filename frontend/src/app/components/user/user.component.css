@@ -13,8 +13,6 @@
     font-size: 1.5rem;
     font-family: 'Lobster', cursive;
   }
-  
-  
 
   .btn-custom {
     background-color: #19246d; 
@@ -42,13 +40,14 @@
   }
   
   .dot {
-    width: 20px;
-    height: 20px;
-    background-color: rgb(171, 171, 194);
+    width: 40px;
+    height: 40px;
+    background-color: rgb(147, 147, 167);
     border-radius: 50%;
     margin: 2px;
-    opacity: 0; /* Comienza invisible */
-    animation: fadeIn 0.6s ease forwards;
+    opacity: 0;
+    animation: fadeIn 2s ease forwards;
+    animation-iteration-count: infinite
   }
   
   /* Animación para hacer aparecer los puntos uno por uno */

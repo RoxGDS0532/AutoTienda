@@ -29,6 +29,8 @@ export class UserComponent {
   // Simulación de la búsqueda de productos por código de barras
   buscarProductoPorCodigo(codigo: string): Producto | undefined {
     const productosDisponibles: Producto[] = [
+      { CodigoBarras: '123', Nombre: 'Producto 1', Precio: 50, Cantidad: 1, Categoria: 'Pan', Stock: 8},
+      { CodigoBarras: '456', Nombre: 'Producto 2', Precio: 75, Cantidad: 1, Categoria: 'Pan', Stock: 8}
     ];
     return productosDisponibles.find(p => p.CodigoBarras === codigo);
   }

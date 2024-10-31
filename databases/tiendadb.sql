@@ -14,12 +14,15 @@ CREATE TABLE Usuarios (
 -- Tabla Productos
 CREATE TABLE Productos (
     Id INT AUTO_INCREMENT PRIMARY KEY,
+    CodigoBarras NUMERIC(13),
+    ImagenURL VARCHAR(300),  
     Nombre VARCHAR(100) NOT NULL,
     Categoria VARCHAR(50) NOT NULL,
     Precio DECIMAL(10, 2) NOT NULL,
     Cantidad INT NOT NULL,
     Stock INT NOT NULL  
 );
+
 
 -- Tabla Proveedores
 CREATE TABLE Proveedores (
@@ -58,6 +61,14 @@ CREATE TABLE Reportes (
     FOREIGN KEY (UsuarioId) REFERENCES Usuarios(Id)
 );
 
+-- Tabla Pagos
+CREATE TABLE Pagos (
+    IdPago INT AUTO_INCREMENT PRIMARY KEY,
+    FechaPago DATE NOT NULL,
+    TipoPago ENUM('Efectivo', 'Transferencia') NOT NULL,
+    CantidadTotal DECIMAL(10, 2) NOT NULL
+);
+
 -- Tabla Ventas
 CREATE TABLE Ventas (
     Id INT AUTO_INCREMENT PRIMARY KEY,
@@ -71,12 +82,4 @@ CREATE TABLE Ventas (
     IdPago INT,
     FOREIGN KEY (IdProducto) REFERENCES Productos(Id),
     FOREIGN KEY (IdPago) REFERENCES Pagos(IdPago)
-);
-
--- Tabla Pagos
-CREATE TABLE Pagos (
-    IdPago INT AUTO_INCREMENT PRIMARY KEY,
-    FechaPago DATE NOT NULL,
-    TipoPago ENUM('Efectivo', 'Transferencia') NOT NULL,
-    CantidadTotal DECIMAL(10, 2) NOT NULL
 );

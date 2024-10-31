@@ -1,1 +1,36 @@
-<p>consultas works!</p>
+<div class="filter-section">
+    <label for="filter">Filtrar por:</label>
+    <select id="filter" [(ngModel)]="selectedFilter" (change)="aplicarFiltro()">
+      <option value="day">Día</option>
+      <option value="week">Semana</option>
+      <option value="month">Mes</option>
+    </select>
+  </div>
+  
+  <div class="chart-container">
+    <h3>Ventas</h3>
+    <canvas baseChart
+            [data]="ventasData"
+            [type]="barChartType"
+            [options]="chartOptions">
+    </canvas>
+  </div>
+  
+  <div class="chart-container">
+    <h3>Pagos</h3>
+    <canvas baseChart
+            [data]="pagosData"
+            [type]="barChartType"
+            [options]="chartOptions">
+    </canvas>
+  </div>
+  
+  <div class="chart-container">
+    <h3>Recibos</h3>
+    <canvas baseChart
+            [data]="recibosData"
+            [type]="pieChartType"
+            [options]="chartOptions">
+    </canvas>
+  </div>
+  

@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BrowserMultiFormatReader } from '@zxing/browser';
 
 interface Producto {
-  codigo: string;
-  nombre: string;
-  precio: number;
-  cantidad: number;
+  Id?: number;
+  CodigoBarras: string;
+  Nombre: string;
+  Categoria: string;
+  Precio: number;
+  Cantidad: number;
+  Stock:number;
 }
 
 @Component({
@@ -13,74 +17,44 @@ interface Producto {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './user.component.html',
-  styleUrl: './user.component.css'
+  styleUrls: ['./user.component.css']
 })
 export class UserComponent {
-  carrito: Producto[] = [];
-  total: number = 0;
-  metodosDePago: string[] = ['Tarjeta', 'Efectivo', 'Vales'];
-  metodoSeleccionado: string = '';
-  facturaGenerada: boolean = false;
+  codeReader = new BrowserMultiFormatReader();
+  productoSeleccionado: Producto | undefined;
+  mensajeError: string | undefined;
+  codigoEscaneado: string | undefined;  // Almacena el código escaneado
 
-   // Agregar producto escaneado al carrito
-   agregarProducto(codigo: string) {
-    const producto = this.buscarProductoPorCodigo(codigo);
-    if (producto) {
-      const itemEnCarrito = this.carrito.find(p => p.codigo === producto.codigo);
-      if (itemEnCarrito) {
-        itemEnCarrito.cantidad++;
-      } else {
-        this.carrito.push({ ...producto, cantidad: 1 });
-      }
-      this.calcularTotal();
-    }
-  }
 
   // Simulación de la búsqueda de productos por código de barras
   buscarProductoPorCodigo(codigo: string): Producto | undefined {
     const productosDisponibles: Producto[] = [
-      { codigo: '123', nombre: 'Producto 1', precio: 50, cantidad: 1 },
-      { codigo: '456', nombre: 'Producto 2', precio: 75, cantidad: 1 }
+  
     ];
-    return productosDisponibles.find(p => p.codigo === codigo);
+    return productosDisponibles.find(p => p.CodigoBarras === codigo);
   }
 
-  // Calcular total
-  calcularTotal() {
-    this.total = this.carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
-  }
+  // Método para iniciar el escaneo de código de barras
+  iniciarEscaneo() {
+    // Llama a la cámara para escanear una vez
+    this.codeReader.decodeOnceFromVideoDevice(undefined, 'video').then(result => {
+      this.codigoEscaneado = result.getText();  // Guarda el código escaneado en la propiedad
 
-  // Modificar cantidad en el carrito
-  modificarCantidad(codigo: string, cantidad: number) {
-    const producto = this.carrito.find(p => p.codigo === codigo);
-    if (producto && cantidad > 0) {
-      producto.cantidad = cantidad;
-      this.calcularTotal();
-    }
-  }
+      // Reproduce el sonido "beep" al escanear con éxito
+      const beepSound = new Audio('assets/sound/beep.mp3');
+      beepSound.play();
 
-  // Eliminar producto del carrito
-  eliminarProducto(codigo: string) {
-    this.carrito = this.carrito.filter(p => p.codigo !== codigo);
-    this.calcularTotal();
-  }
+      // Busca el producto con el código escaneado
+      this.productoSeleccionado = this.buscarProductoPorCodigo(this.codigoEscaneado);
 
-  // Procesar el pago
-  procesarPago() {
-    if (this.metodoSeleccionado) {
-      // Aquí se podría implementar la lógica específica de cada método de pago.
-      alert(`Pago realizado con ${this.metodoSeleccionado}. Total: ${this.total}`);
-      this.generarFactura();
-      this.carrito = [];
-      this.total = 0;
-    } else {
-      alert('Selecciona un método de pago');
-    }
-  }
-
-  // Generar factura
-  generarFactura() {
-    this.facturaGenerada = true;
-    // Aquí podrías agregar la lógica para generar la factura.
+      if (!this.productoSeleccionado) {
+        this.mensajeError = 'Producto no encontrado';
+      } else {
+        this.mensajeError = undefined;
+      }
+    }).catch(err => {
+      this.mensajeError = 'Error al escanear el código de barras';
+      console.error(err);
+    });
   }
 }

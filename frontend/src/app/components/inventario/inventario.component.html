@@ -71,6 +71,43 @@
   </div>
 </div>
 
+<div class="modal fade" id="providerModal" tabindex="-1" aria-labelledby="providerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="providerModalLabel">{{ productoSeleccionado.id ? 'Editar Proveedor' : 'Agregar Proveedor' }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="background-color: #f8f9fa;">
+        <form (ngSubmit)="guardarProveedor()">
+          <input type="hidden" [(ngModel)]="productoSeleccionado.id" name="providerId">
+          <div class="mb-3">
+            <label for="productName" class="form-label">Nombre del Producto</label>
+            <input type="text" [(ngModel)]="productoSeleccionado.Nombre" name="productName" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="productCategory" class="form-label">Categoria</label>
+            <input type="text" [(ngModel)]="productoSeleccionado.Categoria" name="productCategory" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="productPrice" class="form-label">PRECIO</label>
+            <input type="number" [(ngModel)]="productoSeleccionado.Precio" name="productPrice" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="productQuantity" class="form-label">CANTIDAD</label>
+            <input type="number" [(ngModel)]="productoSeleccionado.Cantidad" name="productQuantity" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="productStock" class="form-label">Stock</label>
+            <input type="number" [(ngModel)]="productoSeleccionado.Stock" name="productStock" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">{{ productoSeleccionado.Id ? 'Actualizar' : 'Guardar' }}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Sección de Inventario -->
 <section class="py-5 bg-light">
   <div class="container">
@@ -88,7 +125,7 @@
             <p class="card-text text-secondary">PRECIO: <span class="text-success fw-bold">${{ producto.Precio }}</span></p>
             <p class="card-text text-secondary">CANTIDAD: {{ producto.Cantidad }}</p>
             <div class="d-flex justify-content-between">
-              <button class="btn btn-warning btn-sm">Editar</button>
+              <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#providerModal" (click)="editarProducto(producto)">Editar</button>
               <button class="btn btn-danger btn-sm" (click)="eliminarProducto(producto.Id!)">Eliminar</button>
             </div>
           </div>

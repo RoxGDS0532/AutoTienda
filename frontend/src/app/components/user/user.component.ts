@@ -29,7 +29,6 @@ export class UserComponent {
   // Simulación de la búsqueda de productos por código de barras
   buscarProductoPorCodigo(codigo: string): Producto | undefined {
     const productosDisponibles: Producto[] = [
-  
     ];
     return productosDisponibles.find(p => p.CodigoBarras === codigo);
   }

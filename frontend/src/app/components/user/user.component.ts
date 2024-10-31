@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserMultiFormatReader } from '@zxing/browser';
-import { ProductoService } from '../../services/producto.service';
 
 interface Producto {
   Id?: number;
@@ -24,10 +23,16 @@ export class UserComponent {
   codeReader = new BrowserMultiFormatReader();
   productoSeleccionado: Producto | undefined;
   mensajeError: string | undefined;
-  codigoEscaneado: string | undefined;  
+  codigoEscaneado: string | undefined;  // Almacena el código escaneado
 
-  constructor(private productoService: ProductoService) {}  
 
+  // Simulación de la búsqueda de productos por código de barras
+  buscarProductoPorCodigo(codigo: string): Producto | undefined {
+    const productosDisponibles: Producto[] = [
+  
+    ];
+    return productosDisponibles.find(p => p.CodigoBarras === codigo);
+  }
 
   // Método para iniciar el escaneo de código de barras
   iniciarEscaneo() {
@@ -40,18 +45,13 @@ export class UserComponent {
       beepSound.play();
 
       // Busca el producto con el código escaneado
-      this.productoService.obtenerProductoPorCodigoBarras(this.codigoEscaneado).subscribe(
-        (producto) => {
-          this.productoSeleccionado = producto;
-          this.codigoEscaneado = undefined;  // Limpia el código escaneado{
-          this.mensajeError = undefined;  // Limpia el mensaje de error
-        },
-        (error) =>{
-          this.productoSeleccionado = undefined; 
-          this.mensajeError = 'Producto no encontrado';
-          console.error('Error al buscar el producto:', error);
-        }
-      );
+      this.productoSeleccionado = this.buscarProductoPorCodigo(this.codigoEscaneado);
+
+      if (!this.productoSeleccionado) {
+        this.mensajeError = 'Producto no encontrado';
+      } else {
+        this.mensajeError = undefined;
+      }
     }).catch(err => {
       this.mensajeError = 'Error al escanear el código de barras';
       console.error(err);

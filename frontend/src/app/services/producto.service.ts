@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 export interface Producto {
   Id?: number;
   Nombre: string;
-  CodigoBarras: string;
+  //CodigoBarras: string;
   Categoria: string;
   Precio: number;
   Cantidad: number;
@@ -28,9 +28,9 @@ export class ProductoService {
   }
 
   // Obtener un producto por su código de barras
-  obtenerProductoPorCodigoBarras(codigoBarras: string): Observable<Producto> {
-    return this.http.get<Producto>(`${this.apiUrl}/barcode/${codigoBarras}`);
-}
+//   obtenerProductoPorCodigoBarras(codigoBarras: string): Observable<Producto> {
+//     return this.http.get<Producto>(`${this.apiUrl}/barcode/${codigoBarras}`);
+// }
 
   // Crear un nuevo producto
   agregarProducto(producto: Producto): Observable<any> {

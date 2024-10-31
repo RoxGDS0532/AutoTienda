@@ -30,7 +30,7 @@ export class LoginComponent {
         this.authService.login(correo, contrasena).subscribe({
             next: (response) => {
                 console.log('Inicio de sesión exitoso:', response);
-                // Redirigir al dashboard o mostrar mensaje de éxito
+                
             },
             error: (error) => {
                 console.error('Error en el inicio de sesión:', error);

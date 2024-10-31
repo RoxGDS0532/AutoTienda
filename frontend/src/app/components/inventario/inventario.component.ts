@@ -33,6 +33,8 @@ export class InventarioComponent implements OnInit {
     Cantidad: 0,
     Stock:0
   };
+  productoSeleccionado: any = {};
+
 
   constructor(private productoService: ProductoService) {}
 
@@ -43,8 +45,8 @@ export class InventarioComponent implements OnInit {
   obtenerProductos(): void {
     this.productoService.obtenerProductos().subscribe({
       next: (data) => {
-        console.log('Datos recibidos:', data); // Registra para verificar la estructura de los datos
-        this.productos = data; // Suponiendo que los datos son un array de Productos
+        console.log('Datos recibidos:', data); 
+        this.productos = data; 
       },
       error: (error) => {
         console.error('Error al obtener productos:', error);
@@ -77,6 +79,26 @@ export class InventarioComponent implements OnInit {
     });
   }
   
+
+  guardarProveedor() {
+    if (this.productoSeleccionado && this.productoSeleccionado.Id) {
+      // Si el proveedor tiene un ID, se trata de una actualización
+      this.productoService.actualizarProducto(this.productoSeleccionado.Id, this.productoSeleccionado)
+        .subscribe(
+          response => {
+            console.log('Proveedor actualizado:', response);
+            this.obtenerProductos(); // Actualiza la lista de proveedores
+          },
+          error => {
+            console.error('Error al actualizar el proveedor', error);
+          }
+        );
+    } 
+  }
+  
+  editarProducto(producto: any) {
+    this.productoSeleccionado = { ...producto };
+  }
 
   eliminarProducto(id: number): void {
     this.productoService.eliminarProducto(id).subscribe({

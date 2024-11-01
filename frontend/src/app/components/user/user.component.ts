@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserMultiFormatReader } from '@zxing/browser';
+import { ProductoService} from '../../services/producto.service';
+import { Router } from '@angular/router';
 
 interface Producto {
   Id?: number;
-  CodigoBarras: string;
+  CodigoBarras: number;
   Nombre: string;
   Categoria: string;
   Precio: number;
@@ -23,39 +25,41 @@ export class UserComponent {
   codeReader = new BrowserMultiFormatReader();
   productoSeleccionado: Producto | undefined;
   mensajeError: string | undefined;
-  codigoEscaneado: string | undefined;  // Almacena el código escaneado
+  codigoEscaneado: number | undefined; 
 
-
-  // Simulación de la búsqueda de productos por código de barras
-  buscarProductoPorCodigo(codigo: string): Producto | undefined {
-    const productosDisponibles: Producto[] = [
-      { CodigoBarras: '123', Nombre: 'Producto 1', Precio: 50, Cantidad: 1, Categoria: 'Pan', Stock: 8},
-      { CodigoBarras: '456', Nombre: 'Producto 2', Precio: 75, Cantidad: 1, Categoria: 'Pan', Stock: 8}
-    ];
-    return productosDisponibles.find(p => p.CodigoBarras === codigo);
-  }
+  constructor(private productoService: ProductoService, private router: Router
+  ) {} 
 
   // Método para iniciar el escaneo de código de barras
-  iniciarEscaneo() {
-    // Llama a la cámara para escanear una vez
-    this.codeReader.decodeOnceFromVideoDevice(undefined, 'video').then(result => {
-      this.codigoEscaneado = result.getText();  // Guarda el código escaneado en la propiedad
+iniciarEscaneo() {
+  this.codeReader.decodeOnceFromVideoDevice(undefined, 'video').then(result => {
+    this.codigoEscaneado = +result.getText();
+    console.log(result.getText());
 
-      // Reproduce el sonido "beep" al escanear con éxito
-      const beepSound = new Audio('assets/sound/beep.mp3');
-      beepSound.play();
+    // Reproduce el sonido 
+    const beepSound = new Audio('assets/sound/beep.mp3');
+    beepSound.play();
 
-      // Busca el producto con el código escaneado
-      this.productoSeleccionado = this.buscarProductoPorCodigo(this.codigoEscaneado);
+    this.buscarProductoEnBaseDeDatos(this.codigoEscaneado!);
+    this.router.navigate(['/carrito', this.codigoEscaneado]);
+  }).catch(err => {
+    this.mensajeError = 'Error al escanear el código de barras';
+    console.error(err);
+  });
+}
 
-      if (!this.productoSeleccionado) {
-        this.mensajeError = 'Producto no encontrado';
-      } else {
-        this.mensajeError = undefined;
-      }
-    }).catch(err => {
-      this.mensajeError = 'Error al escanear el código de barras';
-      console.error(err);
-    });
-  }
+// Busca producto en la base de datos
+buscarProductoEnBaseDeDatos(codigo: number) {
+  this.productoService.obtenerProductoPorCodigoBarras(+codigo).subscribe(
+    producto => {
+      this.productoSeleccionado = producto;
+      this.mensajeError = undefined; 
+    },
+    error => {
+      this.productoSeleccionado = undefined;
+      this.mensajeError = 'Producto no encontrado';
+      console.error(error);
+    }
+  );
+}
 }

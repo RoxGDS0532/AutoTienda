@@ -10,7 +10,8 @@ import { ConsultasComponent } from './components/consultas/consultas.component';
 export const routes: Routes = [
     {path: '', component: UserComponent},
     {path:'login',component:LoginComponent},
-    {path:'carrito', component: CarritoComponent},
+    {path:'carrito/:codigoBarras', component: CarritoComponent},
+    {path:'carrito',component:CarritoComponent},
     {path:'inventario',component:InventarioComponent},
     {path:'home', component:HomeComponent},
     {path:'proveedor', component:ProveedoresComponent},

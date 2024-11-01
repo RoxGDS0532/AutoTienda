@@ -75,12 +75,15 @@
         <!-- Muestra el código escaneado -->
         <label *ngIf="codigoEscaneado">Código Escaneado: {{ codigoEscaneado }}</label>
       
-        <div *ngIf="productoSeleccionado">
-          <h3>Producto Encontrado</h3>
-          <p>Nombre: {{ productoSeleccionado.Nombre }}</p>
-          <p>Precio: {{ productoSeleccionado.Precio }}</p>
-          <p>Cantidad: {{ productoSeleccionado.Cantidad }}</p>
+        <div *ngIf="productoSeleccionado; else noProducto">
+          <h2>{{ productoSeleccionado.Nombre }}</h2>
+          <p>Categoría: {{ productoSeleccionado.Categoria }}</p>
+          <p>Precio: {{ productoSeleccionado.Precio | currency }}</p>
+          <p>Stock: {{ productoSeleccionado.Stock }}</p>
         </div>
+        <ng-template #noProducto>
+          <p *ngIf="mensajeError">{{ mensajeError }}</p>
+        </ng-template>
       
         <p *ngIf="mensajeError" style="color:red;">{{ mensajeError }}</p>
       </div>

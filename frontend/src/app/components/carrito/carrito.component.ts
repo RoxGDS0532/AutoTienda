@@ -25,13 +25,16 @@ export class CarritoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    
     const codigoBarras = this.route.snapshot.paramMap.get('codigoBarras');
     if (codigoBarras) {
       this.buscarProductoPorCodigo(+codigoBarras);
     }
+
+    this.iniciarEscaneoContinuo();
   }
 
-  iniciarEscaneo(): void {
+  iniciarEscaneoContinuo(): void {
     if (this.videoElement) {
       this.codeReader.decodeOnceFromVideoDevice(undefined, this.videoElement.nativeElement)
         .then(result => {
@@ -85,17 +88,27 @@ export class CarritoComponent implements OnInit {
   
     obtenerAhorros(): number {
       if (this.descuentoAplicado) {
-        return this.productos.reduce((acc, producto) => acc + producto.Precio * producto.Cantidad * 0.1, 0); // Descuento del 10%
+        return this.productos.reduce((acc, producto) => acc + producto.Precio * producto.Cantidad * 0.1, 0); 
       }
       return 0;
     }
 
     aplicarCodigoDescuento(): void {
-      const codigoValido = 'DESCUENTO10'; // Ejemplo de un código de descuento
+      const codigoValido = 'DESCUENTO10'; 
       this.descuentoAplicado = this.codigoDescuento === codigoValido;
     }
 
   obtenerTotal(): number {
     return this.obtenerSubtotal() - this.obtenerAhorros();
+  }
+
+  pagarConTarjeta() {
+    console.log('Pago con tarjeta seleccionado');
+    // Lógica para procesar el pago con tarjeta
+  }
+
+  pagarEnEfectivo() {
+    console.log('Pago en efectivo seleccionado');
+    // Lógica para procesar el pago en efectivo
   }
 }

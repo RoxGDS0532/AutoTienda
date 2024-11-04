@@ -45,12 +45,15 @@ export class UserComponent {
       beepSound.play();
 
       // Busca el producto con el código escaneado
-      this.productoSeleccionado = this.buscarProductoPorCodigo(this.codigoEscaneado);
-
-      if (!this.productoSeleccionado) {
-        this.mensajeError = 'Producto no encontrado';
+      if (this.codigoEscaneado) {
+        this.productoSeleccionado = this.buscarProductoPorCodigo(this.codigoEscaneado);
+        if (!this.productoSeleccionado) {
+          this.mensajeError = 'Producto no encontrado';
+        } else {
+          this.mensajeError = undefined;
+        }
       } else {
-        this.mensajeError = undefined;
+        this.mensajeError = 'Código escaneado no válido';
       }
     }).catch(err => {
       this.mensajeError = 'Error al escanear el código de barras';

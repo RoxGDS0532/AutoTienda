@@ -11,10 +11,19 @@ class UsuariosController{
     public async create(req: Request, resp: Response): Promise<void> {
         try {
             const { Nombre, Correo, Contrasena, Rol } = req.body;
-            const hashedPassword = await bcrypt.hash(Contrasena, 10);
-            await pool.query('INSERT INTO Usuarios SET ?', [{ Nombre, Correo, Contrasena: hashedPassword, Rol }]);
-            resp.json({ message: 'Usuario guardado' });
+    
+            // Verifica que todos los datos estén presentes
+            if (!Nombre || !Correo || !Contrasena || !Rol) {
+                resp.status(400).json({ message: 'Todos los campos son necesarios' });
+                return;
+            }
+    
+            // Inserta el usuario sin encriptar la contraseña
+            await pool.query('INSERT INTO Usuarios SET ?', [{ Nombre, Correo, Contrasena, Rol }]);
+            
+            resp.json({ message: 'Usuario guardado exitosamente' });
         } catch (error) {
+            console.error('Error al guardar el usuario:', error);  // Agrega un log para ver el error en el servidor
             resp.status(500).json({ message: 'Error al guardar el usuario', error });
         }
     }

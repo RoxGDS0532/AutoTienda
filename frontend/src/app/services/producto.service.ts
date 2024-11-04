@@ -6,10 +6,12 @@ import { Observable } from 'rxjs';
 export interface Producto {
   Id?: number;
   Nombre: string;
-  Categoria: string;
+  CategoriaId: number; // Asegúrate de que esta propiedad exista aquí
   Precio: number;
   Cantidad: number;
-  Stock:number;
+  Stock: number;
+  Imagen?: File; // Opcional
+  CodigoQR?: string; // Opcional
 }
 
 @Injectable({
@@ -25,8 +27,12 @@ export class ProductoService {
     return this.http.get<Producto[]>(this.apiUrl);
   }
 
+  obtenerCategorias(): Observable<any[]> {
+    return this.http.get<any[]>('http://localhost:3000/categoria'); 
+  }
+
   // Crear un nuevo producto
-  agregarProducto(producto: Producto): Observable<any> {
+  agregarProducto(producto: FormData): Observable<any> {
     return this.http.post(this.apiUrl, producto);
   }
 

@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import proveedorRoutes from './routes/proveedorRoutes'
 import usuariosRoutes from './routes/usuariosRoutes'
+import categoriaRoutes from './routes/categoriaRoutes';
 
 class Server{
     public app: Application;
@@ -24,6 +25,7 @@ class Server{
         this.app.use('/producto', productoRoutes)
         this.app.use('/proveedor', proveedorRoutes)
         this.app.use('/usuario',usuariosRoutes)
+        this.app.use('/categoria',categoriaRoutes)
         
     }
     start() : void{

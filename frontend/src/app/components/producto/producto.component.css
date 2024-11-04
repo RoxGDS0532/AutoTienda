@@ -1,0 +1,174 @@
+html, body {
+  height: 100%; /* Asegura que el body ocupe el 100% de la altura */
+}
+body {
+  display: flex;
+  flex-direction: column; /* Coloca los elementos de forma vertical */
+}
+.container {
+  flex: 1; /* Permite que el contenedor crezca y ocupe el espacio disponible */
+  max-width: 1200px; /* Aumentar el ancho máximo para pantallas grandes */
+  padding: 0 15px;   /* Añadir relleno al contenedor */
+}
+
+h2 {
+  font-size: 2rem; /* Ajustar tamaño del título */
+}
+
+.product-card {
+  border-radius: 8px; /* Esquinas redondeadas para las tarjetas */
+  background-color: #f9f9f9; /* Fondo claro para las tarjetas */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transición suave para el efecto hover */
+}
+
+.product-card:hover {
+  transform: scale(1.05); /* Efecto de escalado al pasar el mouse */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra sutil al pasar el mouse */
+}
+
+.card-title {
+  font-size: 1.25rem; /* Tamaño de fuente ligeramente mayor para los nombres de los productos */
+  font-weight: 600; /* Fuente en negrita para los nombres de los productos */
+  color: #333; /* Color oscuro para el texto */
+}
+
+.card-text {
+  font-size: 1rem; /* Tamaño de fuente estándar para el texto de la tarjeta */
+}
+
+.text-muted {
+  color: #6c757d; /* Color atenuado de Bootstrap */
+}
+
+.btn {
+  font-size: 0.9rem; /* Tamaño de fuente consistente para botones */
+  font-weight: 500; /* Texto en negrita para los botones */
+}
+
+.btn-outline-primary {
+  color: #007bff; /* Color primario de Bootstrap */
+  border-color: #007bff; /* Coincidir el borde con el color primario */
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff; /* Cambiar fondo al pasar el mouse */
+  color: white; /* Texto blanco al pasar el mouse */
+}
+
+.btn-outline-danger {
+  color: #dc3545; /* Color de peligro de Bootstrap */
+  border-color: #dc3545; /* Coincidir el borde con el color de peligro */
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545; /* Cambiar fondo al pasar el mouse */
+  color: white; /* Texto blanco al pasar el mouse */
+}
+
+/* Consultas de medios para la responsividad */
+@media (max-width: 768px) {
+  .product-card {
+      margin-bottom: 15px; /* Reducir el margen en pantallas más pequeñas */
+  }
+}
+
+nav {
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link.active {
+  color: white !important;
+  font-size: 1.5rem;
+  font-family: 'Lobster', cursive;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.navbar {
+  background-color: #19246dda; /* Color azul fuerte */
+}
+
+.navbar-brand img {
+  width: 80px;
+  height: 80px;
+}
+
+/* Sección de inventario */
+.card {
+  border: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.btn {
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-warning {
+  background-color: #ffc107; /* Color de botón de advertencia */
+  border: none;
+}
+
+.btn-warning:hover {
+  background-color: #e67e22;
+}
+
+.btn-danger {
+  background-color: #dc3545; /* Color de botón de peligro */
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+}
+
+.btn-success {
+  background-color: #28a745; /* Color de botón de éxito */
+  border: none;
+}
+
+/* Modal */
+.modal-header {
+  background-color: #007bff; /* Color azul fuerte */
+  color: white;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #34495e;
+}
+
+.btn-primary {
+  background-color: #2980b9; /* Color del botón primario */
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #3498db;
+}
+
+.modal-header {
+  border-bottom: 1px solid #ddd;
+}
+
+.modal-body {
+  border-radius: 0 0 1rem 1rem;
+}
+
+footer {
+  height: 60px; /* Altura fija para el footer */
+}

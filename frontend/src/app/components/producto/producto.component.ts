@@ -115,7 +115,10 @@ actualizarProducto() {
 }
 
   limpiarFormulario() {
-    this.productoSeleccionado = { Id: 0, ImagenURL:'', Nombre: '', Precio: 0, Cantidad: 0, CategoriaId: 0, CodigoBarras:''};
+
+    this.productoSeleccionado = { Id: 0, ImagenURL:'', Nombre: '', Precio: 0, Cantidad: 0, CategoriaId: 0, CodigoBarras:'' };
+    
+
   }
 
   onFileSelected(event: Event) {

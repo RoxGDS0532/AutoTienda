@@ -10,8 +10,9 @@ export interface Producto {
   CategoriaId: number; 
   Precio: number;
   Cantidad: number;
-  ImagenURL: string; 
-  CodigoBarras: string; 
+  ImagenURL?: string; 
+  CodigoBarras?: string; 
+
 }
 
 

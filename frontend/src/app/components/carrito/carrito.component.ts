@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ProductoService, Producto } from '../../services/producto.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Importar FormsModule
-import { BrowserMultiFormatReader } from '@zxing/browser';
-import { VentasService, Venta, DetalleVentaSinID} from '../../services/ventas.service';
 import { HttpClient } from '@angular/common/http';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms'; // Importar FormsModule
+import { ActivatedRoute } from '@angular/router';
+import { BrowserMultiFormatReader } from '@zxing/browser';
+import { Producto, ProductoService } from '../../services/producto.service';
+import { DetalleVentaSinID, Venta, VentasService } from '../../services/ventas.service';
 
 declare var paypal:any;
 @Component({
@@ -24,6 +24,9 @@ export class CarritoComponent implements OnInit {
   idFacturaGenerada: string | undefined;
   correoCliente: string = '';
   mostrarCampoCorreo: boolean = false;
+  codigoProductoBuscado: string = ''; // Manual
+  // productoEncontrado: Producto | null = null; // Manual
+  // productoBuscado: boolean = false; // Manual
   
   @ViewChild('video') videoElement: ElementRef | undefined;
   @ViewChild('paypal', { static: true }) paypalElement!: ElementRef;
@@ -119,15 +122,15 @@ export class CarritoComponent implements OnInit {
     const productoExistente = this.productos.find(p => p.CodigoBarras === codigoBarras);
 
     if (productoExistente) {
-      console.log('Producto existente encontrado:', productoExistente); // Ver qué producto existe
+      console.log('Producto existente encontrado:', productoExistente); // producto existe
       productoExistente.Cantidad += 1;
     } else {
       this.productoService.obtenerProductoPorCodigoBarras(codigoBarras).subscribe({
         next: (data) => {
-          console.log('Producto encontrado en la base de datos:', data); // Ver el producto recuperado
+          console.log('Producto encontrado en la base de datos:', data); // producto recuperado
           data.Cantidad = 1; 
           this.productos.push(data); 
-          console.log('Producto agregado al carrito:', this.productos); // Mostrar el carrito actualizado
+          console.log('Producto agregado al carrito:', this.productos); // carrito actualizado
 
         },
         error: (err) => console.error('Producto no encontrado', err)
@@ -252,4 +255,30 @@ export class CarritoComponent implements OnInit {
           this.codigoDescuento = '';
   }
 
-}
+  buscarProductoPorCodigoManual(): void {
+    const codigoBarras = this.codigoProductoBuscado;
+  
+    console.log('Buscando producto manualmente con código de barras:', codigoBarras);
+    
+    // Primero, verifica si el producto ya está en el carrito
+    const productoExistente = this.productos.find(p => p.CodigoBarras === codigoBarras);
+  
+    if (productoExistente) {
+      console.log('Producto existente encontrado en el carrito:', productoExistente);
+      productoExistente.Cantidad += 1; // Incrementa la cantidad del producto existente
+    } else {
+      // Si no está en el carrito, busca en la base de datos
+      this.productoService.obtenerProductoPorCodigoBarras(codigoBarras).subscribe({
+        next: (data) => {
+          console.log('Producto encontrado en la base de datos:', data);
+          data.Cantidad = 1; // Inicializa la cantidad en 1
+          this.productos.push(data); // Agrega el nuevo producto al carrito
+          console.log('Producto agregado al carrito:', this.productos); // Muestra el carrito actualizado
+        },
+        error: (err) => console.error('Producto no encontrado en la base de datos', err)
+      });
+    }
+  }
+  
+    
+  }

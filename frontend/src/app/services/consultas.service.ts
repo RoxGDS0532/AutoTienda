@@ -10,7 +10,8 @@ export class ConsultasService {
   private apiUrlP = 'http://localhost:3000/consulta/pago';
   private apiUrlR = 'http://localhost:3000/consulta/recibo';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {} // Asegúrate de que esto esté correcto
+
 
   public listarVentas(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrlV);
@@ -36,3 +37,5 @@ export class ConsultasService {
     return this.http.get<any>(`${this.apiUrlR}/${id}`);
   }
 }
+
+

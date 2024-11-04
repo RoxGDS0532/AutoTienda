@@ -2,6 +2,22 @@ import { Request, Response } from "express";
 import pool from "../../database";
 
 class ProductoController {
+
+    public async getOneByCodigoBarras(req: Request, resp: Response): Promise<void> {
+        const { codigoBarras } = req.params; 
+        try {
+            const producto = await pool.query('SELECT * FROM productos WHERE CodigoBarras = ?', [codigoBarras]);
+            if (producto.length > 0) {
+                resp.json(producto[0]); 
+            } else {
+                resp.status(404).json({ message: 'Producto no encontrado' });
+            }
+        } catch (error) {
+            console.error(error);
+            resp.status(500).json({ message: 'Error al buscar producto por código de barras', error });
+        }
+    }
+
     public async list(req: Request, resp: Response): Promise<void> {
         try {
             const productos = await pool.query('SELECT * FROM Productos');

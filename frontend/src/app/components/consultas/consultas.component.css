@@ -11,10 +11,7 @@
     color: #34495e;
 }
 
-.filter-section select,
-.filter-section input[type="date"],
-.filter-section input[type="week"],
-.filter-section input[type="month"] {
+.filter-section select {
     padding: 8px 12px;
     font-size: 0.9rem;
     border: 1px solid #ccc;
@@ -24,8 +21,7 @@
     transition: border-color 0.3s;
 }
 
-.filter-section select:focus,
-.filter-section input:focus {
+.filter-section select:focus {
     border-color: #2980b9;
     outline: none;
 }
@@ -47,30 +43,44 @@
 
 .chart-container h3 {
     font-size: 1.3rem;
+    color: #19246d;
     font-weight: 600;
     margin-bottom: 15px;
     text-align: center;
 }
 
-.ventas .chart-container {
-    border-left: 5px solid #28a745; /* Verde para ventas */
-}
-
-.pagos .chart-container {
-    border-left: 5px solid #ffc107; /* Amarillo para pagos */
-}
-
-.recibos .chart-container {
-    border-left: 5px solid #dc3545; /* Rojo para recibos */
-}
-
 /* Canvas para los gráficos */
 canvas {
     width: 100% !important;
-    height: auto !important;
+    height: 450px !important; /* Ajuste de altura para gráficos más altos */
+}
+nav {
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-link.active {
+    color: white !important;
+    font-size: 1.5rem;
+    font-family: 'Lobster', cursive;
+  }
+
+  .btn-custom {
+    background-color: #19246d; 
+    color: white; 
+    transition: background-color 0.3s ease; 
+    width: 300px; 
+  }
+
+/* Sección de gráficos */
+.chart-section {
+    background-color: #d0dbf6; /* Color de fondo para ver la sección */
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
 }
 
-/* Ajuste de fuente en dispositivos móviles */
+/* Botón de aplicar filtro en dispositivos móviles */
 @media (max-width: 768px) {
     .filter-section {
         flex-direction: column;

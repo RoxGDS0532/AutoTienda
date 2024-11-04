@@ -1,97 +1,89 @@
-nav {
-    margin: 0;
-    padding: 0;
+/* Estilo de la tarjeta de filtros */
+.filter-card {
+  margin: 20px 0;
+  padding: 20px;  /* Agrega padding para espaciar el contenido */
+  background-color: #ffffff;  /* Fondo blanco para la tarjeta */
+  border-radius: 10px;  /* Bordes redondeados */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);  /* Sombra suave */
+}
+
+/* Sección de filtros */
+.filter-section {
+  display: flex;
+  flex-wrap: wrap;  /* Permite que los elementos se ajusten en varias líneas */
+  gap: 15px;  /* Espacio entre los filtros */
+  justify-content: space-between;  /* Espacio entre filtros */
+}
+
+/* Estilos de las etiquetas */
+.filter-section label {
+  font-weight: bold;
+  color: #34495e;
+  margin-right: 10px;  /* Espaciado entre etiqueta y select */
+}
+
+/* Estilos para los selects */
+.filter-section select {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  flex: 1;  /* Permite que los selects ocupen el espacio disponible */
+}
+
+/* Efecto al enfocar el select */
+.filter-section select:focus {
+  border-color: #2980b9;
+  outline: none;
+}
+
+/* Contenedor de gráficos */
+.chart-container {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out;
+}
+
+.chart-container:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.chart-container h3 {
+  font-size: 1.3rem;
+  color: #19246d;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* Canvas para los gráficos */
+canvas {
+  width: 100% !important;
+  height: 300px !important;
+}
+
+/* Botón de aplicar filtro en dispositivos móviles */
+@media (max-width: 768px) {
+  .filter-section {
+      flex-direction: column;
+      align-items: flex-start;
   }
-  
-  .nav-link.active {
-    color: white !important;
-    font-size: 1.5rem;
-    font-family: 'Lobster', cursive;
+
+  .chart-container h3 {
+      font-size: 1.1rem;
   }
-  
-  body {
-    font-family: 'Roboto', sans-serif;
-  }
-  
-  .navbar {
-    background-color: #19246dda; /* Color azul fuerte */
-  }
-  
-  .navbar-brand img {
-    width: 80px;
-    height: 80px;
-  }
-  
-  /* Sección de inventario */
-  .card {
-    border: none;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  }
-  
-  .card-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-  }
-  
-  .btn {
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
-  .btn-warning {
-    background-color: #ffc107; /* Color de botón de advertencia */
-    border: none;
-  }
-  
-  .btn-warning:hover {
-    background-color: #e67e22;
-  }
-  
-  .btn-danger {
-    background-color: #dc3545; /* Color de botón de peligro */
-    border: none;
-  }
-  
-  .btn-danger:hover {
-    background-color: #c0392b;
-  }
-  
-  .btn-success {
-    background-color: #28a745; /* Color de botón de éxito */
-    border: none;
-  }
-  
-  /* Modal */
-  .modal-header {
-    background-color: #007bff; /* Color azul fuerte */
-    color: white;
-  }
-  
-  .form-label {
-    font-weight: 600;
-    color: #34495e;
-  }
-  
-  .btn-primary {
-    background-color: #2980b9; /* Color del botón primario */
-    border: none;
-  }
-  
-  .btn-primary:hover {
-    background-color: #3498db;
-  }
-  
-  .modal-header {
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .modal-body {
-    border-radius: 0 0 1rem 1rem;
-  }
-  
+}
+
+.chart-section {
+  background-color: #d0dbf6; /* Color de fondo para ver la sección */
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+}

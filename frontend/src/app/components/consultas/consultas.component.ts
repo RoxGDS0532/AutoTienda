@@ -1,74 +1,58 @@
 import { Component, OnInit } from '@angular/core';
 import { ConsultasService } from '../../services/consultas.service';
-import { ChartConfiguration, ChartType } from 'chart.js';
+import { ChartConfiguration } from 'chart.js';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
-import { importProvidersFrom } from '@angular/core';
+
+interface Venta {
+  fecha_venta: string;
+  hora_venta: string;
+  pago_total: number;
+  tipo_pago: string;
+  detalle_venta: string;
+}
 
 @Component({
   selector: 'app-consultas',
   standalone: true,
-  imports: [FormsModule, HttpClientModule, CommonModule, NgChartsModule],
   templateUrl: './consultas.component.html',
   styleUrls: ['./consultas.component.css'],
+  imports: [CommonModule, FormsModule, NgChartsModule],
   providers: [DatePipe]
 })
 export class ConsultasComponent implements OnInit {
   ventasData: ChartConfiguration['data'] = { labels: [], datasets: [] };
-  pagosData: ChartConfiguration['data'] = { labels: [], datasets: [] };
-  recibosData: ChartConfiguration['data'] = { labels: [], datasets: [] };
-  chartOptions: ChartConfiguration['options'] = {
-    responsive: true,
-    plugins: {
-      tooltip: {
-        enabled: true,
-        callbacks: {
-          label: (tooltipItem) => `Valor: ${tooltipItem.raw}`
-        }
-      },
-      legend: {
-        position: 'top'
-      }
-    },
-    scales: {
-      y: {
-        beginAtZero: true
-      }
-    },
-    onClick: (event, elements) => this.chartClicked(event, elements)
-  };
-  barChartType: ChartType = 'bar';
-  pieChartType: ChartType = 'pie';
+  productosVendidosData: ChartConfiguration['data'] = { labels: [], datasets: [] };
+  horarioVentasData: ChartConfiguration['data'] = { labels: [], datasets: [] };
+  ticketUsoData: ChartConfiguration['data'] = { labels: [], datasets: [] };
+
   selectedFilter: string = 'day';
   selectedDate: string | null = null;
   selectedWeek: number | null = null;
   selectedMonth: number | null = null;
   selectedYear: number | null = null;
-  selectedBarData: any = null; // Datos de la barra seleccionada
 
-  constructor(
-    private consultasService: ConsultasService,
-    private datePipe: DatePipe
-  ) {}
+  constructor(private consultasService: ConsultasService, private datePipe: DatePipe) {}
 
   ngOnInit(): void {
     this.loadData();
   }
 
   loadData(): void {
-    this.consultasService.listarVentas().subscribe((ventas) => {
-      this.ventasData = this.transformVentasData(ventas);
-    });
+    this.consultasService.listarVentas().subscribe((ventas: Venta[]) => {
+      const ventasFiltradas = this.filtrarDatos(ventas, 'fecha_venta');
 
-    this.consultasService.listarPagos().subscribe((pagos) => {
-      this.pagosData = this.transformPagosData(pagos);
-    });
+      // Extrae el detalle de ventas
+      const detalle_venta = ventas.map(v => v.detalle_venta);
+      this.ventasData = this.transformVentasData(ventasFiltradas);
+      this.productosVendidosData = this.transformProductosVendidosData(ventasFiltradas);
+      this.horarioVentasData = this.transformHorarioVentasData(ventasFiltradas);
 
-    this.consultasService.listarRecibos().subscribe((recibos) => {
-      this.recibosData = this.transformRecibosData(recibos);
+      this.consultasService.listarPagos().subscribe((pagos) => {
+        this.ticketUsoData = this.transformConcentradoPagoData(ventasFiltradas, pagos);
+      });
     });
   }
 
@@ -76,19 +60,56 @@ export class ConsultasComponent implements OnInit {
     this.loadData();
   }
 
-  private transformVentasData(ventas: any[]): ChartConfiguration['data'] {
-    const filteredVentas = this.filtrarDatos(ventas, 'FechaVenta');
-    const labels = filteredVentas.map(v => this.datePipe.transform(v.FechaVenta, 'yyyy-MM-dd'));
-    const data = filteredVentas.map(v => v.PagoTotal);
-    const backgroundColors = data.map(value => this.getColor(value));
+  private filtrarDatos(datos: any[], campoFecha: string): any[] {
+    const today = new Date();
+    if (this.selectedFilter === 'day' && this.selectedDate) {
+      return datos.filter(d => d[campoFecha] === this.selectedDate);
+    } else if (this.selectedFilter === 'week' && this.selectedWeek && this.selectedYear) {
+      const startOfWeek = this.getStartOfWeek(this.selectedWeek, this.selectedYear);
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      return datos.filter(d => new Date(d[campoFecha]) >= startOfWeek && new Date(d[campoFecha]) <= endOfWeek);
+    } else if (this.selectedFilter === 'month' && this.selectedMonth && this.selectedYear) {
+      return datos.filter(d => new Date(d[campoFecha]).getMonth() + 1 === this.selectedMonth && new Date(d[campoFecha]).getFullYear() === this.selectedYear);
+    }
+    return datos;
+  }
+
+  private getStartOfWeek(week: number, year: number): Date {
+    const firstDayOfYear = new Date(year, 0, 1);
+    const pastDaysOfYear = (week - 1) * 7;
+    return new Date(firstDayOfYear.setDate(firstDayOfYear.getDate() + pastDaysOfYear));
+  }
+
+  private transformVentasData(ventas: Venta[]): ChartConfiguration['data'] {
+    const labels: string[] = [];
+    const data: number[] = [];
+
+    const ventasAgrupadas: Record<string, number> = {};
+    ventas.forEach(v => {
+      const fecha = this.datePipe.transform(v.fecha_venta, 'yyyy-MM-dd');
+      if (fecha) {
+        ventasAgrupadas[fecha] = (ventasAgrupadas[fecha] || 0) + v.pago_total;
+      }
+    });
+
+    if (Object.keys(ventasAgrupadas).length === 0) {
+      labels.push("Sin datos");
+      data.push(0);
+    } else {
+      for (const fecha in ventasAgrupadas) {
+        labels.push(fecha);
+        data.push(ventasAgrupadas[fecha]);
+      }
+    }
 
     return {
       labels: labels,
       datasets: [
         {
-          label: 'Ventas Totales',
+          label: 'Ventas Totales por Día',
           data: data,
-          backgroundColor: backgroundColors,
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
           borderColor: 'rgba(54, 162, 235, 1)',
           borderWidth: 1
         }
@@ -96,125 +117,104 @@ export class ConsultasComponent implements OnInit {
     };
   }
 
-  private transformPagosData(pagos: any[]): ChartConfiguration['data'] {
-    const filteredPagos = this.filtrarDatos(pagos, 'FechaPago');
-    const labels = filteredPagos.map(p => this.datePipe.transform(p.FechaPago, 'yyyy-MM-dd'));
-    const data = filteredPagos.map(p => p.CantidadTotal);
-    const backgroundColors = data.map(value => this.getColor(value));
+  private cargarProductosVendidos(): void {
+    this.consultasService.listarRecibos().subscribe({
+      next: (detalle_venta) => {
+        this.productosVendidosData = this.transformProductosVendidosData(detalle_venta);
+      },
+      error: (error) => {
+        console.error('Error al cargar los detalles de ventas:', error);
+      }
+    });
+  }
+
+  private transformProductosVendidosData(detalle_venta: any[]): ChartConfiguration['data'] {
+    const productos: Record<string, number> = {};
+    detalle_venta.forEach(item => {
+      productos[item.detalle_venta] = (productos[item.detalle_venta] || 0) + 1;
+    });
 
     return {
-      labels: labels,
+      labels: Object.keys(productos),
       datasets: [
         {
-          label: 'Pagos Totales',
-          data: data,
-          backgroundColor: backgroundColors,
-          borderColor: 'rgba(255, 99, 132, 1)',
+          label: 'Productos Vendidos',
+          data: Object.values(productos),
+          backgroundColor: 'rgba(75, 192, 192, 0.6)',
+          borderColor: 'rgba(75, 192, 192, 1)',
           borderWidth: 1
         }
       ]
     };
   }
 
-  private transformRecibosData(recibos: any[]): ChartConfiguration['data'] {
-    const filteredRecibos = this.filtrarDatosRecibos(recibos);
-    const labels = filteredRecibos.map(r => r.TipoRecibo);
-    const data = filteredRecibos.map(r => r.Contador);
+  private transformHorarioVentasData(ventas: Venta[]): ChartConfiguration['data'] {
+    const horas: Record<string, number> = {};
+    ventas.forEach(v => {
+      const hora = v.hora_venta.split(':')[0];
+      horas[hora] = (horas[hora] || 0) + 1;
+    });
 
     return {
-      labels: labels,
+      labels: Object.keys(horas),
       datasets: [
         {
-          label: 'Recibos',
+          label: 'Ventas por Hora',
+          data: Object.values(horas),
+          backgroundColor: 'rgba(153, 102, 255, 0.6)',
+          borderColor: 'rgba(153, 102, 255, 1)',
+          borderWidth: 1
+        }
+      ]
+    };
+  }
+
+  private transformConcentradoPagoData(ventas: Venta[], pagos: any[]): ChartConfiguration['data'] {
+    const usoPagos = { efectivo: 0, transferencia: 0, paypal: 0 };
+    const totalPagos = { efectivo: 0, transferencia: 0, paypal: 0 };
+
+    pagos.forEach(pago => {
+      if (pago.TipoPago === 'Efectivo') {
+        usoPagos.efectivo++;
+        totalPagos.efectivo += pago.CantidadTotal;
+      } else if (pago.TipoPago === 'Transferencia') {
+        usoPagos.transferencia++;
+        totalPagos.transferencia += pago.CantidadTotal;
+      }
+    });
+
+    ventas.forEach(venta => {
+      if (venta.tipo_pago === 'paypal') {
+        usoPagos.paypal++;
+        totalPagos.paypal += venta.pago_total;
+      }
+    });
+
+    const data = [usoPagos.efectivo, usoPagos.transferencia, usoPagos.paypal];
+
+    if (data.every(val => val === 0)) {
+      data[0] = data[1] = data[2] = 0;
+    }
+
+    return {
+      labels: ['Efectivo', 'Transferencia', 'PayPal'],
+      datasets: [
+        {
+          label: 'Uso de Tickets',
           data: data,
           backgroundColor: [
-            'rgba(75, 192, 192, 0.6)',
-            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
             'rgba(255, 206, 86, 0.6)',
-            'rgba(231, 233, 237, 0.6)',
           ],
           borderColor: [
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
             'rgba(255, 206, 86, 1)',
-            'rgba(231, 233, 237, 1)',
           ],
           borderWidth: 1
         }
       ]
     };
-  }
-
-  private filtrarDatosRecibos(recibos: any[]): any[] {
-    if (this.selectedYear && this.selectedMonth) {
-      const startOfMonth = new Date(this.selectedYear, this.selectedMonth - 1, 1);
-      const endOfMonth = new Date(this.selectedYear, this.selectedMonth, 0);
-      return recibos.filter(r => {
-        const fecha = new Date(r.FechaRecibo);
-        return fecha >= startOfMonth && fecha <= endOfMonth;
-      });
-    }
-    return recibos; // Sin filtro
-  }
-
-  private getColor(value: number): string {
-    if (value < 50) {
-      return 'rgba(255, 99, 132, 0.6)'; // Rojo
-    } else if (value < 100) {
-      return 'rgba(255, 206, 86, 0.6)'; // Amarillo
-    } else {
-      return 'rgba(75, 192, 192, 0.6)'; // Verde
-    }
-  }
-
-  private filtrarDatos(datos: any[], fechaProp: string): any[] {
-    const today = new Date();
-    let filtroFecha: Date;
-
-    if (this.selectedFilter === 'day' && this.selectedDate) {
-      filtroFecha = new Date(this.selectedDate);
-      return datos.filter(d => new Date(d[fechaProp]).toDateString() === filtroFecha.toDateString());
-    } else if (this.selectedFilter === 'week' && this.selectedWeek) {
-      const startOfWeek = this.getStartOfWeek(today, this.selectedWeek);
-      const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(endOfWeek.getDate() + 6);
-      return datos.filter(d => {
-        const fecha = new Date(d[fechaProp]);
-        return fecha >= startOfWeek && fecha <= endOfWeek;
-      });
-    } else if (this.selectedFilter === 'month' && this.selectedMonth) {
-      const startOfMonth = new Date(today.getFullYear(), this.selectedMonth - 1, 1);
-      const endOfMonth = new Date(today.getFullYear(), this.selectedMonth, 0);
-      return datos.filter(d => {
-        const fecha = new Date(d[fechaProp]);
-        return fecha >= startOfMonth && fecha <= endOfMonth;
-      });
-    }
-    return datos; // Sin filtro
-  }
-
-  private getStartOfWeek(date: Date, week: number): Date {
-    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
-    const daysOffset = (week - 1) * 7; // Cada semana tiene 7 días
-    const startOfWeek = new Date(firstDayOfYear);
-    startOfWeek.setDate(firstDayOfYear.getDate() + daysOffset);
-    return startOfWeek;
-  }
-
-  // Método para manejar clics en el gráfico
-  chartClicked(event: any, elements: any[]): void {
-    if (elements.length > 0) {
-      const chartElement = elements[0];
-      const datasetIndex = chartElement.datasetIndex;
-      const index = chartElement.index;
-
-      // Verificar si ventasData y ventasData.labels están definidos antes de acceder a ellos
-      if (this.ventasData && this.ventasData.labels && this.ventasData.labels[index] !== undefined) {
-        this.selectedBarData = {
-          label: this.ventasData.labels[index],
-          value: this.ventasData.datasets[datasetIndex]?.data[index]
-        };
-      }
-    }
   }
 }

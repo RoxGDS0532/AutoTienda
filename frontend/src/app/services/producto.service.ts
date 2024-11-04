@@ -6,8 +6,9 @@ import { Observable } from 'rxjs';
 // Modelo de Producto
 export interface Producto {
   Id?: number;
+  CodigoBarras: number;
+  ImagenURL?: string;
   Nombre: string;
-  //CodigoBarras: string;
   Categoria: string;
   Precio: number;
   Cantidad: number;
@@ -27,10 +28,6 @@ export class ProductoService {
     return this.http.get<Producto[]>(this.apiUrl);
   }
 
-  // Obtener un producto por su código de barras
-//   obtenerProductoPorCodigoBarras(codigoBarras: string): Observable<Producto> {
-//     return this.http.get<Producto>(`${this.apiUrl}/barcode/${codigoBarras}`);
-// }
 
   // Crear un nuevo producto
   agregarProducto(producto: Producto): Observable<any> {
@@ -45,5 +42,10 @@ export class ProductoService {
   // Eliminar un producto
   eliminarProducto(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+   // Obtener un producto por su código de barras
+   obtenerProductoPorCodigoBarras(codigoBarras: number): Observable<Producto> {
+    return this.http.get<Producto>(`${this.apiUrl}/codigo/${codigoBarras}`);
   }
 }

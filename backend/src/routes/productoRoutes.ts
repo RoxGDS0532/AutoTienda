@@ -9,6 +9,7 @@ class ProductoRoutes{
     }
     
     config():void{
+        this.router.get('/codigo/:codigoBarras', productoController.getOneByCodigoBarras);
         this.router.get('/',productoController.list);
         this.router.post('/',productoController.create);
         this.router.delete('/:Id',productoController.delete);

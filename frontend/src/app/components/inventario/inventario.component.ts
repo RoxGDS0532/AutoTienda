@@ -9,6 +9,7 @@ import * as bootstrap from 'bootstrap';
 
 interface Producto {
   Id?: number;
+  CodigoBarras: number;
   Nombre: string;
   Categoria: string;
   Precio: number;
@@ -27,6 +28,7 @@ interface Producto {
 export class InventarioComponent implements OnInit {
   productos: Producto[] = [];
   nuevoProducto: Producto = {
+    CodigoBarras: 0,
     Nombre: '',
     Categoria: '',
     Precio: 0,
@@ -60,7 +62,7 @@ export class InventarioComponent implements OnInit {
     this.productoService.agregarProducto(this.nuevoProducto).subscribe({
       next: (producto) => {
         this.productos.push(producto);
-        this.nuevoProducto = { Nombre: '', Categoria: '', Precio: 0, Cantidad: 0, Stock: 0 };
+        this.nuevoProducto = { CodigoBarras: 0, Nombre: '', Categoria: '', Precio: 0, Cantidad: 0, Stock: 0 };
 
         // Cerrar el modal usando Bootstrap
         const modalElement = document.getElementById('addProductModal');

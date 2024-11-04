@@ -14,6 +14,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../../database"));
 class ProductoController {
+    getOneByCodigoBarras(req, resp) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { codigoBarras } = req.params;
+            try {
+                const producto = yield database_1.default.query('SELECT * FROM productos WHERE CodigoBarras = ?', [codigoBarras]);
+                if (producto.length > 0) {
+                    resp.json(producto[0]);
+                }
+                else {
+                    resp.status(404).json({ message: 'Producto no encontrado' });
+                }
+            }
+            catch (error) {
+                console.error(error);
+                resp.status(500).json({ message: 'Error al buscar producto por código de barras', error });
+            }
+        });
+    }
     list(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
             //pool.query('DESCRIBE productos')

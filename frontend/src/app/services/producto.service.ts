@@ -12,6 +12,7 @@ export interface Producto {
   Cantidad: number;
   ImagenURL?: string; 
   CodigoBarras?: string; 
+
 }
 
 

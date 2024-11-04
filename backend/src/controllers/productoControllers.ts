@@ -29,11 +29,10 @@ class ProductoController {
     }
 
     public async create(req: Request, resp: Response): Promise<void> {
-        const { Nombre, Precio, Cantidad, CodigoBarras, CategoriaId } = req.body;
-        const ImagenURL = req.file ? req.file.path : null; // Asumiendo que se guarda la ruta de la imagen
+        const { Nombre, Precio, Cantidad, CodigoBarras, CategoriaId, ImagenURL } = req.body;
 
         // Validación de campos obligatorios
-        if (!Nombre || Precio === undefined || Cantidad === undefined || CategoriaId === undefined) {
+        if (!Nombre || Precio === undefined || Cantidad === undefined || CategoriaId === undefined || !ImagenURL) {
             resp.status(400).json({ message: 'Todos los campos son requeridos' });
             return;
         }
@@ -66,11 +65,10 @@ class ProductoController {
 
     public async update(req: Request, resp: Response): Promise<void> {
         const { Id } = req.params;
-        const { Nombre, Precio, Cantidad, CodigoBarras, CategoriaId } = req.body;
-        const ImagenURL = req.file ? req.file.path : null;
+        const { Nombre, Precio, Cantidad, CodigoBarras, CategoriaId, ImagenURL } = req.body;
 
         // Validación de campos obligatorios
-        if (!Nombre || Precio === undefined || Cantidad === undefined || CategoriaId === undefined) {
+        if (!Nombre || Precio === undefined || Cantidad === undefined || CategoriaId === undefined || !ImagenURL) {
             resp.status(400).json({ message: 'Todos los campos son requeridos' });
             return;
         }

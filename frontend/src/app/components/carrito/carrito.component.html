@@ -34,10 +34,20 @@
   <div class="row">
     <!-- Escáner -->
     <div class="col-3 mb-4">
-      <div class="card h-100" style="align-items: center;">
+      <div class="card h-50" style="align-items: center;">
         <button type="button" class="btn btn-primary" style="background-color: #04092cda; margin: 10px;" (click)="iniciarEscaneoContinuo()">Escanear Nuevo Producto</button>
         <div class="scanner-section mt-5">
           <video #video id="video" width="300" height="200" autoplay style="margin: 10px;"></video>
+        </div>
+      </div>
+      <br>
+      <div class="card h-50" style="align-items: center;">
+        <div class="card-header">
+          Buscar Producto por Código
+        </div>
+        <div class="card-body">
+          <input type="number" [(ngModel)]="codigoProductoBuscado" placeholder="Ingrese el código de barras" class="form-control" />
+          <button (click)="buscarProductoPorCodigoManual()" class="btn btn-primary mt-2">Buscar Producto</button>
         </div>
       </div>
     </div>
@@ -53,7 +63,7 @@
           <!-- Productos -->
           <div *ngFor="let producto of productos" class="cart-item d-flex justify-content-between align-items-center mb-3">
             <div class="item-image">
-              <img [src]="producto.ImagenURL" alt="{{ producto.Nombre }}" />
+              <img [src]="producto.ImagenURL" alt="{{ producto.Nombre }}"  />
             </div>
 
             <div>

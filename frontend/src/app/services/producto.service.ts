@@ -2,9 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+
 // Modelo de Producto
 export interface Producto {
   Id?: number;
+  CodigoBarras: number;
+  ImagenURL?: string;
   Nombre: string;
   CategoriaId: number; // Asegúrate de que esta propiedad exista aquí
   Precio: number;
@@ -18,7 +21,7 @@ export interface Producto {
   providedIn: 'root'
 })
 export class ProductoService {
-  private apiUrl = 'http://localhost:3000/producto'; // URL de tu API
+  private apiUrl = 'http://localhost:3000/producto';
 
   constructor(private http: HttpClient) {}
 
@@ -26,7 +29,6 @@ export class ProductoService {
   obtenerProductos(): Observable<Producto[]> {
     return this.http.get<Producto[]>(this.apiUrl);
   }
-
   obtenerCategorias(): Observable<any[]> {
     return this.http.get<any[]>('http://localhost:3000/categoria'); 
   }
@@ -44,5 +46,10 @@ export class ProductoService {
   // Eliminar un producto
   eliminarProducto(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+   // Obtener un producto por su código de barras
+   obtenerProductoPorCodigoBarras(codigoBarras: number): Observable<Producto> {
+    return this.http.get<Producto>(`${this.apiUrl}/codigo/${codigoBarras}`);
   }
 }

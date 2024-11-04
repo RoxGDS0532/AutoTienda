@@ -1,0 +1,83 @@
+/* Sección de filtros */
+.filter-section {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-section label {
+    font-weight: bold;
+    color: #34495e;
+}
+
+.filter-section select,
+.filter-section input[type="date"],
+.filter-section input[type="week"],
+.filter-section input[type="month"] {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+.filter-section select:focus,
+.filter-section input:focus {
+    border-color: #2980b9;
+    outline: none;
+}
+
+/* Contenedor de gráficos */
+.chart-container {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease-in-out;
+}
+
+.chart-container:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.chart-container h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.ventas .chart-container {
+    border-left: 5px solid #28a745; /* Verde para ventas */
+}
+
+.pagos .chart-container {
+    border-left: 5px solid #ffc107; /* Amarillo para pagos */
+}
+
+.recibos .chart-container {
+    border-left: 5px solid #dc3545; /* Rojo para recibos */
+}
+
+/* Canvas para los gráficos */
+canvas {
+    width: 100% !important;
+    height: auto !important;
+}
+
+/* Ajuste de fuente en dispositivos móviles */
+@media (max-width: 768px) {
+    .filter-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .chart-container h3 {
+        font-size: 1.1rem;
+    }
+}

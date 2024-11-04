@@ -19,6 +19,8 @@ CREATE TABLE Categorias (
 -- Tabla Productos
 CREATE TABLE Productos (
     Id INT AUTO_INCREMENT PRIMARY KEY,
+    CodigoBarras NUMERIC(13),
+    ImagenURL VARCHAR(300),  
     Nombre VARCHAR(100) NOT NULL,
     Precio DECIMAL(10, 2) NOT NULL,
     Cantidad INT NOT NULL,
@@ -28,6 +30,7 @@ CREATE TABLE Productos (
     CategoriaId INT, 
     FOREIGN KEY (CategoriaId) REFERENCES Categorias(Id) 
 );
+
 
 -- Tabla Proveedores
 CREATE TABLE Proveedores (
@@ -66,25 +69,29 @@ CREATE TABLE Reportes (
     FOREIGN KEY (UsuarioId) REFERENCES Usuarios(Id)
 );
 
--- Tabla Ventas
-CREATE TABLE Ventas (
-    Id INT AUTO_INCREMENT PRIMARY KEY,
-    IdProducto INT,
-    FechaVenta DATE NOT NULL,
-    CantidadProductos INT NOT NULL,
-    PrecioUProducto DECIMAL(10, 2) NOT NULL,
-    CantidadUProducto INT NOT NULL,
-    HoraVenta TIME NOT NULL,
-    PagoTotal DECIMAL(10, 2) NOT NULL,
-    IdPago INT,
-    FOREIGN KEY (IdProducto) REFERENCES Productos(Id),
-    FOREIGN KEY (IdPago) REFERENCES Pagos(IdPago)
-);
-
 -- Tabla Pagos
 CREATE TABLE Pagos (
     IdPago INT AUTO_INCREMENT PRIMARY KEY,
     FechaPago DATE NOT NULL,
     TipoPago ENUM('Efectivo', 'Transferencia') NOT NULL,
     CantidadTotal DECIMAL(10, 2) NOT NULL
+);
+
+-- Tabla Ventas
+CREATE TABLE venta (
+    id_venta INT AUTO_INCREMENT PRIMARY KEY,
+    fecha_venta DATETIME NOT NULL,
+    hora_venta TIME NOT NULL,
+    pago_total DECIMAL(10, 2) NOT NULL,
+    tipo_pago VARCHAR(10)
+);
+
+CREATE TABLE detalle_venta (
+    id_detalle INT AUTO_INCREMENT PRIMARY KEY,
+    id_venta INT,
+    id_producto INT,
+    cantidad INT NOT NULL,
+    precio_unitario DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (id_venta) REFERENCES venta(id_venta) ON DELETE CASCADE,
+    FOREIGN KEY (id_producto) REFERENCES Productos(Id) ON DELETE CASCADE
 );

@@ -11,10 +11,9 @@ class ProductoRoutes{
     }
     
     config():void{
-
         const storage = multer.memoryStorage(); // Cambia a diskStorage si prefieres guardar el archivo en el disco
         const upload = multer({ storage });
-
+        
         this.router.get('/',productoController.list);
         this.router.post('/',upload.single('Imagen'),productoController.create);
         this.router.delete('/:Id',productoController.delete);

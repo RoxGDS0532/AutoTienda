@@ -1,1 +1,74 @@
-<p>consultas works!</p>
+<div class="container">
+  <h1>Consultas</h1>
+
+  <!-- Filtros de búsqueda -->
+  <div class="filters">
+    <label for="filter">Filtro:</label>
+    <select id="filter" [(ngModel)]="selectedFilter">
+      <option value="day">Día</option>
+      <option value="week">Semana</option>
+      <option value="month">Mes</option>
+    </select>
+
+    <!-- Fecha seleccionada para el filtro por día -->
+    <div *ngIf="selectedFilter === 'day'">
+      <label for="selectedDate">Fecha:</label>
+      <input id="selectedDate" type="date" [(ngModel)]="selectedDate" />
+    </div>
+
+    <!-- Semana seleccionada para el filtro por semana -->
+    <div *ngIf="selectedFilter === 'week'">
+      <label for="selectedWeek">Semana:</label>
+      <input id="selectedWeek" type="number" [(ngModel)]="selectedWeek" min="1" max="52" />
+    </div>
+
+    <!-- Mes seleccionado para el filtro por mes -->
+    <div *ngIf="selectedFilter === 'month'">
+      <label for="selectedMonth">Mes:</label>
+      <select id="selectedMonth" [(ngModel)]="selectedMonth">
+        <option *ngFor="let month of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]" [value]="month">
+          {{ month }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Año seleccionado (opcional para todos los filtros) -->
+    <label for="selectedYear">Año:</label>
+    <input id="selectedYear" type="number" [(ngModel)]="selectedYear" min="2000" max="2100" />
+
+    <!-- Botón para aplicar filtro -->
+    <button (click)="aplicarFiltro()">Aplicar Filtro</button>
+  </div>
+
+  <!-- Gráfico de Ventas -->
+  <div class="chart-section">
+    <h2>Ventas</h2>
+    <canvas *ngIf="ventasData" baseChart
+            [data]="ventasData"
+            [options]="chartOptions"
+            [type]="barChartType"></canvas>
+    <!-- Mostrar detalles de la barra seleccionada -->
+    <div *ngIf="selectedBarData">
+      <p><strong>Fecha:</strong> {{ selectedBarData.label }}</p>
+      <p><strong>Valor:</strong> {{ selectedBarData.value }}</p>
+    </div>
+  </div>
+
+  <!-- Gráfico de Pagos -->
+  <div class="chart-section">
+    <h2>Pagos</h2>
+    <canvas *ngIf="pagosData" baseChart
+            [data]="pagosData"
+            [options]="chartOptions"
+            [type]="barChartType"></canvas>
+  </div>
+
+  <!-- Gráfico de Recibos -->
+  <div class="chart-section">
+    <h2>Recibos</h2>
+    <canvas *ngIf="recibosData" baseChart
+            [data]="recibosData"
+            [options]="chartOptions"
+            [type]="pieChartType"></canvas>
+  </div>
+</div>

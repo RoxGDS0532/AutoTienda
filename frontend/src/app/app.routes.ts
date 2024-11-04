@@ -8,15 +8,18 @@ import { ProveedoresComponent } from './components/proveedores/proveedores.compo
 import { RegistroComponent } from './components/registro/registro.component';
 import { RestrablecerComponent } from './components/restrablecer/restrablecer.component';
 import { ProductoComponent } from './components/producto/producto.component';
+import { ConsultasComponent } from './components/consultas/consultas.component';
 
 export const routes: Routes = [
     {path: '', component: UserComponent},
     {path:'login',component:LoginComponent},
-    {path:'carrito', component: CarritoComponent},
+    {path:'carrito/:codigoBarras', component: CarritoComponent},
+    {path:'carrito',component:CarritoComponent},
     {path:'inventario',component:InventarioComponent},
     {path:'home', component:HomeComponent},
     {path:'proveedor', component:ProveedoresComponent},
     {path:'registro', component:RegistroComponent},
     {path:'restablecer', component:RestrablecerComponent},
-    {path:'producto', component:ProductoComponent}
+    {path:'producto', component:ProductoComponent},
+    {path:'consultas', component:ConsultasComponent}
 ];

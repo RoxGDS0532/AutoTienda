@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import pool from "../../database";
 
-class ProductoController {
-    public async list(req: Request, resp: Response) {
-        const productos = await pool.query('SELECT * FROM Productos');
-        resp.json(productos);
+class ProductoController{
+    public async list (req:Request, resp:Response){
+        //pool.query('DESCRIBE productos')
+        //resp.json('productos');
+        const producto=await pool.query('select * from productos' );
+        resp.json(producto)
     }
 
     public async create(req: Request, resp: Response): Promise<void> {

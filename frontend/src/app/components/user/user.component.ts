@@ -41,23 +41,6 @@ iniciarEscaneo() {
     beepSound.play();
 
 
-      // Busca el producto con el código escaneado
-      if (this.codigoEscaneado) {
-        this.productoSeleccionado = this.buscarProductoPorCodigo(this.codigoEscaneado);
-        if (!this.productoSeleccionado) {
-          this.mensajeError = 'Producto no encontrado';
-        } else {
-          this.mensajeError = undefined;
-        }
-      } else {
-        this.mensajeError = 'Código escaneado no válido';
-      }
-    }).catch(err => {
-      this.mensajeError = 'Error al escanear el código de barras';
-      console.error(err);
-    });
-  }
-
     this.buscarProductoEnBaseDeDatos(this.codigoEscaneado!);
     this.router.navigate(['/carrito', this.codigoEscaneado]);
   }).catch(err => {

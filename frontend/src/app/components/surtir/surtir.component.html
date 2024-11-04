@@ -1,26 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Lista de Productos</title>
+</head>
+<body>
+
 <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #19246dda;">
     <div class="container-fluid" style="background-color: #04092cda;">
-        <a class="navbar-brand" href="#">
-            <img src="assets/SUPERAMA_Logo.png" alt="logo" width="80" height="80" class="d-inline-block align-top">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link active custom-font" aria-current="page" href="#">Superama</a>
-                </li>
-            </ul>
-            <div class="d-flex align-items-center">
-                <a class="nav-link custom-font" href="/home" style="color: white; font-size: 1.2rem; padding: 0 15px;">Home</a>
-                <a style="cursor: pointer; color: white; font-size: 1.5rem; padding: 0 15px;">
-                    <i class="fas fa-user" style="color: white;"></i>
-                </a>
-            </div>
+      <a class="navbar-brand" href="#">
+        <img src="assets/SUPERAMA_Logo.png" alt="logo" width="80" height="80" class="d-inline-block align-top">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active custom-font" aria-current="page" href="#">Superama</a>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center">
+          <a class="nav-link custom-font" href="/home" style="color: white; font-size: 1.2rem; padding: 0 15px;">Home</a>
+          <a style="cursor: pointer; color: white; font-size: 1.5rem; padding: 0 15px;">
+            <i class="fas fa-user" style="color: white;"></i>
+          </a>
         </div>
+      </div>
     </div>
-</nav>
+  </nav>
 
 <div class="container mt-5">
     <h2 class="display-4 text-center mb-4">Surtir Productos</h2>
@@ -54,3 +64,8 @@
 
     <button (click)="solicitarProductos()" class="btn btn-success mt-3">Solicitar Productos</button>
 </div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

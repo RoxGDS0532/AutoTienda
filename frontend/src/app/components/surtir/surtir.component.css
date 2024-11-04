@@ -1,0 +1,44 @@
+/* Estilo general para el contenedor */
+.container {
+    background-color: #f8f9fa; /* Color de fondo claro */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Encabezados de categorías */
+.display-5 {
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+/* Estilo de las tarjetas de productos */
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #dee2e6; /* Borde gris claro */
+}
+
+.product-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo del botón de solicitar */
+.btn-success {
+    background-color: #28a745; /* Color de botón de éxito */
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    border-radius: 5px;
+}
+
+/* Mejorar el input */
+.form-control {
+    border-radius: 5px; /* Bordes redondeados */
+}
+
+/* Alineación de texto */
+.text-center {
+    text-align: center;
+}

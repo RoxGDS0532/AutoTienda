@@ -6,15 +6,14 @@ import { Observable } from 'rxjs';
 // Modelo de Producto
 export interface Producto {
   Id?: number;
-  ImagenURL?: string;
   Nombre: string;
-  CategoriaId: number; // Asegúrate de que esta propiedad exista aquí
+  CategoriaId: number; 
   Precio: number;
   Cantidad: number;
-  Stock: number;
-  Imagen?: File; // Opcional
-  CodigoQR?: string; // Opcional
+  ImagenURL?: string; 
+  CodigoBarras?: number; 
 }
+
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +34,7 @@ export class ProductoService {
   }
 
   // Crear un nuevo producto
-  agregarProducto(producto: FormData): Observable<any> {
+  agregarProducto(producto: Producto): Observable<any> {
     return this.http.post(this.apiUrl, producto);
   }
 
@@ -43,6 +42,7 @@ export class ProductoService {
   actualizarProducto(Id: number, Producto: Producto): Observable<any> {
     return this.http.put(`${this.apiUrl}/${Id}`, Producto);
   }
+  
 
   // Eliminar un producto
   eliminarProducto(id: number): Observable<any> {

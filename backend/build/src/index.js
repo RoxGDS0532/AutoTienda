@@ -10,6 +10,7 @@ const cors_1 = __importDefault(require("cors"));
 const proveedorRoutes_1 = __importDefault(require("./routes/proveedorRoutes"));
 const usuariosRoutes_1 = __importDefault(require("./routes/usuariosRoutes"));
 const consultasRoutes_1 = __importDefault(require("./routes/consultasRoutes"));
+const ventasRoutes_1 = __importDefault(require("./routes/ventasRoutes"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -25,6 +26,7 @@ class Server {
     }
     routes() {
         this.app.use('/producto', productoRoutes_1.default);
+        this.app.use('/ventas', ventasRoutes_1.default);
         this.app.use('/proveedor', proveedorRoutes_1.default);
         this.app.use('/usuario', usuariosRoutes_1.default);
         this.app.use('/consulta', consultasRoutes_1.default);

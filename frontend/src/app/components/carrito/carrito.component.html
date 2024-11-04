@@ -30,93 +30,99 @@
 </nav>
 <body>
  <!-- Main Content -->
-<div class="container mt-4">
-    <div class="row">
-      <!-- Productos en el Carrito -->
-      <div class="col-md-8">
-        <h5>Carrito</h5><small>({{ productos.length }} artículos)</small>
-
-        <div *ngIf="productos.length === 0">
-          <p>No hay productos en el carrito.</p>
+ <div class="container-fluid mt-4">
+  <div class="row">
+    <!-- Escáner -->
+    <div class="col-3 mb-4">
+      <div class="card h-100" style="align-items: center;">
+        <button type="button" class="btn btn-primary" style="background-color: #04092cda; margin: 10px;" (click)="iniciarEscaneoContinuo()">Escanear Nuevo Producto</button>
+        <div class="scanner-section mt-5">
+          <video #video id="video" width="300" height="200" autoplay style="margin: 10px;"></video>
         </div>
-        <!-- Producto -->
-        <div *ngFor="let producto of productos" class="cart-item d-flex justify-content-between align-items-center mb-3">
-          <div class="item-image">
-            <img [src]="producto.ImagenURL" alt="{{ producto.Nombre }}" />
-          </div>
+      </div>
+    </div>
 
-          <div>
-            <p class="m-0">{{producto.Nombre}}</p>
-            <small class="text-muted">{{producto.Categoria}}</small>
-            <div class="quantity-control mt-2 d-flex align-items-center">
-              <button (click)="decrementarCantidad(producto)">-</button>
-              <span class="mx-2">{{ producto.Cantidad }}</span>
-              <button (click)="incrementarCantidad(producto)">+</button>
+    <!-- Carrito -->
+    <div class="col-6 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5>Carrito</h5><small>({{ productos.length }} artículos)</small>
+          <div *ngIf="productos.length === 0">
+            <p>No hay productos en el carrito.</p>
+          </div>
+          <!-- Productos -->
+          <div *ngFor="let producto of productos" class="cart-item d-flex justify-content-between align-items-center mb-3">
+            <div class="item-image">
+              <img [src]="producto.ImagenURL" alt="{{ producto.Nombre }}" />
+            </div>
+
+            <div>
+              <p class="m-0">{{producto.Nombre}}</p>
+              <small class="text-muted">{{producto.Categoria}}</small>
+              <div class="quantity-control mt-2 d-flex align-items-center">
+                <button (click)="decrementarCantidad(producto)">-</button>
+                <span class="mx-2">{{ producto.Cantidad }}</span>
+                <button (click)="incrementarCantidad(producto)">+</button>
+              </div>
+            </div>
+            <div>
+              <p class="m-0">{{producto.Precio | currency }}</p>
+              <p class="text-muted">Subtotal: {{ (producto.Precio * producto.Cantidad) | currency }}</p>
+            </div>
+            <button class="btn btn-danger btn-sm" (click)="eliminarProducto(producto)">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resumen de Compra y Descuento -->
+    <div class="col-3 mb-4">
+      <div class="card h-100">
+        <div class="card-header">
+          <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="resumen-tab" data-bs-toggle="tab" href="#resumen" role="tab" aria-controls="resumen" aria-selected="false">Resumen de Compra</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="descuento-tab" data-bs-toggle="tab" href="#descuento" role="tab" aria-controls="descuento" aria-selected="false">Descuento</a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <div class="tab-content" id="myTabContent">
+            <!-- Resumen de Compra -->
+            <div class="tab-pane fade show active" id="resumen" role="tabpanel" aria-labelledby="resumen-tab">
+              <h5 class="card-title">Resumen de Compra</h5>
+              <p class="d-flex justify-content-between">
+                <span>Subtotal</span>
+                <span>{{ obtenerSubtotal() | currency }}</span>
+              </p>
+              <p class="d-flex justify-content-between">
+                <span>Ahorros</span>
+                <span class="text-green">- {{ obtenerAhorros() | currency }}</span>
+              </p>
+              <h5 class="d-flex justify-content-between">
+                <span>Total a Pagar</span>
+                <span>{{ obtenerTotal() | currency }}</span>
+              </h5>
+              <button class="btn btn-primary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#paymentModal">Continuar</button>
+            </div>
+
+            <!-- Código de Descuento -->
+            <div class="tab-pane fade" id="descuento" role="tabpanel" aria-labelledby="descuento-tab">
+              <h5 class="card-title">Código de Descuento</h5>
+              <label for="codigoDescuento">Código de Descuento:</label>
+              <input type="text" [(ngModel)]="codigoDescuento" id="codigoDescuento" class="form-control" placeholder="Ingresa el código de descuento" />
+              <button (click)="aplicarCodigoDescuento()" class="btn btn-secondary w-100 mt-2">Aplicar Código</button>
             </div>
           </div>
-          <div>
-            <p class="m-0">{{producto.Precio | currency }}</p>
-            <p class="text-muted">Subtotal: {{ (producto.Precio * producto.Cantidad) | currency }}</p>
-          </div>
-          <button class="btn btn-danger btn-sm" (click)="eliminarProducto(producto)">Eliminar</button>
-        </div>
-       <!-- end-Producto -->  
-      </div>
- <!-- Card con Pestañas para Resumen, Descuento y Escáner -->
- <div class="col-md-4">
-  <div class="card" style="align-items: center;" >
-  <button  type="button" class="btn btn-primary" style="background-color: #04092cda; margin: 10px;"  (click)="iniciarEscaneoContinuo()">Escanear Nuevo Producto</button> 
-  <div class="scanner-section mt-4">
-    <video #video id="video" width="300" height="200" autoplay style="margin: 10px;"></video>
-  </div>
-</div>
-  <div class="card">
-    <div class="card-header">
-      <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="resumen-tab" data-bs-toggle="tab" href="#resumen" role="tab" aria-controls="resumen" aria-selected="false">Resumen de Compra</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="descuento-tab" data-bs-toggle="tab" href="#descuento" role="tab" aria-controls="descuento" aria-selected="false">Descuento</a>
-        </li>
-      </ul>
-    </div>
-    <div class="card-body">
-      <div class="tab-content" id="myTabContent">
-        <!-- Resumen de Compra -->
-        <div class="tab-pane fade show active" id="resumen" role="tabpanel" aria-labelledby="resumen-tab">
-          <h5 class="card-title">Resumen de Compra</h5>
-          <p class="d-flex justify-content-between">
-            <span>Subtotal</span>
-            <span>{{ obtenerSubtotal() | currency }}</span>
-          </p>
-          <p class="d-flex justify-content-between">
-            <span>Ahorros</span>
-            <span class="text-green">- {{ obtenerAhorros() | currency }}</span>
-          </p>
-          <h5 class="d-flex justify-content-between">
-            <span>Total a Pagar</span>
-            <span>{{ obtenerTotal() | currency }}</span>
-          </h5>
-          <button class="btn btn-primary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#paymentModal">Continuar</button>
-        </div>
-
-        <!-- Código de Descuento -->
-        <div class="tab-pane fade" id="descuento" role="tabpanel" aria-labelledby="descuento-tab">
-          <h5 class="card-title">Código de Descuento</h5>
-          <label for="codigoDescuento">Código de Descuento:</label>
-          <input type="text" [(ngModel)]="codigoDescuento" id="codigoDescuento" class="form-control" placeholder="Ingresa el código de descuento" />
-          <button (click)="aplicarCodigoDescuento()" class="btn btn-secondary w-100 mt-2">Aplicar Código</button>
         </div>
       </div>
     </div>
   </div>
 </div>
-</div>
-</div>
-
-<!-- Modal de Selección de Pago -->
-<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+ <!-- Modal de Selección de Pago -->
+ <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">

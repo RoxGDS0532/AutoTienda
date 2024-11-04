@@ -5,6 +5,7 @@ import cors from 'cors';
 import proveedorRoutes from './routes/proveedorRoutes'
 import usuariosRoutes from './routes/usuariosRoutes'
 import consultasRoutes from './routes/consultasRoutes'
+import ventasRoutes from './routes/ventasRoutes';
 
 class Server{
     public app: Application;
@@ -23,6 +24,7 @@ class Server{
     }
     routes() : void{
         this.app.use('/producto', productoRoutes)
+        this.app.use('/ventas', ventasRoutes)
         this.app.use('/proveedor', proveedorRoutes)
         this.app.use('/usuario',usuariosRoutes)
         this.app.use('/consulta',consultasRoutes)

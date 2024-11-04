@@ -39,7 +39,7 @@ iniciarEscaneo() {
     // Reproduce el sonido 
     const beepSound = new Audio('assets/sound/beep.mp3');
     beepSound.play();
-    
+
     this.buscarProductoEnBaseDeDatos(this.codigoEscaneado!);
     this.router.navigate(['/carrito', this.codigoEscaneado]);
   }).catch(err => {

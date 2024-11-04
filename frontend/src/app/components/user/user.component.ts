@@ -13,7 +13,7 @@ interface Producto {
   CategoriaId: number; // Asegúrate de que esta propiedad exista aquí
   Precio: number;
   Cantidad: number;
-  CodigoBarras?: number; // Opcional
+  CodigoBarras?: string; // Opcional
 }
 
 @Component({
@@ -27,7 +27,7 @@ export class UserComponent {
   codeReader = new BrowserMultiFormatReader();
   productoSeleccionado: Producto | undefined;
   mensajeError: string | undefined;
-  codigoEscaneado: number | undefined; 
+  codigoEscaneado: string | undefined; 
 
   constructor(private productoService: ProductoService, private router: Router
   ) {} 
@@ -35,7 +35,7 @@ export class UserComponent {
   // Método para iniciar el escaneo de código de barras
 iniciarEscaneo() {
   this.codeReader.decodeOnceFromVideoDevice(undefined, 'video').then(result => {
-    this.codigoEscaneado = +result.getText();
+    this.codigoEscaneado = result.getText();
     console.log(result.getText());
 
     // Reproduce el sonido 
@@ -51,8 +51,8 @@ iniciarEscaneo() {
 }
 
 // Busca producto en la base de datos
-buscarProductoEnBaseDeDatos(codigo: number) {
-  this.productoService.obtenerProductoPorCodigoBarras(+codigo).subscribe(
+buscarProductoEnBaseDeDatos(codigo: string) {
+  this.productoService.obtenerProductoPorCodigoBarras(codigo).subscribe(
     producto => {
       this.productoSeleccionado = producto;
       this.mensajeError = undefined; 

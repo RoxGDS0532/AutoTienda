@@ -33,7 +33,7 @@ export class CarritoComponent implements OnInit {
 
   ngOnInit(): void {
     
-    const codigoBarras = this.route.snapshot.paramMap.get('codigoBarras');
+    const codigoBarras = this.route.snapshot.paramMap.get('CodigoQR');
     if (codigoBarras) {
       this.buscarProductoPorCodigo(+codigoBarras);
     }
@@ -122,7 +122,7 @@ export class CarritoComponent implements OnInit {
   }
 
   buscarProductoPorCodigo(codigoBarras: number): void {
-    const productoExistente = this.productos.find(p => p.CodigoBarras === codigoBarras);
+    const productoExistente = this.productos.find(p => p.CodigoQR === codigoBarras.toString());
 
     if (productoExistente) {
       productoExistente.Cantidad += 1;

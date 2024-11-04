@@ -22,6 +22,8 @@ export interface Producto {
 })
 export class ProductoService {
   private apiUrl = 'http://localhost:3000/producto';
+  private solicitarUrl = 'http://localhost:3000/solicitar'; 
+
 
   constructor(private http: HttpClient) {}
 
@@ -51,5 +53,9 @@ export class ProductoService {
    // Obtener un producto por su código de barras
    obtenerProductoPorCodigoBarras(codigoBarras: number): Observable<Producto> {
     return this.http.get<Producto>(`${this.apiUrl}/codigo/${codigoBarras}`);
+  }
+
+  solicitarProductos(solicitudes: any[]): Observable<any> { 
+    return this.http.post(this.solicitarUrl, solicitudes);
   }
 }

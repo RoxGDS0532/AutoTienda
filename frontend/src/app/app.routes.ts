@@ -8,6 +8,7 @@ import { RegistroComponent } from './components/registro/registro.component';
 import { RestrablecerComponent } from './components/restrablecer/restrablecer.component';
 import { ProductoComponent } from './components/producto/producto.component';
 import { ConsultasComponent } from './components/consultas/consultas.component';
+import { SurtirComponent } from './components/surtir/surtir.component';
 
 export const routes: Routes = [
     {path: '', component: UserComponent},
@@ -19,5 +20,6 @@ export const routes: Routes = [
     {path:'registro', component:RegistroComponent},
     {path:'restablecer', component:RestrablecerComponent},
     {path:'producto', component:ProductoComponent},
-    {path:'consultas', component:ConsultasComponent}
+    {path:'consultas', component:ConsultasComponent},
+    {path:'surtir', component:SurtirComponent}
 ];

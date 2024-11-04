@@ -7,7 +7,7 @@ import usuariosRoutes from './routes/usuariosRoutes'
 import consultasRoutes from './routes/consultasRoutes'
 import ventasRoutes from './routes/ventasRoutes';
 import categoriaRoutes from './routes/categoriaRoutes';
-
+import surtirRoutes from './routes/surtirRoutes';
 
 class Server{
     public app: Application;
@@ -30,6 +30,7 @@ class Server{
         this.app.use('/proveedor', proveedorRoutes)
         this.app.use('/usuario',usuariosRoutes)
         this.app.use('/categoria',categoriaRoutes )
+        this.app.use('/solicitar',surtirRoutes)
         
     }
     start() : void{

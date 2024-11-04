@@ -13,7 +13,7 @@ interface Producto {
   CategoriaId: number; // Asegúrate de que esta propiedad exista aquí
   Precio: number;
   Cantidad: number;
-  CodigoBarras?: string; // Opcional
+  CodigoBarras?: string; 
 }
 
 @Component({

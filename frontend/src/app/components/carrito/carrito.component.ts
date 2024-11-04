@@ -39,7 +39,7 @@ export class CarritoComponent implements OnInit {
     
     const codigoBarras = this.route.snapshot.paramMap.get('codigoBarras');
     if (codigoBarras) {
-      this.buscarProductoPorCodigo(+codigoBarras);
+      this.buscarProductoPorCodigo(codigoBarras);
     }
 
     this.iniciarEscaneoContinuo();
@@ -102,7 +102,7 @@ export class CarritoComponent implements OnInit {
     if (this.videoElement) {
       this.codeReader.decodeOnceFromVideoDevice(undefined, this.videoElement.nativeElement)
         .then(result => {
-          const codigoEscaneado = +result.getText();
+          const codigoEscaneado = result.getText();
 
           const beepSound = new Audio('assets/sound/beep.mp3');
           beepSound.play();
@@ -114,7 +114,7 @@ export class CarritoComponent implements OnInit {
     }
   }
 
-  buscarProductoPorCodigo(codigoBarras: number): void {
+  buscarProductoPorCodigo(codigoBarras: string): void {
     console.log('Buscando producto con código de barras:', codigoBarras);
     const productoExistente = this.productos.find(p => p.CodigoBarras === codigoBarras);
 

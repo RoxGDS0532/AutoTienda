@@ -27,7 +27,7 @@ export class UserComponent {
   codeReader = new BrowserMultiFormatReader();
   productoSeleccionado: Producto | undefined;
   mensajeError: string | undefined;
-  codigoEscaneado: number | undefined; 
+  codigoEscaneado: string | undefined; 
 
   constructor(private productoService: ProductoService, private router: Router
   ) {} 
@@ -51,8 +51,8 @@ iniciarEscaneo() {
 }
 
 // Busca producto en la base de datos
-buscarProductoEnBaseDeDatos(codigo: number) {
-  this.productoService.obtenerProductoPorCodigoBarras(+codigo).subscribe(
+buscarProductoEnBaseDeDatos(codigo: string) {
+  this.productoService.obtenerProductoPorCodigoBarras(codigo).subscribe(
     producto => {
       this.productoSeleccionado = producto;
       this.mensajeError = undefined; 

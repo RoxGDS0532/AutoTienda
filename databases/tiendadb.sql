@@ -19,7 +19,6 @@ CREATE TABLE Categorias (
 -- Tabla Productos
 CREATE TABLE Productos (
     Id INT AUTO_INCREMENT PRIMARY KEY,
-    CodigoBarras NUMERIC(13),
     ImagenURL VARCHAR(300),  
     Nombre VARCHAR(100) NOT NULL,
     Precio DECIMAL(10, 2) NOT NULL,

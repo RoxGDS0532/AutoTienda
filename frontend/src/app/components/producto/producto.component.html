@@ -106,8 +106,8 @@
                 </div>
                 <div class="form-group">
                   <label for="CodigoQR">Código de Barras</label>
-                  <input type="text" [(ngModel)]="codigoBarras" name="codigoBarras" class="form-control" />
-                </div>
+                  <input type="text" [(ngModel)]="productoSeleccionado.CodigoBarras" name="codigoBarras" class="form-control" required />
+                </div>                
                 <div class="form-group">
                   <label for="Imagen">URL de la Imagen</label>
                   <input type="text" [(ngModel)]="productoSeleccionado.ImagenURL" name="Imagen" class="form-control" placeholder="Ingrese la URL de la imagen" />

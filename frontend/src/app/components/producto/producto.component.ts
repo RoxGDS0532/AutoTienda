@@ -21,9 +21,8 @@ import { Router } from '@angular/router';
 export class ProductoComponent implements OnInit {
   productos: Producto[] = [];
   categorias: Categoria[] = [];
-  productoSeleccionado: Producto = { Id: 0, ImagenURL:'', Nombre: '', Precio: 0, Cantidad: 0, CategoriaId: 0 , CodigoBarras:0}; // Inicialización
+  productoSeleccionado: Producto = { Id: 0, ImagenURL:'', Nombre: '', Precio: 0, Cantidad: 0, CategoriaId: 0 , CodigoBarras:''}; // Inicialización
   imagenFile: File | null = null; // Almacenar el archivo de imagen
-  codigoBarras: number=0; // Almacenar el código QR
   productosFiltrados: Producto[] = []; // Lista de productos filtrados
   categoriaSeleccionada: number = 0; // ID de la categoría seleccionada
   busquedaProducto: string = '';
@@ -72,15 +71,14 @@ export class ProductoComponent implements OnInit {
 }
 
 agregarProducto() {
-  if (this.productoSeleccionado.ImagenURL) {
-    this.productoService.agregarProducto(this.productoSeleccionado).subscribe(() => {
-      this.cargarProductos();
-      const agregarModal = bootstrap.Modal.getInstance(document.getElementById('agregarProductoModal')!);
-      agregarModal?.hide();
-    });
-  } else {
-    console.error('No se ha proporcionado una URL de imagen válida.');
-  }
+  console.log('Producto a agregar:', this.productoSeleccionado); // Para verificar
+  this.productoService.agregarProducto(this.productoSeleccionado).subscribe(() => {
+    this.cargarProductos();
+    const agregarModal = bootstrap.Modal.getInstance(document.getElementById('agregarProductoModal')!);
+    agregarModal?.hide();
+  }, error => {
+    console.error('Error al agregar el producto:', error);
+  });
 }
 
 actualizarProducto() {
@@ -117,9 +115,7 @@ actualizarProducto() {
 }
 
   limpiarFormulario() {
-    this.productoSeleccionado = { Id: 0, ImagenURL:'', Nombre: '', Precio: 0, Cantidad: 0, CategoriaId: 0, CodigoBarras:0 };
-    this.imagenFile = null; // Reiniciar la imagen
-    this.codigoBarras = 0; // Reiniciar el código QR
+    this.productoSeleccionado = { Id: 0, ImagenURL:'', Nombre: '', Precio: 0, Cantidad: 0, CategoriaId: 0, CodigoBarras:''};
   }
 
   onFileSelected(event: Event) {

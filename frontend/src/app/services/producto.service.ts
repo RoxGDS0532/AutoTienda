@@ -10,8 +10,8 @@ export interface Producto {
   CategoriaId: number; 
   Precio: number;
   Cantidad: number;
-  ImagenURL?: string; 
-  CodigoBarras?: number; 
+  ImagenURL: string; 
+  CodigoBarras: string; 
 }
 
 
@@ -50,7 +50,7 @@ export class ProductoService {
   }
 
    // Obtener un producto por su código de barras
-   obtenerProductoPorCodigoBarras(codigoBarras: number): Observable<Producto> {
+   obtenerProductoPorCodigoBarras(codigoBarras: string): Observable<Producto> {
     return this.http.get<Producto>(`${this.apiUrl}/codigo/${codigoBarras}`);
   }
 

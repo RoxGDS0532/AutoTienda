@@ -19,7 +19,7 @@ export class SurtirComponent implements OnInit {
   productos: (Producto & { cantidadSolicitada: number; proveedorId: number | null })[] = [];
   proveedores: Proveedor[] = []; // Lista de proveedores
   categorias: any[] = []; // Para almacenar las categorías
-  selectedCategoriaId: number = 0;
+  selectedCategoriaId: number=0 ;
   
   constructor(
     private productoService: ProductoService,
@@ -35,11 +35,11 @@ export class SurtirComponent implements OnInit {
 
   cargarProductos() {
     this.productoService.obtenerProductos().subscribe(productos => {
-      // Añadir un campo para la cantidad solicitada y el ID del proveedor
+      console.log('Productos cargados:', productos); // Para depuración
       this.productos = productos.map(producto => ({
         ...producto,
-        cantidadSolicitada: 0, // Inicializamos con 0
-        proveedorId: null // Inicializamos sin proveedor
+        cantidadSolicitada: 0,
+        proveedorId: null
       }));
     });
   }
@@ -54,6 +54,10 @@ export class SurtirComponent implements OnInit {
     this.productoService.obtenerCategorias().subscribe(categorias => {
       this.categorias = categorias; // Almacena las categorías
     });
+  }
+
+  onCategoriaChange(event: any) {
+    console.log('Categoría seleccionada:', event); // Log para verificar la categoría seleccionada
   }
 
   solicitarProductos() {

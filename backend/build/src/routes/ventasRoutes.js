@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const ventasControllers_1 = __importDefault(require("../controllers/ventasControllers"));
+const correoControllers_1 = require("../controllers/correoControllers");
 class VentasRoutes {
     constructor() {
         this.router = (0, express_1.Router)();
@@ -12,6 +13,7 @@ class VentasRoutes {
     }
     config() {
         this.router.post('/', ventasControllers_1.default.create);
+        this.router.post('/envio', correoControllers_1.envioCorreo);
     }
 }
 const ventasRoutes = new VentasRoutes();

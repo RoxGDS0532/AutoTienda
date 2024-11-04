@@ -10,18 +10,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("../../database");
+const date_fns_tz_1 = require("date-fns-tz");
 class VentasController {
     create(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
-            const fechaOriginal = new Date('2024-11-04T04:22:39.417Z');
-            const fechaVenta = fechaOriginal.toISOString().slice(0, 19).replace('T', ' ');
-            const horaVenta = fechaOriginal.toISOString().slice(11, 19);
+            const mexicoCityTimeZone = 'America/Mexico_City';
+            const fechaActual = new Date();
+            const fechaEnMexico = (0, date_fns_tz_1.toZonedTime)(fechaActual, mexicoCityTimeZone);
+            // Formatea la fecha y hora como cadenas
+            const fechaVenta = (0, date_fns_tz_1.format)(fechaEnMexico, 'yyyy-MM-dd HH:mm:ss', { timeZone: mexicoCityTimeZone });
+            const horaVenta = (0, date_fns_tz_1.format)(fechaEnMexico, 'HH:mm:ss', { timeZone: mexicoCityTimeZone });
             const { pago_total, tipo_pago, detalles } = req.body;
             const connection = yield (0, database_1.getConnection)();
             try {
                 yield connection.beginTransaction();
                 const ventaResult = yield connection.query('INSERT INTO venta (fecha_venta, hora_venta, pago_total, tipo_pago) VALUES (?, ?, ?, ?)', [fechaVenta, horaVenta, pago_total, tipo_pago]);
-                const idVenta = ventaResult.insertId; // Obtén el ID de la venta insertada
+                const idVenta = ventaResult.insertId; // ID de la venta
                 for (const detalle of detalles) {
                     yield connection.query('INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)', [idVenta, detalle.id_producto, detalle.cantidad, detalle.precio_unitario]);
                 }

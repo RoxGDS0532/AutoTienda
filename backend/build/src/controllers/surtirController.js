@@ -36,9 +36,7 @@ class SurtirController {
                 // Guardar las solicitudes en la base de datos
                 yield Promise.all(solicitudes.map((s) => __awaiter(this, void 0, void 0, function* () {
                     yield database_1.default.query('INSERT INTO Solicitudes SET ?', [s]);
-                    // Actualizar la cantidad del producto
-                    yield database_1.default.query('UPDATE Productos SET cantidad = cantidad + ? WHERE id = ?', [s.cantidad, s.productoId] // Asegúrate de que 'id' sea la columna correcta en la tabla de productos
-                    );
+                    yield database_1.default.query('UPDATE Productos SET cantidad = cantidad + ? WHERE id = ?', [s.cantidad, s.productoId]);
                 })));
                 res.json({ message: 'Solicitudes guardadas y cantidades actualizadas' });
             }

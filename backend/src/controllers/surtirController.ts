@@ -29,10 +29,9 @@ class SurtirController {
             await Promise.all(solicitudes.map(async (s: Solicitud) => {
                 await pool.query('INSERT INTO Solicitudes SET ?', [s]);
 
-                // Actualizar la cantidad del producto
                 await pool.query(
                     'UPDATE Productos SET cantidad = cantidad + ? WHERE id = ?',
-                    [s.cantidad, s.productoId] // Asegúrate de que 'id' sea la columna correcta en la tabla de productos
+                    [s.cantidad, s.productoId] 
                 );
             }));
 

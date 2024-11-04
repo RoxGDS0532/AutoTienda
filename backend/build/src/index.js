@@ -9,8 +9,9 @@ const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const proveedorRoutes_1 = __importDefault(require("./routes/proveedorRoutes"));
 const usuariosRoutes_1 = __importDefault(require("./routes/usuariosRoutes"));
-const consultasRoutes_1 = __importDefault(require("./routes/consultasRoutes"));
 const ventasRoutes_1 = __importDefault(require("./routes/ventasRoutes"));
+const categoriaRoutes_1 = __importDefault(require("./routes/categoriaRoutes"));
+const surtirRoutes_1 = __importDefault(require("./routes/surtirRoutes"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -29,7 +30,8 @@ class Server {
         this.app.use('/ventas', ventasRoutes_1.default);
         this.app.use('/proveedor', proveedorRoutes_1.default);
         this.app.use('/usuario', usuariosRoutes_1.default);
-        this.app.use('/consulta', consultasRoutes_1.default);
+        this.app.use('/categoria', categoriaRoutes_1.default);
+        this.app.use('/solicitar', surtirRoutes_1.default);
     }
     start() {
         console.log('Iniciando el servidor...');

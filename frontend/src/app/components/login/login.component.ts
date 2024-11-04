@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 
 
@@ -17,7 +18,7 @@ import { HttpClientModule } from '@angular/common/http';
 export class LoginComponent {
   loginForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService) {
+  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.formBuilder.group({
       correo: ['', Validators.required],  // Cambia el nombre de usuario a correo
       contrasena: ['', Validators.required] // Cambia la contraseña a contrasena
@@ -30,14 +31,24 @@ export class LoginComponent {
         this.authService.login(correo, contrasena).subscribe({
             next: (response) => {
                 console.log('Inicio de sesión exitoso:', response);
-                
+                this.router.navigate(['/home']);
+                alert('Has iniciado sesión con éxito');
             },
             error: (error) => {
                 console.error('Error en el inicio de sesión:', error);
-                // Mostrar mensaje de error al usuario
-            }
+                alert('Error en el inicio de sesión, por favor verifica tus credenciales');
+              }
         });
     }
-}
+  }
+
+  toggleRememberMe(event: any) {
+    const isChecked = event.target.checked;
+    if (isChecked) {
+      localStorage.setItem('rememberMe', 'true');
+    } else {
+      localStorage.removeItem('rememberMe');
+    }
+  }
 
 }

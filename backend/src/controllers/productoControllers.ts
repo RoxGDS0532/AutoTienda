@@ -2,77 +2,79 @@ import { Request, Response } from "express";
 import pool from "../../database";
 
 class ProductoController{
-
-    public async getOneByCodigoBarras(req: Request, resp: Response): Promise<void> {
-        const { codigoBarras } = req.params; 
-        try {
-            const producto = await pool.query('SELECT * FROM productos WHERE CodigoBarras = ?', [codigoBarras]);
-            if (producto.length > 0) {
-                resp.json(producto[0]); 
-            } else {
-                resp.status(404).json({ message: 'Producto no encontrado' });
-            }
-        } catch (error) {
-            console.error(error);
-            resp.status(500).json({ message: 'Error al buscar producto por código de barras', error });
-        }
-    }
-
     public async list (req:Request, resp:Response){
         //pool.query('DESCRIBE productos')
         //resp.json('productos');
         const producto=await pool.query('select * from productos' );
         resp.json(producto)
     }
-    public async create(req:Request, resp:Response):Promise<void>{
-        console.log(req.body)
-        await pool.query('INSERT INTO productos set ?',[req.body]);
-        resp.json({message : 'producto saved'})
-    }
-    public async delete(req:Request, resp:Response){
-        const {Id}=req.params;
-        await pool.query('delete from productos where Id=?',[Id]);
-        resp.json({message : 'elimino producto'})
+
+    public async create(req: Request, resp: Response): Promise<void> {
+        console.log(req.body);
+        console.log(req.file); // Muestra la información del archivo
+
+        const { Nombre, Precio, Cantidad, Stock, CodigoQR, CategoriaId } = req.body;
+        const Imagen = req.file ? req.file.buffer : null; // Puedes almacenar el archivo o su nombre/ruta
+
+
+        // Validación de campos
+        if (!Nombre || Precio === undefined || Cantidad === undefined || Stock === undefined || CategoriaId === undefined || !Imagen) {
+            resp.status(400).json({ message: 'Todos los campos son requeridoss' });
+            return;
+        }
+
+        await pool.query('INSERT INTO Productos SET ?', [{ Nombre, Precio, Cantidad, Stock, Imagen, CodigoQR, CategoriaId }]);
+        resp.json({ message: 'Producto guardado' });
     }
 
-    public async update(req: Request, res: Response): Promise<void> {
+    public async delete(req: Request, resp: Response) {
         const { Id } = req.params;
-        const { Nombre, Categoria, Precio, Cantidad, Stock } = req.body;
+        await pool.query('DELETE FROM Productos WHERE Id = ?', [Id]);
+        resp.json({ message: 'Producto eliminado' });
+    }
+
+    public async update(req: Request, resp: Response): Promise<void> {
+        const { Id } = req.params;
+        const { Nombre, Precio, Cantidad, Stock, CategoriaId } = req.body;
+    
+        console.log('ID:', Id);
+        console.log('Cuerpo de la solicitud:', req.body);
     
         // Validación de campos
-        if (!Nombre || !Categoria || Precio === undefined || !Cantidad || Stock === undefined) {
-            res.status(400).json({ message: 'Todos los campos son requeridos' });
-            return; // Asegúrate de retornar aquí para no continuar
+        if (!Nombre || Precio === undefined || Cantidad === undefined || Stock === undefined || CategoriaId === undefined) {
+            resp.status(400).json({ message: 'Todos los campos son requeridos' });
+            return;
         }
     
         try {
             const result = await pool.query(
-                'UPDATE productos SET Nombre = ?, Categoria = ?, Precio = ?, Cantidad = ?, Stock = ? WHERE Id = ?',
-                [Nombre, Categoria, Precio, Cantidad, Stock, Id]
+                'UPDATE Productos SET Nombre = ?, Precio = ?, Cantidad = ?, Stock = ?, CategoriaId = ? WHERE Id = ?',
+                [Nombre, Precio, Cantidad, Stock, CategoriaId, Id]
             );
     
             // Verificar si se actualizó algún registro
             if (result.affectedRows === 0) {
-                res.status(404).json({ message: 'Producto no encontrado o no actualizado' });
-                return; // Asegúrate de retornar aquí para no continuar
+                resp.status(404).json({ message: 'Producto no encontrado o no actualizado' });
+                return;
             }
     
-            res.json({ message: 'Producto actualizado exitosamente' });
+            resp.json({ message: 'Producto actualizado exitosamente' });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Error al actualizar producto', error });
+            resp.status(500).json({ message: 'Error al actualizar producto', error });
         }
     }
     
 
-    public async getOne(req:Request, resp:Response){
-        const{id}=req.params; 
-        const producto=await pool.query('select * from productos where Id = ?',[id]);
-        if(producto.length>0){ 
+    public async getOne(req: Request, resp: Response) {
+        const { id } = req.params;
+        const producto = await pool.query('SELECT * FROM Productos WHERE Id = ?', [id]);
+        if (producto.length > 0) {
             return resp.json(producto[0]);
         }
-        resp.status(404).json({text: 'the a producto doesnt exist'});
+        resp.status(404).json({ message: 'El producto no existe' });
     }
 }
+
 const productoController = new ProductoController();
-export default productoController; 
+export default productoController;

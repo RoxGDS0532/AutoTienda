@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../../database"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
 class UsuariosController {
     list(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -25,11 +24,17 @@ class UsuariosController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { Nombre, Correo, Contrasena, Rol } = req.body;
-                const hashedPassword = yield bcrypt_1.default.hash(Contrasena, 10);
-                yield database_1.default.query('INSERT INTO Usuarios SET ?', [{ Nombre, Correo, Contrasena: hashedPassword, Rol }]);
-                resp.json({ message: 'Usuario guardado' });
+                // Verifica que todos los datos estén presentes
+                if (!Nombre || !Correo || !Contrasena || !Rol) {
+                    resp.status(400).json({ message: 'Todos los campos son necesarios' });
+                    return;
+                }
+                // Inserta el usuario sin encriptar la contraseña
+                yield database_1.default.query('INSERT INTO Usuarios SET ?', [{ Nombre, Correo, Contrasena, Rol }]);
+                resp.json({ message: 'Usuario guardado exitosamente' });
             }
             catch (error) {
+                console.error('Error al guardar el usuario:', error); // Agrega un log para ver el error en el servidor
                 resp.status(500).json({ message: 'Error al guardar el usuario', error });
             }
         });

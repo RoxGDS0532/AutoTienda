@@ -2,6 +2,9 @@ import { Request, Response } from 'express';
 import { getConnection } from '../../database';
 import { format, toZonedTime  } from 'date-fns-tz';
 
+import nodemailer from 'nodemailer';
+
+
 interface DetalleVenta {
   id_producto: number;
   cantidad: number;
@@ -59,5 +62,6 @@ class VentasController {
     
   }
 }
+
 const ventasController = new VentasController();
 export default ventasController;

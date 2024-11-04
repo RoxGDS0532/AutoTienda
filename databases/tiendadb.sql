@@ -11,16 +11,23 @@ CREATE TABLE Usuarios (
     Rol ENUM('Encargado', 'Administrador') NOT NULL  
 );
 
+CREATE TABLE Categorias (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(50) NOT NULL UNIQUE
+);
+
 -- Tabla Productos
 CREATE TABLE Productos (
     Id INT AUTO_INCREMENT PRIMARY KEY,
-    CodigoBarras NUMERIC(13),
     ImagenURL VARCHAR(300),  
     Nombre VARCHAR(100) NOT NULL,
-    Categoria VARCHAR(50) NOT NULL,
     Precio DECIMAL(10, 2) NOT NULL,
     Cantidad INT NOT NULL,
-    Stock INT NOT NULL  
+    Stock INT NOT NULL,
+    Imagen LONGBLOB, 
+    CodigoQR VARCHAR(255), 
+    CategoriaId INT, 
+    FOREIGN KEY (CategoriaId) REFERENCES Categorias(Id) 
 );
 
 
@@ -86,4 +93,13 @@ CREATE TABLE detalle_venta (
     precio_unitario DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (id_venta) REFERENCES venta(id_venta) ON DELETE CASCADE,
     FOREIGN KEY (id_producto) REFERENCES Productos(Id) ON DELETE CASCADE
+);
+
+CREATE TABLE Solicitudes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  productoId INT NOT NULL,
+  proveedorId INT NOT NULL,
+  cantidad INT NOT NULL,
+  FOREIGN KEY (productoId) REFERENCES Productos(Id),
+  FOREIGN KEY (proveedorId) REFERENCES Proveedores(Id)
 );

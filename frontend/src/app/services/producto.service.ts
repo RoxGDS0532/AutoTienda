@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 export interface Producto {
   Id?: number;
   ImagenURL?: string;
+  CodigoBarras: number;
   Nombre: string;
   CategoriaId: number; // Asegúrate de que esta propiedad exista aquí
   Precio: number;

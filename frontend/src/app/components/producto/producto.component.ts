@@ -21,7 +21,7 @@ import { Router } from '@angular/router';
 export class ProductoComponent implements OnInit {
   productos: Producto[] = [];
   categorias: Categoria[] = [];
-  productoSeleccionado: Producto = { Id: 0, Nombre: '', Precio: 0, Cantidad: 0, Stock: 0, CategoriaId: 0 }; // Inicialización
+  productoSeleccionado: Producto = { Id: 0, CodigoBarras:0, Nombre: '', Precio: 0, Cantidad: 0, Stock: 0, CategoriaId: 0 }; // Inicialización
   imagenFile: File | null = null; // Almacenar el archivo de imagen
   codigoQR: string = ''; // Almacenar el código QR
   productosFiltrados: Producto[] = []; // Lista de productos filtrados
@@ -136,7 +136,7 @@ actualizarProducto() {
 }
 
   limpiarFormulario() {
-    this.productoSeleccionado = { Id: 0, Nombre: '', Precio: 0, Cantidad: 0, Stock: 0, CategoriaId: 0 };
+    this.productoSeleccionado = { Id: 0, CodigoBarras:0, Nombre: '', Precio: 0, Cantidad: 0, Stock: 0, CategoriaId: 0 };
     this.imagenFile = null; // Reiniciar la imagen
     this.codigoQR = ''; // Reiniciar el código QR
   }

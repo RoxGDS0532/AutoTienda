@@ -70,16 +70,20 @@ CREATE TABLE Pagos (
 );
 
 -- Tabla Ventas
-CREATE TABLE Ventas (
-    Id INT AUTO_INCREMENT PRIMARY KEY,
-    IdProducto INT,
-    FechaVenta DATE NOT NULL,
-    CantidadProductos INT NOT NULL,
-    PrecioUProducto DECIMAL(10, 2) NOT NULL,
-    CantidadUProducto INT NOT NULL,
-    HoraVenta TIME NOT NULL,
-    PagoTotal DECIMAL(10, 2) NOT NULL,
-    IdPago INT,
-    FOREIGN KEY (IdProducto) REFERENCES Productos(Id),
-    FOREIGN KEY (IdPago) REFERENCES Pagos(IdPago)
+CREATE TABLE venta (
+    id_venta INT AUTO_INCREMENT PRIMARY KEY,
+    fecha_venta DATETIME NOT NULL,
+    hora_venta TIME NOT NULL,
+    pago_total DECIMAL(10, 2) NOT NULL,
+    tipo_pago VARCHAR(10)
+);
+
+CREATE TABLE detalle_venta (
+    id_detalle INT AUTO_INCREMENT PRIMARY KEY,
+    id_venta INT,
+    id_producto INT,
+    cantidad INT NOT NULL,
+    precio_unitario DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (id_venta) REFERENCES venta(id_venta) ON DELETE CASCADE,
+    FOREIGN KEY (id_producto) REFERENCES Productos(Id) ON DELETE CASCADE
 );

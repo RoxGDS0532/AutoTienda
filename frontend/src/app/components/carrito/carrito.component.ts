@@ -4,6 +4,7 @@ import { ProductoService, Producto } from '../../services/producto.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // Importar FormsModule
 import { BrowserMultiFormatReader } from '@zxing/browser';
+import { VentasService, Venta } from '../../services/ventas.service';
 import * as bootstrap from 'bootstrap';
 
 declare var paypal:any;
@@ -23,11 +24,11 @@ export class CarritoComponent implements OnInit {
   
   @ViewChild('video') videoElement: ElementRef | undefined;
   @ViewChild('paypal', { static: true }) paypalElement!: ElementRef;
-  @ViewChild('paymentModal') paymentModal!: ElementRef;
 
   constructor(
     private route: ActivatedRoute,
-    private productoService: ProductoService
+    private productoService: ProductoService,
+    private ventas: VentasService,
   ) {}
 
   ngOnInit(): void {
@@ -54,20 +55,54 @@ export class CarritoComponent implements OnInit {
         const order = await actions.order.capture();
         console.log('Orden capturada:', order);
 
-         // Vaciar el carrito después de un pago exitoso
+        this.guardarVenta();
+
          this.productos = [];
          this.descuentoAplicado = false;
          this.codigoDescuento = '';
          
          //alert('Pago completado. El carrito se ha vaciado.');
          // Cerrar el modal de pago
-         const modalElement = new bootstrap.Modal(this.paymentModal.nativeElement);
-         modalElement.hide();
+         const modalElement = document.getElementById('paymentModal');
+         if (modalElement) {
+           (modalElement as any).classList.remove('show');
+           modalElement.setAttribute('aria-hidden', 'true');
+           modalElement.setAttribute('style', 'display: none');
+           document.body.classList.remove('modal-open');
+           const modalBackdrop = document.querySelector('.modal-backdrop');
+           if (modalBackdrop) {
+             modalBackdrop.remove();
+           }
+         }
       },
       onError: (err:any) => {
         console.error('Error al pagar:', err);
       }
     }).render(this.paypalElement.nativeElement);
+  }
+
+  guardarVenta(): void {
+    const fechaVenta = new Date();
+    const venta: Venta = {
+      fecha_venta: fechaVenta,
+      hora_venta: fechaVenta,
+      pago_total: this.obtenerTotal(),
+      tipo_pago: 'paypal',
+      detalles: this.productos.map(producto => ({
+        id_producto: producto.Id ?? 0, // Usa 0 o un valor predeterminado si producto.Id es undefined
+        cantidad: producto.Cantidad,
+        precio_unitario: producto.Precio
+      }))
+    };
+
+    this.ventas.registrarVenta(venta).subscribe({
+      next: (respuesta) => {
+        console.log('Venta guardada en la base de datos:', respuesta);
+      },
+      error: (error) => {
+        console.error('Error al guardar la venta:', error);
+      }
+    });
   }
 
   iniciarEscaneoContinuo(): void {
@@ -136,11 +171,6 @@ export class CarritoComponent implements OnInit {
 
   obtenerTotal(): number {
     return this.obtenerSubtotal() - this.obtenerAhorros();
-  }
-
-  pagarConTarjeta() {
-    console.log('Pago con tarjeta seleccionado');
-    // Lógica para procesar el pago con tarjeta
   }
 
   pagarEnEfectivo() {

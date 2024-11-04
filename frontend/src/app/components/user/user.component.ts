@@ -3,15 +3,19 @@ import { CommonModule } from '@angular/common';
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import { ProductoService} from '../../services/producto.service';
 import { Router } from '@angular/router';
+import { Result } from '@zxing/library'; // Importa el tipo Result
+
 
 interface Producto {
   Id?: number;
-  CodigoBarras: number;
+  ImagenURL?: string;
   Nombre: string;
-  Categoria: string;
+  CategoriaId: number; // Asegúrate de que esta propiedad exista aquí
   Precio: number;
   Cantidad: number;
-  Stock:number;
+  Stock: number;
+  Imagen?: File; // Opcional
+  CodigoQR?: string; // Opcional
 }
 
 @Component({

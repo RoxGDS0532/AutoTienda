@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Lista de Productos</title>
+</head>
+<body>
+
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #19246dda;">
+      <div class="container-fluid" style="background-color: #04092cda;">
+        <a class="navbar-brand" href="#">
+          <img src="assets/SUPERAMA_Logo.png" alt="logo" width="80" height="80" class="d-inline-block align-top">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link active custom-font" aria-current="page" href="#">Superama</a>
+            </li>
+          </ul>
+          <div class="d-flex align-items-center">
+            <a class="nav-link custom-font" href="/home" style="color: white; font-size: 1.2rem; padding: 0 15px;">Home</a>
+            <a style="cursor: pointer; color: white; font-size: 1.5rem; padding: 0 15px;">
+              <i class="fas fa-user" style="color: white;"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mt-5">
+      <header class="d-flex justify-content-between align-items-center mb-4">
+          <h2 class="display-4">Lista de Productos</h2>
+          <div>
+            <button class="btn btn-primary" (click)="abrirModalAgregar()">Agregar Producto</button>
+            <button class="btn btn-warning" (click)="irASurtirProductos()">Surtir Productos</button>
+          </div>
+      </header>
+  
+      <!-- Selector de Categoría y Buscador -->
+      <select (change)="onCategoriaChange($event)">
+        <option value="0">Todas las categorías</option>
+        <option *ngFor="let categoria of categorias" [value]="categoria.Id">{{ categoria.Nombre }}</option>
+      </select>
+      
+      <!-- Input para búsqueda -->
+      <input type="text" (input)="onBusquedaChange($event)" placeholder="Buscar productos..." />
+  
+      <!-- Sección de Productos -->
+      <div class="row">
+          <div *ngFor="let producto of productosFiltrados" class="col-lg-4 col-md-6 col-sm-12 mb-4">
+              <div class="card product-card shadow-sm border-0">
+                  <img [src]="producto.Imagen" class="card-img-top rounded-top" alt="{{ producto.Nombre }}" (error)="setDefaultImage($event)">
+                  <div class="card-body">
+                      <h5 class="card-title">{{ producto.Nombre }}</h5>
+                      <p class="card-text">Categoría: <span class="font-weight-bold">{{ getCategoriaNombre(producto.CategoriaId) }}</span></p>
+                      <p class="card-text" [ngClass]="{'text-danger': producto.Cantidad < 5}">
+                        Cantidad: 
+                        <span class="font-weight-bold">{{ producto.Cantidad }}</span>
+                        <span *ngIf="producto.Cantidad < 5" class="text-danger"> - Esta por agotarse</span>
+                      </p>
+                      <div class="d-flex justify-content-between align-items-center">
+                          <button (click)="editarProducto(producto)" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#modalEditar">Editar</button>
+                          <button (click)="eliminarProducto(producto.Id!)" class="btn btn-outline-danger btn-sm">Eliminar</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  
+      <!-- Modal para agregar productos -->
+      <div class="modal fade" id="agregarProductoModal" tabindex="-1" aria-labelledby="agregarProductoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+              <h5 class="modal-title" id="agregarProductoModalLabel">Agregar Producto</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="limpiarFormulario()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form (ngSubmit)="agregarProducto()">
+                <div class="form-group">
+                  <label for="Nombre">Nombre</label>
+                  <input type="text" [(ngModel)]="productoSeleccionado.Nombre" name="nombre" required class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="Precio">Precio</label>
+                  <input type="number" [(ngModel)]="productoSeleccionado.Precio" name="precio" required class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="Cantidad">Cantidad</label>
+                  <input type="number" [(ngModel)]="productoSeleccionado.Cantidad" name="cantidad" required class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="Stock">Stock</label>
+                  <input type="number" [(ngModel)]="productoSeleccionado.Stock" name="Stock" required class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="Categoria">Categoría</label>
+                  <select [(ngModel)]="productoSeleccionado.CategoriaId" name="Categoria" required class="form-control">
+                    <option *ngFor="let categoria of categorias" [value]="categoria.Id">{{ categoria.Nombre }}</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="CodigoQR">Código QR</label>
+                  <input type="text" [(ngModel)]="codigoQR" name="CodigoQR" class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="Imagen">Imagen</label>
+                  <input type="file" (change)="onFileSelected($event)" name="Imagen" class="form-control-file" />
+                </div>
+                <button type="submit" class="btn btn-success btn-block">Agregar</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal para editar productos -->
+      <div class="modal fade" id="editarProductoModal" tabindex="-1" aria-labelledby="editarProductoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+              <h5 class="modal-title" id="editarProductoModalLabel">Editar Producto</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="limpiarFormulario()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form (ngSubmit)="actualizarProducto()">
+                <div class="form-group">
+                  <label for="Nombre">Nombre</label>
+                  <input type="text" [(ngModel)]="productoSeleccionado.Nombre" name="Nombre" required class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="Precio">Precio</label>
+                  <input type="number" [(ngModel)]="productoSeleccionado.Precio" name="Precio" required class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="Cantidad">Cantidad</label>
+                  <input type="number" [(ngModel)]="productoSeleccionado.Cantidad" name="Cantidad" required class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="Stock">Stock</label>
+                  <input type="number" [(ngModel)]="productoSeleccionado.Stock" name="Stock" required class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="Categoria">Categoría</label>
+                  <select [(ngModel)]="productoSeleccionado.CategoriaId" name="Categoria" required class="form-control">
+                    <option *ngFor="let categoria of categorias" [value]="categoria.Id">{{ categoria.Nombre }}</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="CodigoQR">Código QR</label>
+                  <input type="text" [(ngModel)]="codigoQR" name="CodigoQR" class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="Imagen">Imagen</label>
+                  <input type="file" (change)="onFileSelected($event)" name="Imagen" class="form-control-file" />
+                </div>
+                <button type="submit" class="btn btn-success btn-block">Actualizar</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

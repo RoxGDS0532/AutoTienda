@@ -6,6 +6,8 @@ import proveedorRoutes from './routes/proveedorRoutes'
 import usuariosRoutes from './routes/usuariosRoutes'
 import consultasRoutes from './routes/consultasRoutes'
 import ventasRoutes from './routes/ventasRoutes';
+import categoriaRoutes from './routes/categoriaRoutes';
+
 
 class Server{
     public app: Application;
@@ -27,7 +29,8 @@ class Server{
         this.app.use('/ventas', ventasRoutes)
         this.app.use('/proveedor', proveedorRoutes)
         this.app.use('/usuario',usuariosRoutes)
-        this.app.use('/consulta',consultasRoutes)
+        this.app.use('/categoria',categoriaRoutes )
+        
     }
     start() : void{
         console.log('Iniciando el servidor...');

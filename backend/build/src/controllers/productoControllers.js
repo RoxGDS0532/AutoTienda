@@ -14,24 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../../database"));
 class ProductoController {
-    getOneByCodigoBarras(req, resp) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { codigoBarras } = req.params;
-            try {
-                const producto = yield database_1.default.query('SELECT * FROM productos WHERE CodigoBarras = ?', [codigoBarras]);
-                if (producto.length > 0) {
-                    resp.json(producto[0]);
-                }
-                else {
-                    resp.status(404).json({ message: 'Producto no encontrado' });
-                }
-            }
-            catch (error) {
-                console.error(error);
-                resp.status(500).json({ message: 'Error al buscar producto por código de barras', error });
-            }
-        });
-    }
     list(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
             //pool.query('DESCRIBE productos')
@@ -43,49 +25,59 @@ class ProductoController {
     create(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(req.body);
-            yield database_1.default.query('INSERT INTO productos set ?', [req.body]);
-            resp.json({ message: 'producto saved' });
+            console.log(req.file); // Muestra la información del archivo
+            const { Nombre, Precio, Cantidad, Stock, CodigoQR, CategoriaId } = req.body;
+            const Imagen = req.file ? req.file.buffer : null; // Puedes almacenar el archivo o su nombre/ruta
+            // Validación de campos
+            if (!Nombre || Precio === undefined || Cantidad === undefined || Stock === undefined || CategoriaId === undefined || !Imagen) {
+                resp.status(400).json({ message: 'Todos los campos son requeridoss' });
+                return;
+            }
+            yield database_1.default.query('INSERT INTO Productos SET ?', [{ Nombre, Precio, Cantidad, Stock, Imagen, CodigoQR, CategoriaId }]);
+            resp.json({ message: 'Producto guardado' });
         });
     }
     delete(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
             const { Id } = req.params;
-            yield database_1.default.query('delete from productos where Id=?', [Id]);
-            resp.json({ message: 'elimino producto' });
+            yield database_1.default.query('DELETE FROM Productos WHERE Id = ?', [Id]);
+            resp.json({ message: 'Producto eliminado' });
         });
     }
-    update(req, res) {
+    update(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
             const { Id } = req.params;
-            const { Nombre, Categoria, Precio, Cantidad, Stock } = req.body;
+            const { Nombre, Precio, Cantidad, Stock, CategoriaId } = req.body;
+            console.log('ID:', Id);
+            console.log('Cuerpo de la solicitud:', req.body);
             // Validación de campos
-            if (!Nombre || !Categoria || Precio === undefined || !Cantidad || Stock === undefined) {
-                res.status(400).json({ message: 'Todos los campos son requeridos' });
-                return; // Asegúrate de retornar aquí para no continuar
+            if (!Nombre || Precio === undefined || Cantidad === undefined || Stock === undefined || CategoriaId === undefined) {
+                resp.status(400).json({ message: 'Todos los campos son requeridos' });
+                return;
             }
             try {
-                const result = yield database_1.default.query('UPDATE productos SET Nombre = ?, Categoria = ?, Precio = ?, Cantidad = ?, Stock = ? WHERE Id = ?', [Nombre, Categoria, Precio, Cantidad, Stock, Id]);
+                const result = yield database_1.default.query('UPDATE Productos SET Nombre = ?, Precio = ?, Cantidad = ?, Stock = ?, CategoriaId = ? WHERE Id = ?', [Nombre, Precio, Cantidad, Stock, CategoriaId, Id]);
                 // Verificar si se actualizó algún registro
                 if (result.affectedRows === 0) {
-                    res.status(404).json({ message: 'Producto no encontrado o no actualizado' });
-                    return; // Asegúrate de retornar aquí para no continuar
+                    resp.status(404).json({ message: 'Producto no encontrado o no actualizado' });
+                    return;
                 }
-                res.json({ message: 'Producto actualizado exitosamente' });
+                resp.json({ message: 'Producto actualizado exitosamente' });
             }
             catch (error) {
                 console.error(error);
-                res.status(500).json({ message: 'Error al actualizar producto', error });
+                resp.status(500).json({ message: 'Error al actualizar producto', error });
             }
         });
     }
     getOne(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
-            const producto = yield database_1.default.query('select * from productos where Id = ?', [id]);
+            const producto = yield database_1.default.query('SELECT * FROM Productos WHERE Id = ?', [id]);
             if (producto.length > 0) {
                 return resp.json(producto[0]);
             }
-            resp.status(404).json({ text: 'the a producto doesnt exist' });
+            resp.status(404).json({ message: 'El producto no existe' });
         });
     }
 }

@@ -77,7 +77,7 @@
       
         <div *ngIf="productoSeleccionado; else noProducto">
           <h2>{{ productoSeleccionado.Nombre }}</h2>
-          <p>Categoría: {{ productoSeleccionado.Categoria }}</p>
+          <p>Categoría: {{ productoSeleccionado.CategoriaId }}</p>
           <p>Precio: {{ productoSeleccionado.Precio | currency }}</p>
           <p>Stock: {{ productoSeleccionado.Stock }}</p>
         </div>

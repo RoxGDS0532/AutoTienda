@@ -31,16 +31,26 @@ export class LoginComponent {
         this.authService.login(correo, contrasena).subscribe({
             next: (response) => {
                 console.log('Inicio de sesión exitoso:', response);
-                this.router.navigate(['/home']);
+                
+                // Verificar el rol del usuario y redirigir en consecuencia
+                if (response.user.Rol === 'Encargado') {
+                  this.router.navigate(['/home']);
+              } else if (response.user.Rol === 'Administrador') {
+                  this.router.navigate(['/consultas']);
+              } else {
+                  console.warn('Rol desconocido:', response.user.Rol);
+              }
+
                 alert('Has iniciado sesión con éxito');
             },
             error: (error) => {
                 console.error('Error en el inicio de sesión:', error);
                 alert('Error en el inicio de sesión, por favor verifica tus credenciales');
-              }
+            }
         });
     }
-  }
+}
+
 
   toggleRememberMe(event: any) {
     const isChecked = event.target.checked;

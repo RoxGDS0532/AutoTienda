@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { CategoryFilterPipe } from '../../category-filter.pipe';
 
 import * as bootstrap from 'bootstrap';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-producto',
@@ -29,7 +30,8 @@ export class ProductoComponent implements OnInit {
 
   constructor(
     private productoService: ProductoService,
-    private categoriaService: CategoriaService
+    private categoriaService: CategoriaService,
+    private router:Router
   ) {}
 
   ngOnInit(): void {
@@ -175,7 +177,7 @@ actualizarProducto() {
     console.log('Productos filtrados:', this.productosFiltrados);
   }
   irASurtirProductos(): void {
-    // Aquí puedes redirigir a la página o componente que maneje el surtido de productos
+    this.router.navigate(['/surtir']);
   }
 
 }

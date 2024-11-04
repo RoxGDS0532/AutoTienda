@@ -2,6 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface Proveedor {
+  Id: number;              // ID del proveedor
+  Nombre: string;         // Nombre del proveedor
+  Contacto?: string;      // Nombre de contacto (opcional)
+  Telefono?: string;      // Número de teléfono (opcional)
+  Email?: string;         // Correo electrónico (opcional)
+}
+
 @Injectable({
   providedIn: 'root'
 })

@@ -94,3 +94,12 @@ CREATE TABLE detalle_venta (
     FOREIGN KEY (id_venta) REFERENCES venta(id_venta) ON DELETE CASCADE,
     FOREIGN KEY (id_producto) REFERENCES Productos(Id) ON DELETE CASCADE
 );
+
+CREATE TABLE Solicitudes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  productoId INT NOT NULL,
+  proveedorId INT NOT NULL,
+  cantidad INT NOT NULL,
+  FOREIGN KEY (productoId) REFERENCES Productos(Id),
+  FOREIGN KEY (proveedorId) REFERENCES Proveedores(Id)
+);

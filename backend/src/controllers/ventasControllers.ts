@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
 import { getConnection } from '../../database';
+import { format, toZonedTime  } from 'date-fns-tz';
+
+import nodemailer from 'nodemailer';
+
 
 interface DetalleVenta {
   id_producto: number;
@@ -13,13 +17,17 @@ interface Venta {
   pago_total: number;
   tipo_pago: string;
   detalles: DetalleVenta[];
+  correoCliente: string;
 }
 
 class VentasController {
   public async create(req: Request, resp: Response): Promise<void> {
-    const fechaOriginal = new Date('2024-11-04T04:22:39.417Z');
-    const fechaVenta = fechaOriginal.toISOString().slice(0, 19).replace('T', ' ');
-    const horaVenta = fechaOriginal.toISOString().slice(11, 19);
+    const mexicoCityTimeZone = 'America/Mexico_City';
+    const fechaActual = new Date();
+    const fechaEnMexico = toZonedTime(fechaActual, mexicoCityTimeZone);
+    // Formatea la fecha y hora como cadenas
+    const fechaVenta = format(fechaEnMexico, 'yyyy-MM-dd HH:mm:ss', { timeZone: mexicoCityTimeZone });
+    const horaVenta = format(fechaEnMexico, 'HH:mm:ss', { timeZone: mexicoCityTimeZone });
 
     const { pago_total, tipo_pago, detalles } = req.body as Venta;
 
@@ -32,7 +40,7 @@ class VentasController {
             [fechaVenta, horaVenta, pago_total, tipo_pago]
         );
 
-        const idVenta = (ventaResult as any).insertId; // Obtén el ID de la venta insertada
+        const idVenta = (ventaResult as any).insertId; // ID de la venta
 
         for (const detalle of detalles) {
             await connection.query(
@@ -42,6 +50,7 @@ class VentasController {
         }
 
         await connection.commit();
+
         resp.status(201).json({ message: 'Venta registrada exitosamente', ventaId: idVenta });
     } catch (error) {
         await connection.rollback();
@@ -50,8 +59,8 @@ class VentasController {
     } finally {
         connection.release();
     }
-}
-
+    
+  }
 }
 
 const ventasController = new VentasController();

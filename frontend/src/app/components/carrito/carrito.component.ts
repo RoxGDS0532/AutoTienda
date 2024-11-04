@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // Importar FormsModule
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import { VentasService, Venta } from '../../services/ventas.service';
-import * as bootstrap from 'bootstrap';
+import { HttpClient } from '@angular/common/http';
 
 declare var paypal:any;
 @Component({
@@ -21,6 +21,9 @@ export class CarritoComponent implements OnInit {
   codeReader = new BrowserMultiFormatReader();
   codigoDescuento: string = '';
   descuentoAplicado: boolean = false;
+  idFacturaGenerada: string | undefined;
+  correoCliente: string = '';
+  mostrarCampoCorreo: boolean = false;
   
   @ViewChild('video') videoElement: ElementRef | undefined;
   @ViewChild('paypal', { static: true }) paypalElement!: ElementRef;
@@ -29,6 +32,7 @@ export class CarritoComponent implements OnInit {
     private route: ActivatedRoute,
     private productoService: ProductoService,
     private ventas: VentasService,
+    private httpclient: HttpClient,
   ) {}
 
   ngOnInit(): void {
@@ -54,26 +58,19 @@ export class CarritoComponent implements OnInit {
       onApprove: async (data:any, actions:any) => {
         const order = await actions.order.capture();
         console.log('Orden capturada:', order);
-
         this.guardarVenta();
+        this.mostrarModalFactura();
+        //this.generarFactura();
+        
+        this.solicitarCorreoCliente();
 
-         this.productos = [];
-         this.descuentoAplicado = false;
-         this.codigoDescuento = '';
+        //  this.productos = [];
+        //  this.descuentoAplicado = false;
+        //  this.codigoDescuento = '';
+
+         this.cerrarModalPago();
          
          //alert('Pago completado. El carrito se ha vaciado.');
-         // Cerrar el modal de pago
-         const modalElement = document.getElementById('paymentModal');
-         if (modalElement) {
-           (modalElement as any).classList.remove('show');
-           modalElement.setAttribute('aria-hidden', 'true');
-           modalElement.setAttribute('style', 'display: none');
-           document.body.classList.remove('modal-open');
-           const modalBackdrop = document.querySelector('.modal-backdrop');
-           if (modalBackdrop) {
-             modalBackdrop.remove();
-           }
-         }
       },
       onError: (err:any) => {
         console.error('Error al pagar:', err);
@@ -122,15 +119,20 @@ export class CarritoComponent implements OnInit {
   }
 
   buscarProductoPorCodigo(codigoBarras: number): void {
+    console.log('Buscando producto con código de barras:', codigoBarras);
     const productoExistente = this.productos.find(p => p.CodigoBarras === codigoBarras);
 
     if (productoExistente) {
+      console.log('Producto existente encontrado:', productoExistente); // Ver qué producto existe
       productoExistente.Cantidad += 1;
     } else {
       this.productoService.obtenerProductoPorCodigoBarras(codigoBarras).subscribe({
         next: (data) => {
+          console.log('Producto encontrado en la base de datos:', data); // Ver el producto recuperado
           data.Cantidad = 1; 
           this.productos.push(data); 
+          console.log('Producto agregado al carrito:', this.productos); // Mostrar el carrito actualizado
+
         },
         error: (err) => console.error('Producto no encontrado', err)
       });
@@ -160,7 +162,7 @@ export class CarritoComponent implements OnInit {
     obtenerAhorros(): number {
       if (this.descuentoAplicado) {
         return this.productos.reduce((acc, producto) => acc + producto.Precio * producto.Cantidad * 0.1, 0); 
-      }
+      } 
       return 0;
     }
 
@@ -177,4 +179,78 @@ export class CarritoComponent implements OnInit {
     console.log('Pago en efectivo seleccionado');
     // Lógica para procesar el pago en efectivo
   }
+
+  // Métodos para manejar el modal
+  mostrarModalFactura(): void {
+    const modalElement = document.getElementById('invoiceModal');
+    if (modalElement) {
+      (modalElement as any).classList.add('show');
+      modalElement.setAttribute('aria-hidden', 'false');
+      modalElement.setAttribute('style', 'display: block');
+      document.body.classList.add('modal-open');
+    }
+  }
+
+  cerrarModalFactura(): void {
+    const modalElement = document.getElementById('invoiceModal');
+    if (modalElement) {
+      (modalElement as any).classList.remove('show');
+      modalElement.setAttribute('aria-hidden', 'true');
+      modalElement.setAttribute('style', 'display: none');
+      document.body.classList.remove('modal-open');
+      const modalBackdrop = document.querySelector('.modal-backdrop');
+      if (modalBackdrop) {
+        modalBackdrop.remove();
+      }
+    }
+  }
+
+  cerrarModalPago(): void {
+    const modalElement = document.getElementById('paymentModal');
+    if (modalElement) {
+      (modalElement as any).classList.remove('show');
+      modalElement.setAttribute('aria-hidden', 'true');
+      modalElement.setAttribute('style', 'display: none');
+      document.body.classList.remove('modal-open');
+      const modalBackdrop = document.querySelector('.modal-backdrop');
+      if (modalBackdrop) {
+        modalBackdrop.remove();
+      }
+    }
+  }
+
+  // Método para solicitar el correo del cliente
+  solicitarCorreoCliente(): void {
+    this.mostrarCampoCorreo = true;
+  }
+ 
+  enviarCorreoCliente(): void {
+    // Asegurarse de que el correo del cliente esté definido
+    if (!this.correoCliente) {
+      console.error('Correo del cliente no está definido.');
+      return;
+    }
+    
+    // Crear el objeto de detalles de la venta
+    const detallesVenta = this.productos.map(producto => ({
+      id_producto: producto.Id ?? 0,
+      cantidad: producto.Cantidad,
+      precio_unitario: producto.Precio
+    }));
+  
+    // Llamar al método del servicio para enviar el correo
+    this.ventas.sendEmail(this.correoCliente, detallesVenta).subscribe({
+      next: (respuesta) => {
+        console.log('Correo enviado:', respuesta);
+        // Puedes cerrar el modal o mostrar un mensaje de éxito aquí
+        this.cerrarModalFactura();
+      },
+      error: (error) => {
+        console.error('Error al enviar el correo:', error);
+        // Puedes mostrar un mensaje de error al usuario aquí
+      }
+    });
+  }
+  
+
 }

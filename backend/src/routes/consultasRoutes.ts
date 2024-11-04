@@ -9,9 +9,13 @@ class ConsultasRoutes {
     }
 
     config(): void {
-        this.router.get('/venta', consultasController.listVentas.bind(consultasController));
-        this.router.get('/pago', consultasController.listPagos.bind(consultasController));
-        this.router.get('/recibo', consultasController.listRecibos.bind(consultasController));
+        this.router.get('/venta', consultasController.listVenta);
+        this.router.get('/pago', consultasController.listPagos);
+        this.router.get('/deVenta', consultasController.listDeVenta);
+        this.router.get('/producto',consultasController.list);
+        this.router.get('/getPagoById/:id', consultasController.getPagoById.bind);
+        this.router.get('/getVentaById/:id', consultasController.getVentaById.bind);
+        this.router.get('/getDeVentaById/:id', consultasController.getDeVentaById.bind);
     }
 }
 

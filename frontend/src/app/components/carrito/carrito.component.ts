@@ -25,8 +25,6 @@ export class CarritoComponent implements OnInit {
   correoCliente: string = '';
   mostrarCampoCorreo: boolean = false;
   codigoProductoBuscado: string = ''; // Manual
-  // productoEncontrado: Producto | null = null; // Manual
-  // productoBuscado: boolean = false; // Manual
   
   @ViewChild('video') videoElement: ElementRef | undefined;
   @ViewChild('paypal', { static: true }) paypalElement!: ElementRef;

@@ -9,6 +9,7 @@ import { RestrablecerComponent } from './components/restrablecer/restrablecer.co
 import { ProductoComponent } from './components/producto/producto.component';
 import { ConsultasComponent } from './components/consultas/consultas.component';
 import { SurtirComponent } from './components/surtir/surtir.component';
+import { InventarioComponent } from './components/inventario/inventario.component';
 
 export const routes: Routes = [
     {path: '', component: UserComponent},

@@ -1,0 +1,27 @@
+.card {
+    border: none;
+    border-radius: 10px;
+  }
+  
+  .card-img-top {
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .navbar-brand img {
+    margin-right: 10px;
+  }
+  
+  .modal-content {
+    border-radius: 10px;
+  }
+  
+  .btn-primary {
+    background-color: #0056b3;
+    border-color: #0056b3;
+  }
+  
+  section.vh-100 {
+    background-color: #f0f0f0;
+  }
+  

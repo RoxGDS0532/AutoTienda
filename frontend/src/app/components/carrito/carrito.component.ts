@@ -4,8 +4,7 @@ import { ProductoService, Producto } from '../../services/producto.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // Importar FormsModule
 import { BrowserMultiFormatReader } from '@zxing/browser';
-import { VentasService, Venta } from '../../services/ventas.service';
-import Facturapi from 'facturapi';
+import { VentasService, Venta, DetalleVentaSinID} from '../../services/ventas.service';
 import { HttpClient } from '@angular/common/http';
 
 declare var paypal:any;
@@ -65,10 +64,6 @@ export class CarritoComponent implements OnInit {
         
         this.solicitarCorreoCliente();
 
-        //  this.productos = [];
-        //  this.descuentoAplicado = false;
-        //  this.codigoDescuento = '';
-
          this.cerrarModalPago();
          
          //alert('Pago completado. El carrito se ha vaciado.');
@@ -87,7 +82,7 @@ export class CarritoComponent implements OnInit {
       pago_total: this.obtenerTotal(),
       tipo_pago: 'paypal',
       detalles: this.productos.map(producto => ({
-        id_producto: producto.Id ?? 0, // Usa 0 o un valor predeterminado si producto.Id es undefined
+        id_producto: producto.Id ?? 0, 
         cantidad: producto.Cantidad,
         precio_unitario: producto.Precio
       }))
@@ -226,32 +221,35 @@ export class CarritoComponent implements OnInit {
   }
  
   enviarCorreoCliente(): void {
-    // Asegurarse de que el correo del cliente esté definido
     if (!this.correoCliente) {
       console.error('Correo del cliente no está definido.');
       return;
     }
-    
-    // Crear el objeto de detalles de la venta
-    const detallesVenta = this.productos.map(producto => ({
-      id_producto: producto.Id ?? 0,
+  
+    const detallesVenta: DetalleVentaSinID[] = this.productos.map(producto => ({
+      id_producto: producto.Id?? 0, 
+      nombre: producto.Nombre,
       cantidad: producto.Cantidad,
-      precio_unitario: producto.Precio
+      precio_unitario: producto.Precio,
+      total_pago: producto.Cantidad * producto.Precio
     }));
   
-    // Llamar al método del servicio para enviar el correo
     this.ventas.sendEmail(this.correoCliente, detallesVenta).subscribe({
       next: (respuesta) => {
         console.log('Correo enviado:', respuesta);
-        // Puedes cerrar el modal o mostrar un mensaje de éxito aquí
         this.cerrarModalFactura();
+        this.limpiarCarrito();
       },
       error: (error) => {
         console.error('Error al enviar el correo:', error);
-        // Puedes mostrar un mensaje de error al usuario aquí
       }
     });
   }
-  
+
+  limpiarCarrito(){
+          this.productos = [];
+          this.descuentoAplicado = false;
+          this.codigoDescuento = '';
+  }
 
 }

@@ -19,13 +19,11 @@ CREATE TABLE Categorias (
 -- Tabla Productos
 CREATE TABLE Productos (
     Id INT AUTO_INCREMENT PRIMARY KEY,
-    ImagenURL VARCHAR(300),  
+    ImagenURL VARCHAR(300),
+    CodigoBarras NUMERIC(13),   
     Nombre VARCHAR(100) NOT NULL,
     Precio DECIMAL(10, 2) NOT NULL,
-    Cantidad INT NOT NULL,
-    Stock INT NOT NULL,
-    Imagen LONGBLOB, 
-    CodigoQR VARCHAR(255), 
+    Cantidad INT NOT NULL,    
     CategoriaId INT, 
     FOREIGN KEY (CategoriaId) REFERENCES Categorias(Id) 
 );

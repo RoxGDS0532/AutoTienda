@@ -21,9 +21,8 @@ import { Router } from '@angular/router';
 export class ProductoComponent implements OnInit {
   productos: Producto[] = [];
   categorias: Categoria[] = [];
-  productoSeleccionado: Producto = { Id: 0, Nombre: '', Precio: 0, Cantidad: 0, Stock: 0, CategoriaId: 0 }; // Inicialización
+  productoSeleccionado: Producto = { Id: 0, ImagenURL:'', Nombre: '', Precio: 0, Cantidad: 0, CategoriaId: 0 , CodigoBarras:''}; // Inicialización
   imagenFile: File | null = null; // Almacenar el archivo de imagen
-  codigoQR: string = ''; // Almacenar el código QR
   productosFiltrados: Producto[] = []; // Lista de productos filtrados
   categoriaSeleccionada: number = 0; // ID de la categoría seleccionada
   busquedaProducto: string = '';
@@ -72,49 +71,29 @@ export class ProductoComponent implements OnInit {
 }
 
 agregarProducto() {
-  if (this.imagenFile) {
-    const formData = new FormData();
-    formData.append('Imagen', this.imagenFile);
-    formData.append('Nombre', this.productoSeleccionado.Nombre);
-    formData.append('Precio', this.productoSeleccionado.Precio.toString());
-    formData.append('Cantidad', this.productoSeleccionado.Cantidad.toString());
-    formData.append('Stock', this.productoSeleccionado.Stock.toString());
-    formData.append('CategoriaId', this.productoSeleccionado.CategoriaId.toString());
-    formData.append('CodigoQR', this.codigoQR); // Si es opcional
-    this.productoService.agregarProducto(formData).subscribe(() => {
-      this.cargarProductos();
-      alert('Producto agregado correctamente');
-    }, (error) => {
-      alert('Error al agregar el producto');
-      console.error(error); // Añade esto para depurar
-    });
-  }
+  console.log('Producto a agregar:', this.productoSeleccionado); // Para verificar
+  this.productoService.agregarProducto(this.productoSeleccionado).subscribe(() => {
+    this.cargarProductos();
+    const agregarModal = bootstrap.Modal.getInstance(document.getElementById('agregarProductoModal')!);
+    agregarModal?.hide();
+  }, error => {
+    console.error('Error al agregar el producto:', error);
+  });
 }
 
-
 actualizarProducto() {
-  if (this.productoSeleccionado.Id !== undefined) {
-    // Crear el objeto con los datos del producto
-    const productoData = {
-      Nombre: this.productoSeleccionado.Nombre,
-      Precio: this.productoSeleccionado.Precio,
-      Cantidad: this.productoSeleccionado.Cantidad,
-      Stock: this.productoSeleccionado.Stock,
-      CategoriaId: this.productoSeleccionado.CategoriaId
-    };
+  const Id = this.productoSeleccionado.Id; // Assuming `productoSeleccionado` has an `Id` property
 
-    this.productoService.actualizarProducto(this.productoSeleccionado.Id, productoData).subscribe(
-      () => {
-        this.cargarProductos();
-        alert('Producto editado correctamente');
-      },
-      (error) => {
-        alert('Error al editar el producto');
-        console.error(error); // Para depuración
-      }
-    );
+  if (Id ) { // Check if `Id` and `ImagenURL` are valid
+    this.productoService.actualizarProducto(Id, this.productoSeleccionado).subscribe(() => {
+      this.cargarProductos(); // Refresh the list of products or perfthis.productoSeleccionado = { Id: 0, Nombre: '', Precio: 0, Cantidad: 0, Stock: 0, CategoriaId: 0 };orm another action
+      const editarModal = bootstrap.Modal.getInstance(document.getElementById('editarProductoModal')!);
+      editarModal?.hide(); // Hide the modal after update
+    }, error => {
+      console.error('Error updating product:', error);
+    });
   } else {
-    console.error('El ID del producto no está definido.');
+    console.error('Invalid product ID or image URL.');
   }
 }
 
@@ -136,9 +115,7 @@ actualizarProducto() {
 }
 
   limpiarFormulario() {
-    this.productoSeleccionado = { Id: 0, Nombre: '', Precio: 0, Cantidad: 0, Stock: 0, CategoriaId: 0 };
-    this.imagenFile = null; // Reiniciar la imagen
-    this.codigoQR = ''; // Reiniciar el código QR
+    this.productoSeleccionado = { Id: 0, ImagenURL:'', Nombre: '', Precio: 0, Cantidad: 0, CategoriaId: 0, CodigoBarras:''};
   }
 
   onFileSelected(event: Event) {

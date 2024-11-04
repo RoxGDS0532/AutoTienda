@@ -1,24 +1,56 @@
-<div class="container mt-5">
-    <h2 class="display-4">Surtir Productos</h2>
-  
-    <div class="row">
-      <div *ngFor="let producto of productos" class="col-lg-4 col-md-6 col-sm-12 mb-4">
-        <div class="card product-card shadow-sm border-0">
-          <div class="card-body">
-            <h5 class="card-title">{{ producto.Nombre }}</h5>
-            <p class="card-text">Cantidad disponible: <strong>{{ producto.Cantidad }}</strong></p>
-            <input type="number" [(ngModel)]="producto.cantidadSolicitada" min="1" max="{{ producto.Cantidad }}" placeholder="Cantidad a solicitar" class="form-control" />
-            <div class="form-group">
-              <label for="proveedor">Seleccionar Proveedor</label>
-              <select [(ngModel)]="producto.proveedorId" class="form-control">
-                <option *ngFor="let proveedor of proveedores" [value]="proveedor.Id">{{ proveedor.Nombre }}</option>
-              </select>
+<nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #19246dda;">
+    <div class="container-fluid" style="background-color: #04092cda;">
+        <a class="navbar-brand" href="#">
+            <img src="assets/SUPERAMA_Logo.png" alt="logo" width="80" height="80" class="d-inline-block align-top">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active custom-font" aria-current="page" href="#">Superama</a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <a class="nav-link custom-font" href="/home" style="color: white; font-size: 1.2rem; padding: 0 15px;">Home</a>
+                <a style="cursor: pointer; color: white; font-size: 1.5rem; padding: 0 15px;">
+                    <i class="fas fa-user" style="color: white;"></i>
+                </a>
             </div>
-          </div>
         </div>
-      </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2 class="display-4 text-center mb-4">Surtir Productos</h2>
+
+    <!-- Selección de categoría -->
+    <div class="mb-3">
+        <label for="categoriaSelect" class="form-label">Seleccionar Categoría</label>
+        <select [(ngModel)]="selectedCategoriaId" (ngModelChange)="onCategoriaChange($event)" id="categoriaSelect" class="form-select">
+            <option value="">Todas las Categorías</option>
+            <option *ngFor="let categoria of categorias" [value]="categoria.Id">{{ categoria.Nombre }}</option>
+        </select>
     </div>
   
+    <div class="row">
+        <div *ngFor="let producto of (productos | categoryFilter: selectedCategoriaId)" class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="card product-card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">{{ producto.Nombre }}</h5>
+                    <p class="card-text">Cantidad disponible: <strong>{{ producto.Cantidad }}</strong></p>
+                    <input type="number" [(ngModel)]="producto.cantidadSolicitada" min="1" max="{{ producto.Cantidad }}" placeholder="Cantidad a solicitar" class="form-control" />
+                    <div class="form-group mt-2">
+                        <label for="proveedor">Seleccionar Proveedor</label>
+                        <select [(ngModel)]="producto.proveedorId" class="form-control">
+                            <option *ngFor="let proveedor of proveedores" [value]="proveedor.Id">{{ proveedor.Nombre }}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <button (click)="solicitarProductos()" class="btn btn-success mt-3">Solicitar Productos</button>
-  </div>
-  
+</div>

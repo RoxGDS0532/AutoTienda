@@ -13,9 +13,7 @@ interface Producto {
   CategoriaId: number; // Asegúrate de que esta propiedad exista aquí
   Precio: number;
   Cantidad: number;
-  Stock: number;
-  Imagen?: File; // Opcional
-  CodigoQR?: string; // Opcional
+  CodigoBarras?: number; // Opcional
 }
 
 @Component({

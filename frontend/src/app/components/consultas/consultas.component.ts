@@ -117,36 +117,63 @@ export class ConsultasComponent implements OnInit {
     };
   }
 
-  private cargarProductosVendidos(): void {
-    this.consultasService.listarRecibos().subscribe({
-      next: (detalle_venta) => {
-        this.productosVendidosData = this.transformProductosVendidosData(detalle_venta);
-      },
-      error: (error) => {
-        console.error('Error al cargar los detalles de ventas:', error);
-      }
-    });
-  }
+
+
+
+
+
+
+
 
   private transformProductosVendidosData(detalle_venta: any[]): ChartConfiguration['data'] {
-    const productos: Record<string, number> = {};
+    const productosPorDia: Record<string, Record<string, number>> = {};
+
+    // Agrupar productos vendidos por día
     detalle_venta.forEach(item => {
-      productos[item.detalle_venta] = (productos[item.detalle_venta] || 0) + 1;
+      const fecha = this.datePipe.transform(item.fecha_venta, 'yyyy-MM-dd');
+      if (fecha) {
+        if (!productosPorDia[fecha]) {
+          productosPorDia[fecha] = {};
+        }
+        productosPorDia[fecha][item.detalle_venta] = (productosPorDia[fecha][item.detalle_venta] || 0) + 1;
+      }
+    });
+
+    const labels: string[] = [];
+    const data: number[] = [];
+
+    // Extraer los dos productos más vendidos de cada día
+    Object.keys(productosPorDia).forEach(fecha => {
+      const productos = Object.entries(productosPorDia[fecha])
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 1);  // Obtener los dos más vendidos
+
+      productos.forEach(([nombreProducto, cantidad]) => {
+        labels.push(`${fecha} - ${nombreProducto}`);
+        data.push(cantidad);
+      });
     });
 
     return {
-      labels: Object.keys(productos),
+      labels: labels,
       datasets: [
         {
-          label: 'Productos Vendidos',
-          data: Object.values(productos),
+          label: 'Top Producto mas Vendidos por Día',
+          data: data,
           backgroundColor: 'rgba(75, 192, 192, 0.6)',
           borderColor: 'rgba(75, 192, 192, 1)',
           borderWidth: 1
         }
       ]
     };
-  }
+}
+
+
+
+
+
+
+
 
   private transformHorarioVentasData(ventas: Venta[]): ChartConfiguration['data'] {
     const horas: Record<string, number> = {};
@@ -156,7 +183,7 @@ export class ConsultasComponent implements OnInit {
     });
 
     return {
-      labels: Object.keys(horas),
+      labels: Object.keys(horas).map(hora => `${hora.padStart(2, '0')}:00`),
       datasets: [
         {
           label: 'Ventas por Hora',

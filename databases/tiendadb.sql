@@ -101,3 +101,16 @@ CREATE TABLE Solicitudes (
   FOREIGN KEY (productoId) REFERENCES Productos(Id),
   FOREIGN KEY (proveedorId) REFERENCES Proveedores(Id)
 );
+
+DELIMITER //
+
+CREATE TRIGGER reducir_cantidad_producto
+AFTER INSERT ON detalle_venta
+FOR EACH ROW
+BEGIN
+    UPDATE Productos
+    SET Cantidad = Cantidad - NEW.cantidad
+    WHERE Id = NEW.id_producto;
+END //
+
+DELIMITER ;

@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import { Producto, ProductoService } from '../../services/producto.service';
 import { DetalleVentaSinID, Venta, VentasService } from '../../services/ventas.service';
+import { FacturaService } from '../../services/factura.service';
 
 declare var paypal:any;
 @Component({
@@ -34,6 +35,7 @@ export class CarritoComponent implements OnInit {
     private productoService: ProductoService,
     private ventas: VentasService,
     private httpclient: HttpClient,
+    private facturaService: FacturaService,
   ) {}
 
   ngOnInit(): void {
@@ -278,5 +280,27 @@ export class CarritoComponent implements OnInit {
     }
   }
   
-    
+    generarFacturaCompra() {
+      const facturaData = {
+        fecha: new Date(),
+        clienteCorreo: 'roxana.ort100@gmail.com',
+        productos: [
+          { nombre: 'Producto A', cantidad: 2, precioUnitario: 50, total: 100 },
+          { nombre: 'Producto B', cantidad: 1, precioUnitario: 30, total: 30 },
+        ],
+        subtotal: 130,
+        descuento: 0,
+        total: 130
+      };
+
+      this.facturaService.generarFactura(facturaData).subscribe((pdfBlob) => {
+        const url = window.URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'factura.pdf';
+        link.click();
+        window.URL.revokeObjectURL(url); // Limpiar la URL creada
+      });
+    }
   }
+    

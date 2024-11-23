@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 // Modelo de Producto
 export interface Producto {
-  Id?: number;
+  Id: number;
   Nombre: string;
   CategoriaId: number; 
   Precio: number;
@@ -40,8 +40,8 @@ export class ProductoService {
   }
 
   // Actualizar un producto existente
-  actualizarProducto(Id: number, Producto: Producto): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${Id}`, Producto);
+  actualizarProducto(Id: number,cambios: Partial<Producto>): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${Id}`, cambios);
   }
   
 

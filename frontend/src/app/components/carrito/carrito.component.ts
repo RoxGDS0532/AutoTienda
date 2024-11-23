@@ -26,7 +26,9 @@ export class CarritoComponent implements OnInit {
   correoCliente: string = '';
   mostrarCampoCorreo: boolean = false;
   codigoProductoBuscado: string = ''; // Manual
-
+  // productoEncontrado: Producto | null = null; // Manual
+  // productoBuscado: boolean = false; // Manual
+  
   @ViewChild('video') videoElement: ElementRef | undefined;
   @ViewChild('paypal', { static: true }) paypalElement!: ElementRef;
 
@@ -69,6 +71,7 @@ export class CarritoComponent implements OnInit {
 
          this.cerrarModalPago();
          
+         //alert('Pago completado. El carrito se ha vaciado.');
       },
       onError: (err:any) => {
         console.error('Error al pagar:', err);
@@ -77,12 +80,6 @@ export class CarritoComponent implements OnInit {
   }
 
   guardarVenta(): void {
-    const productosSinStock = this.productos.some(producto => producto.Cantidad < 0);
-
-  if (productosSinStock) {
-    alert('No se puede completar la compra. Hay productos con stock insuficiente.');
-    return;
-  }
     const fechaVenta = new Date();
     const venta: Venta = {
       fecha_venta: fechaVenta,
@@ -99,23 +96,12 @@ export class CarritoComponent implements OnInit {
     this.ventas.registrarVenta(venta).subscribe({
       next: (respuesta) => {
         console.log('Venta guardada en la base de datos:', respuesta);
-       // this.actualizarStock();
       },
       error: (error) => {
         console.error('Error al guardar la venta:', error);
       }
     });
   }
-
-  actualizarStock(): void {
-    this.productos.forEach(producto => {
-      this.productoService.actualizarProducto(producto.Id, { Cantidad: producto.Cantidad }).subscribe({
-        next: () => console.log(`Stock actualizado para el producto: ${producto.Nombre}`),
-        error: (err) => console.error('Error al actualizar el stock:', err),
-      });
-    });
-  }
-  
 
   iniciarEscaneoContinuo(): void {
     if (this.videoElement) {
@@ -155,12 +141,7 @@ export class CarritoComponent implements OnInit {
   }
 
   incrementarCantidad(producto: Producto): void {
-    if (producto.Cantidad <= 0) {
-      alert(`No hay stock disponible para "${producto.Nombre}".`);
-      return;
-    }
-  
-    producto.Cantidad -= 1; 
+    producto.Cantidad += 1;
   }
   
   decrementarCantidad(producto: Producto): void {
@@ -301,6 +282,27 @@ export class CarritoComponent implements OnInit {
     }
   }
   
-    
+    generarFacturaCompra() {
+      const facturaData = {
+        fecha: new Date(),
+        clienteCorreo: 'roxana.ort100@gmail.com',
+        productos: [
+          { nombre: 'Producto A', cantidad: 2, precioUnitario: 50, total: 100 },
+          { nombre: 'Producto B', cantidad: 1, precioUnitario: 30, total: 30 },
+        ],
+        subtotal: 130,
+        descuento: 0,
+        total: 130
+      };
+
+      this.facturaService.generarFactura(facturaData).subscribe((pdfBlob) => {
+        const url = window.URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'factura.pdf';
+        link.click();
+        window.URL.revokeObjectURL(url); // Limpiar la URL creada
+      });
+    }
   }
     

@@ -1,0 +1,14 @@
+<div *ngIf="productosSimilares.length > 0">
+    <h3>Productos Similares</h3>
+    <div class="producto-similar" *ngFor="let producto of productosSimilares">
+      <img [src]="producto.imagen" alt="Imagen del producto" width="100" height="100">
+      <h4>{{ producto.titulo }}</h4>
+      <p>{{ producto.descripcion }}</p>
+      <a [href]="producto.enlace" target="_blank">Ver más</a>
+    </div>
+  </div>
+  
+  <div *ngIf="productosSimilares.length === 0">
+    <p>No hay productos similares disponibles.</p>
+  </div>
+  

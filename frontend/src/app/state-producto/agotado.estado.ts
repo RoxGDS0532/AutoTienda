@@ -12,8 +12,21 @@ export class Agotado implements EstadoProducto {
 
   sugerirAccion(): string {
     return 'El producto está agotado. Sugerencia: Solicitar al proveedor.';
-
   }
+
+
+// solicitar(producto: Producto): void {
+//   // En este estado, si el producto está agotado, se podrían sugerir alternativas
+//   console.log(`El producto ${producto.Nombre} está agotado. Buscando alternativas similares...`);
+//   // Aquí, consumimos la API para obtener productos similares
+//   this.productoService.obtenerProductosSimilares(producto.CategoriaId).then((alternativas) => {
+//     console.log("Alternativas similares:", alternativas);
+//   });
+// }
+
+// sugerirAccion(): string {
+//   return "Este producto está agotado. Te sugerimos alternativas similares.";
+// }
 }
 
 

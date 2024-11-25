@@ -18,6 +18,12 @@ export interface Producto {
 
 }
 
+export interface ProductoSimilar {
+  titulo: string;
+  enlace: string;
+  descripcion: string;
+  imagen: string;
+}
 
 
 @Injectable({
@@ -36,6 +42,10 @@ export class ProductoService {
   }
   obtenerCategorias(): Observable<any[]> {
     return this.http.get<any[]>('http://localhost:3000/categoria'); 
+  }
+
+  obtenerProductosSimilares(nombreProducto: string): Observable<ProductoSimilar[]> {
+    return this.http.get<ProductoSimilar[]>(`${this.apiUrl}/similares?nombre=${nombreProducto}`);
   }
 
   // Crear un nuevo producto

@@ -13,7 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../../database"));
+const axios_1 = __importDefault(require("axios"));
 class ProductoController {
+    constructor() {
+        this.googleAPIKey = 'AIzaSyB67d-9zvUMLVvnDpOEBEVXXjtPQs6VOSU'; // clave de API
+        this.searchEngineId = '95b22fc4523ca4cec'; // Tu ID del motor de búsqueda
+    }
     getOneByCodigoBarras(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
             const { codigoBarras } = req.params;
@@ -26,7 +31,7 @@ class ProductoController {
                         Nombre,
                         CategoriaId,
                         Precio,
-                        CantidadDisponible, // Asignando 'Cantidad' a 'CantidadDisponible'
+                        CantidadDisponible,
                         CodigoBarras,
                         ImagenURL
                     });
@@ -128,6 +133,35 @@ class ProductoController {
             catch (error) {
                 console.error(error);
                 resp.status(500).json({ message: 'Error al obtener el producto', error });
+            }
+        });
+    }
+    // Método para obtener productos similares
+    obtenerProductosSimilares(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { nombreProducto } = req.query;
+            if (!nombreProducto) {
+                res.status(400).json({ message: 'El nombre del producto es obligatorio' });
+                return;
+            }
+            const query = `${nombreProducto} producto similar`;
+            const url = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query)}&key=${this.googleAPIKey}&cx=${this.searchEngineId}`;
+            try {
+                const response = yield axios_1.default.get(url);
+                const resultados = response.data.items.map((item) => {
+                    var _a, _b, _c;
+                    return ({
+                        titulo: item.title,
+                        enlace: item.link,
+                        descripcion: item.snippet,
+                        imagen: ((_c = (_b = (_a = item.pagemap) === null || _a === void 0 ? void 0 : _a.cse_image) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.src) || '',
+                    });
+                });
+                res.json(resultados);
+            }
+            catch (error) {
+                console.error('Error al buscar productos similares:', error);
+                res.status(500).json({ message: 'Error al obtener productos similares', error });
             }
         });
     }

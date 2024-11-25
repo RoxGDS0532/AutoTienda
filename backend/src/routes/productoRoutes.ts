@@ -11,13 +11,15 @@ class ProductoRoutes{
     }
     
     config():void{
-        const storage = multer.memoryStorage(); // Cambia a diskStorage si prefieres guardar el archivo en el disco
+        const storage = multer.memoryStorage(); 
         const upload = multer({ storage });
         this.router.get('/codigo/:codigoBarras', productoController.getOneByCodigoBarras);
         this.router.get('/',productoController.list);
         this.router.post('/',upload.single('Imagen'),productoController.create);
         this.router.delete('/:Id',productoController.delete);
         this.router.put('/:Id',productoController.update);
+        this.router.get('/similares', productoController.obtenerProductosSimilares);  
+
     }
 }
 const productoRoutes=new ProductoRoutes();

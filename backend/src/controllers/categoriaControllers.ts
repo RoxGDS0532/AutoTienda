@@ -3,8 +3,7 @@ import pool from "../../database";
 
 class CategoriaController{
     public async list (req:Request, resp:Response){
-        //pool.query('DESCRIBE productos')
-        //resp.json('productos');
+ 
         const Categoria=await pool.query('select * from Categorias' );
         resp.json(Categoria)
     }

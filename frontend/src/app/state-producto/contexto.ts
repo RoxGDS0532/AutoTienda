@@ -12,11 +12,15 @@ export class ContextoProducto {
     this.estado = estado;
   }
 
-  manejarEstado(producto: Producto): void {
-    this.estado.manejarEstado(producto);
+  verificarEstado(producto: Producto): void {
+    this.estado.verificarEstado(producto);
+  }
+
+  solicitar(producto: Producto): void {
+    this.estado.solicitar(producto);
   }
 
   sugerirAccion(): string {
     return this.estado.sugerirAccion();
-  }
+  }
 }

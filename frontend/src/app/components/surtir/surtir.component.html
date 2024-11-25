@@ -4,33 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <title>Lista de Productos</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        .border-danger { border-color: #dc3545 !important; }
+        .border-warning { border-color: #ffc107 !important; }
+        .border-success { border-color: #28a745 !important; }
+        .product-card { transition: box-shadow 0.3s; }
+        .product-card:hover { box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); }
+    </style>
+    <title>Surtir Productos</title>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #19246dda;">
-    <div class="container-fluid" style="background-color: #04092cda;">
-      <a class="navbar-brand" href="#">
-        <img src="assets/SUPERAMA_Logo.png" alt="logo" width="80" height="80" class="d-inline-block align-top">
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item">
-            <a class="nav-link active custom-font" aria-current="page" href="#">Superama</a>
-          </li>
-        </ul>
-        <div class="d-flex align-items-center">
-          <a class="nav-link custom-font" href="/home" style="color: white; font-size: 1.2rem; padding: 0 15px;">Home</a>
-          <a style="cursor: pointer; color: white; font-size: 1.5rem; padding: 0 15px;">
-            <i class="fas fa-user" style="color: white;"></i>
-          </a>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #04092c;">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="assets/SUPERAMA_Logo.png" alt="logo" width="80" height="80" class="d-inline-block align-top">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Superama</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/surtir">Surtir Productos</a>
+                </li>
+            </ul>
         </div>
-      </div>
     </div>
-  </nav>
+</nav>
 
 <div class="container mt-5">
     <h2 class="display-4 text-center mb-4">Surtir Productos</h2>
@@ -43,27 +51,49 @@
             <option *ngFor="let categoria of categorias" [value]="categoria.Id">{{ categoria.Nombre }}</option>
         </select>
     </div>
-  
+
+    <!-- Productos -->
     <div class="row">
-        <div *ngFor="let producto of (productos | categoryFilter: selectedCategoriaId)" class="col-lg-4 col-md-6 col-sm-12 mb-4">
-            <div class="card product-card shadow-sm border-0">
+        <div *ngFor="let producto of productos | categoryFilter:selectedCategoriaId" class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="card product-card shadow-sm border-0" 
+                 [ngClass]="{
+                    'border-danger': producto.estado === 'Agotado',
+                    'border-warning': producto.estado === 'PorAgotarse',
+                    'border-success': producto.estado === 'Disponible'
+                 }">
                 <div class="card-body">
                     <h5 class="card-title">{{ producto.Nombre }}</h5>
                     <p class="card-text">Cantidad disponible: <strong>{{ producto.Cantidad }}</strong></p>
-                    <input type="number" [(ngModel)]="producto.cantidadSolicitada" min="1" max="{{ producto.Cantidad }}" placeholder="Cantidad a solicitar" class="form-control" />
-                    <div class="form-group mt-2">
-                        <label for="proveedor">Seleccionar Proveedor</label>
-                        <select [(ngModel)]="producto.proveedorId" class="form-control">
-                            <option *ngFor="let proveedor of proveedores" [value]="proveedor.Id">{{ proveedor.Nombre }}</option>
-                        </select>
+                    <div *ngIf="producto.estado === 'Agotado'" class="alert alert-danger">
+                        <strong>¡Producto agotado!</strong>
+                    </div>
+                    <div *ngIf="producto.estado === 'PorAgotarse'" class="alert alert-warning">
+                        <strong>¡Por agotarse!</strong>
+                    </div>
+                    <div *ngIf="producto.estado === 'Disponible'" class="alert alert-success">
+                        <strong>Producto en stock</strong>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <button (click)="solicitarProductos()" class="btn btn-success mt-3">Solicitar Productos</button>
 </div>
+
+<!-- Panel lateral para sugerencias -->
+<div class="container mt-5">
+    <h5 class="mb-4">Sugerencias para pedido</h5>
+    <div *ngFor="let sugerencia of sugerencias" class="card p-3 mb-3 shadow-sm">
+        <p>
+            Producto: <strong>{{ sugerencia.productoNombre }}</strong>
+        </p>
+        <select [(ngModel)]="sugerencia.proveedorId" class="form-control">
+            <option value="">Seleccionar Proveedor</option>
+            <option *ngFor="let proveedor of proveedores" [value]="proveedor.Id">{{ proveedor.Nombre }}</option>
+        </select>
+        <button class="btn btn-success mt-2" (click)="solicitarSugerencia(sugerencia)">Realizar pedido</button>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

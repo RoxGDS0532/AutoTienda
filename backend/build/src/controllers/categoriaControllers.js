@@ -16,8 +16,6 @@ const database_1 = __importDefault(require("../../database"));
 class CategoriaController {
     list(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
-            //pool.query('DESCRIBE productos')
-            //resp.json('productos');
             const Categoria = yield database_1.default.query('select * from Categorias');
             resp.json(Categoria);
         });

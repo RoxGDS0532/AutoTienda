@@ -50,6 +50,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ producto.Nombre }}</h5>
                     <p class="card-text">Cantidad disponible: <strong>{{ producto.Cantidad }}</strong></p>
+                    <p class="text-info">Estado: <strong>{{ producto.estado }}</strong></p>
                     <input type="number" [(ngModel)]="producto.cantidadSolicitada" min="1" max="{{ producto.Cantidad }}" placeholder="Cantidad a solicitar" class="form-control" />
                     <div class="form-group mt-2">
                         <label for="proveedor">Seleccionar Proveedor</label>

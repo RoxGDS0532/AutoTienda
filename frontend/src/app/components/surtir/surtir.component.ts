@@ -5,6 +5,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { CategoriaService, Categoria } from '../../services/categoria.service';
+import { Agotado } from '../../state-producto/agotado.estado';
+import { PorAgotarse } from '../../state-producto/porAgotarse';
+import { Disponible } from '../../state-producto/disponible.estado';
+import { ContextoProducto } from '../../state-producto/contexto';
+import { EstadoProducto } from '../../state-producto/producto.interface';
 import { CategoryFilterPipe } from '../../category-filter.pipe'; // Asegúrate de importar tu pipe
 
 
@@ -33,14 +38,31 @@ export class SurtirComponent implements OnInit {
     this.cargarCategorias();
   }
 
+  evaluarEstado(producto: Producto): void {
+    let estado: EstadoProducto;
+  
+    if (producto.Cantidad === 0) {
+      estado = new Agotado();
+    } else if (producto.Cantidad > 0 && producto.Cantidad <= 5) {
+      estado = new PorAgotarse();
+    } else {
+      estado = new Disponible();
+    }
+  
+    const contexto = new ContextoProducto(estado);
+    producto.estado = estado.constructor.name; // Almacena el estado actual
+    producto.sugerencia = contexto.sugerirAccion(); // Almacena la sugerencia
+  }
+  
+  
+
   cargarProductos() {
     this.productoService.obtenerProductos().subscribe(productos => {
       console.log('Productos cargados:', productos); // Para depuración
-      this.productos = productos.map(producto => ({
-        ...producto,
-        cantidadSolicitada: 0,
-        proveedorId: null
-      }));
+      this.productos = productos.map(producto => {
+        this.evaluarEstado(producto); // Evalúa el estado del producto
+        return { ...producto, cantidadSolicitada: 0, proveedorId: null };
+      });
     });
   }
 

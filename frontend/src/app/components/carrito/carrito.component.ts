@@ -302,7 +302,8 @@ export class CarritoComponent implements OnInit {
           this.productos.push(data); // Agrega el nuevo producto al carrito
           console.log('Producto agregado al carrito:', this.productos); // Muestra el carrito actualizado
         },
-        error: (err) => console.error('Producto no encontrado en la base de datos', err)
+        error: (err) => this.toastr.error('Producto no encontrado', '¡Error!')
+
       });
     }
   }

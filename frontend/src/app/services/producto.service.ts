@@ -48,6 +48,11 @@ export class ProductoService {
     return this.http.get<ProductoSimilar[]>(`${this.apiUrl}/similares?nombre=${nombreProducto}`);
   }
 
+  // Obtener un producto por su ID
+obtenerProductoPorId(id: number): Observable<Producto> {
+  return this.http.get<Producto>(`${this.apiUrl}/${id}`);
+}
+
   // Crear un nuevo producto
   agregarProducto(producto: Producto): Observable<any> {
     return this.http.post(this.apiUrl, producto);

@@ -120,9 +120,9 @@ class ProductoController {
     }
     getOne(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
+            const { Id } = req.params;
             try {
-                const producto = yield database_1.default.query('SELECT * FROM Productos WHERE Id = ?', [id]);
+                const producto = yield database_1.default.query('SELECT * FROM Productos WHERE Id = ?', [Id]);
                 if (producto.length > 0) {
                     resp.json(producto[0]);
                 }

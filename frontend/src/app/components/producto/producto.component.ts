@@ -36,6 +36,13 @@ export class ProductoComponent implements OnInit {
 productosPorAgotarse: Producto[] = [];
 productosDisponibles: Producto[] = [];
 
+verDetalleProducto(id: number | undefined): void {
+  if (id !== undefined) {
+    this.router.navigate(['/detalle-producto', id]);
+  } else {
+    console.error('El producto no tiene un ID válido.');
+  }
+}
 
   constructor(
     private productoService: ProductoService,
@@ -59,6 +66,7 @@ productosDisponibles: Producto[] = [];
     } else {
       estado = new Disponible();
     }
+    
   
     const contexto = new ContextoProducto(estado);
     producto.estado = estado.constructor.name; // Almacena el estado actual

@@ -106,9 +106,9 @@ class ProductoController {
     }
 
     public async getOne(req: Request, resp: Response): Promise<void> {
-        const { id } = req.params;
+        const { Id } = req.params;
         try {
-            const producto = await pool.query('SELECT * FROM Productos WHERE Id = ?', [id]);
+            const producto = await pool.query('SELECT * FROM Productos WHERE Id = ?', [Id]);
             if (producto.length > 0) {
                 resp.json(producto[0]);
             } else {

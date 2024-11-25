@@ -10,6 +10,7 @@ import { ProductoComponent } from './components/producto/producto.component';
 import { ConsultasComponent } from './components/consultas/consultas.component';
 import { SurtirComponent } from './components/surtir/surtir.component';
 import { InventarioComponent } from './components/inventario/inventario.component';
+import { DetallesProductoComponent } from './components/detalles-producto/detalles-producto.component';
 
 export const routes: Routes = [
     {path: '', component: UserComponent},
@@ -22,5 +23,6 @@ export const routes: Routes = [
     {path:'restablecer', component:RestrablecerComponent},
     {path:'producto', component:ProductoComponent},
     {path:'consultas', component:ConsultasComponent},
-    {path:'surtir', component:SurtirComponent}
+    {path:'surtir', component:SurtirComponent},
+    {path:'detalle-producto/:id', component:DetallesProductoComponent}
 ];

@@ -45,13 +45,13 @@
 
     <!-- Selección de categoría -->
     <div class="mb-3">
-        <label for="categoriaSelect" class="form-label">Seleccionar Categoría</label>
-        <select [(ngModel)]="selectedCategoriaId" (ngModelChange)="onCategoriaChange($event)" id="categoriaSelect" class="form-select">
-            <option value="">Todas las Categorías</option>
-            <option *ngFor="let categoria of categorias" [value]="categoria.Id">{{ categoria.Nombre }}</option>
-        </select>
-    </div>
-
+      <label for="categoriaSelect" class="form-label">Seleccionar Categoría</label>
+      <select [(ngModel)]="selectedCategoriaId" id="categoriaSelect" class="form-select">
+          <option value="0">Todas las Categorías</option>
+          <option *ngFor="let categoria of categorias" [value]="categoria.Id">{{ categoria.Nombre }}</option>
+      </select>
+  </div>
+  
     <!-- Productos -->
     <div class="row">
         <div *ngFor="let producto of productos | categoryFilter:selectedCategoriaId" class="col-lg-4 col-md-6 col-sm-12 mb-4">

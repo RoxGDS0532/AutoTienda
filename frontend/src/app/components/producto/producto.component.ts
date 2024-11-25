@@ -10,6 +10,7 @@ import { PorAgotarse } from '../../state-producto/porAgotarse.estado';
 import { Disponible } from '../../state-producto/disponible.estado';
 import { ContextoProducto } from '../../state-producto/contexto';
 import { EstadoProducto } from '../../state-producto/producto.interface';
+import { ToastrService } from 'ngx-toastr';
 
 import * as bootstrap from 'bootstrap';
 import { Router } from '@angular/router';
@@ -39,6 +40,7 @@ productosDisponibles: Producto[] = [];
   constructor(
     private productoService: ProductoService,
     private categoriaService: CategoriaService,
+    private toastr: ToastrService,
     private router:Router
   ) {}
 
@@ -103,8 +105,10 @@ productosDisponibles: Producto[] = [];
         this.productoSeleccionado = { ...producto }; // Clonar el producto para editar
         const editarModal = new bootstrap.Modal(document.getElementById('editarProductoModal')!);
         editarModal.show();
+        this.toastr.success('Producto editado correctamente.', '¡Éxito!');
     } else {
         console.error('El producto a editar no tiene un ID definido:', producto);
+        this.toastr.error('Hubo un error al editar el producto.', '¡Error!');
     }
 }
 
@@ -114,8 +118,10 @@ agregarProducto() {
     this.cargarProductos();
     const agregarModal = bootstrap.Modal.getInstance(document.getElementById('agregarProductoModal')!);
     agregarModal?.hide();
+    this.toastr.success('Producto agregado correctamente.', '¡Éxito!');
   }, error => {
     console.error('Error al agregar el producto:', error);
+    this.toastr.error('Hubo un error al agregar el producto.', '¡Error!');
   });
 }
 
@@ -127,11 +133,14 @@ actualizarProducto() {
       this.cargarProductos(); // Refresh the list of products or perfthis.productoSeleccionado = { Id: 0, Nombre: '', Precio: 0, Cantidad: 0, Stock: 0, CategoriaId: 0 };orm another action
       const editarModal = bootstrap.Modal.getInstance(document.getElementById('editarProductoModal')!);
       editarModal?.hide(); // Hide the modal after update
+      this.toastr.success('Producto actualizado correctamente.', '¡Éxito!');
     }, error => {
       console.error('Error updating product:', error);
+      this.toastr.error('Hubo un error al actualizar el producto.', '¡Error!');
     });
   } else {
     console.error('Invalid product ID or image URL.');
+    
   }
 }
 
@@ -143,10 +152,11 @@ actualizarProducto() {
             response => {
                 alert('Producto eliminado correctamente.');
                 this.cargarProductos(); // Recargar la lista de productos
+                this.toastr.success('Producto eliminado correctamente.', '¡Éxito!');
             },
             error => {
                 console.error('Error al eliminar el producto:', error);
-                alert('Hubo un error al eliminar el producto.'); // Mensaje de error
+                this.toastr.error('Hubo un error al eliminar el producto.', '¡Error!');
             }
         );
     }

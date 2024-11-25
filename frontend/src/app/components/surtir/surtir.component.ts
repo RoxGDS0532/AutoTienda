@@ -12,7 +12,6 @@ import { ContextoProducto } from '../../state-producto/contexto';
 import { EstadoProducto } from '../../state-producto/producto.interface';
 import { CategoryFilterPipe } from '../../category-filter.pipe'; // Asegúrate de importar tu pipe
 
-
 @Component({
   selector: 'app-surtir',
   standalone: true,
@@ -24,10 +23,10 @@ export class SurtirComponent implements OnInit {
   productos: (Producto & { cantidadSolicitada: number; proveedorId: number | null })[] = [];
   proveedores: Proveedor[] = []; // Lista de proveedores
   categorias: any[] = []; // Para almacenar las categorías
-  selectedCategoriaId: number=0 ;
+  selectedCategoriaId: number = 0;
+  productosFiltrados: (Producto & { cantidadSolicitada: number; proveedorId: number | null })[] = []; // Agregado
   sugerencias: any[] = []; // Almacena las sugerencias generadas para productos
 
-  
   constructor(
     private productoService: ProductoService,
     private proveedorService: ProveedorService,
@@ -55,8 +54,6 @@ export class SurtirComponent implements OnInit {
     producto.estado = estado.constructor.name; // Almacena el estado actual
     producto.sugerencia = contexto.sugerirAccion(); // Almacena la sugerencia
   }
-  
-  
 
   cargarProductos() {
     this.productoService.obtenerProductos().subscribe(productos => {
@@ -65,24 +62,30 @@ export class SurtirComponent implements OnInit {
         this.evaluarEstado(producto); // Evalúa el estado del producto
         return { ...producto, cantidadSolicitada: 0, proveedorId: null };
       });
+      this.productosFiltrados = [...this.productos]; // Inicializa los productos filtrados con todos los productos
     });
   }
 
   cargarProveedores() {
-    this.proveedorService.listarProveedores().subscribe(proveedores => { // Cambio aquí
+    this.proveedorService.listarProveedores().subscribe(proveedores => {
       this.proveedores = proveedores;
     });
   }
 
+  filtrarPorCategoria() {
+    if (this.selectedCategoriaId) {
+      this.productosFiltrados = this.productos.filter(producto => producto.CategoriaId === this.selectedCategoriaId);
+    } else {
+      this.productosFiltrados = [...this.productos];
+    }
+  }
+
   cargarCategorias() {
-    this.productoService.obtenerCategorias().subscribe(categorias => {
-      this.categorias = categorias; // Almacena las categorías
+    this.categoriaService.obtenerCategorias().subscribe(categorias => {
+      this.categorias = categorias;
     });
   }
 
-  onCategoriaChange(event: any) {
-    console.log('Categoría seleccionada:', event); // Log para verificar la categoría seleccionada
-  }
 
   solicitarProductos() {
     const solicitudes = this.productos
@@ -92,7 +95,7 @@ export class SurtirComponent implements OnInit {
         proveedorId: producto.proveedorId,
         cantidad: producto.cantidadSolicitada
       }));
-  
+
     console.log('Solicitudes a enviar:', solicitudes); // Log para verificar la estructura
     this.productoService.solicitarProductos(solicitudes).subscribe({
       next: (response) => {
@@ -122,6 +125,4 @@ export class SurtirComponent implements OnInit {
       alert(`Pedido realizado para el producto: ${sugerencia.productoNombre}`);
     });
   }
-
-  
 }

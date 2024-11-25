@@ -40,6 +40,8 @@
       </div>
     </nav>
 
+
+    
     <div class="container mt-5">
       <header class="d-flex justify-content-between align-items-center mb-4">
           <h2 class="display-4">Lista de Productos</h2>
@@ -58,42 +60,72 @@
       <!-- Input para búsqueda -->
       <input type="text" (input)="onBusquedaChange($event)" placeholder="Buscar productos..." />
   
-      <!-- Sección de Productos -->
-      <div class="row">
-          <div *ngFor="let producto of productosFiltrados" class="col-lg-4 col-md-6 col-sm-12 mb-4">
-              <div class="card product-card shadow-sm border-0"
-              [ngClass]="{
-                'border-danger': producto.estado === 'Agotado',
-                'border-warning': producto.estado === 'PorAgotarse',
-                'border-success': producto.estado === 'Disponible'
-             }">
-                  <img [src]="producto.ImagenURL" class="card-img-top rounded-top" alt="{{ producto.Nombre }}" (error)="setDefaultImage($event)">
-                  <div class="card-body" >
-                      <h5 class="card-title">{{ producto.Nombre }}</h5>
-                      <p class="card-text">Categoría: <span class="font-weight-bold">{{ getCategoriaNombre(producto.CategoriaId) }}</span></p>
-                      <p class="card-text" [ngClass]="{'text-danger': producto.CantidadDisponible < 5}">
-                        Cantidad: 
-                        <span class="font-weight-bold">{{ producto.CantidadDisponible }}</span>
-                      </p>
+      
 
-                      <div *ngIf="producto.estado === 'Agotado'" class="alert alert-danger">
-                        <strong>¡Producto agotado!</strong>
-                    </div>
-                    <div *ngIf="producto.estado === 'PorAgotarse'" class="alert alert-warning">
-                        <strong>¡Por agotarse!</strong>
-                    </div>
-                    <div *ngIf="producto.estado === 'Disponible'" class="alert alert-success">
-                        <strong>Producto en stock</strong>
-                    </div>
 
-                      <div class="d-flex justify-content-between align-items-center">
-                          <button (click)="editarProducto(producto)" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#modalEditar">Editar</button>
-                          <button (click)="eliminarProducto(producto.Id!)" class="btn btn-outline-danger btn-sm">Eliminar</button>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
+      <div class="container mt-5">
+        <!-- Productos Disponibles -->
+        <h2 class="text-success mt-4">Productos Disponibles</h2>
+        <div class="row">
+            <div *ngFor="let producto of productosDisponibles" class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                <div class="card product-card shadow-sm border-success">
+                    <img [src]="producto.ImagenURL" class="card-img-top rounded-top" alt="{{ producto.Nombre }}" (error)="setDefaultImage($event)">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ producto.Nombre }}</h5>
+                        <p class="card-text">Categoría: {{ getCategoriaNombre(producto.CategoriaId) }}</p>
+                        <p class="card-text text-success">Cantidad Disponible: {{ producto.CantidadDisponible }}</p>
+                        <div class="alert alert-success">Producto en stock</div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button (click)="editarProducto(producto)" class="btn btn-outline-primary btn-sm">Editar</button>
+                            <button (click)="eliminarProducto(producto.Id!)" class="btn btn-outline-danger btn-sm">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Productos Agotados -->
+        <h2 class="text-danger mt-4">Productos Agotados</h2>
+        <div class="row">
+            <div *ngFor="let producto of productosAgotados" class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                <div class="card product-card shadow-sm border-danger">
+                    <img [src]="producto.ImagenURL" class="card-img-top rounded-top" alt="{{ producto.Nombre }}" (error)="setDefaultImage($event)">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ producto.Nombre }}</h5>
+                        <p class="card-text">Categoría: {{ getCategoriaNombre(producto.CategoriaId) }}</p>
+                        <p class="card-text text-danger">Cantidad Disponible: {{ producto.CantidadDisponible }}</p>
+                        <div class="alert alert-danger">¡Producto agotado!</div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button (click)="editarProducto(producto)" class="btn btn-outline-primary btn-sm">Editar</button>
+                            <button (click)="eliminarProducto(producto.Id!)" class="btn btn-outline-danger btn-sm">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Productos Por Agotarse -->
+        <h2 class="text-warning mt-4">Productos Por Agotarse</h2>
+        <div class="row">
+            <div *ngFor="let producto of productosPorAgotarse" class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                <div class="card product-card shadow-sm border-warning">
+                    <img [src]="producto.ImagenURL" class="card-img-top rounded-top" alt="{{ producto.Nombre }}" (error)="setDefaultImage($event)">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ producto.Nombre }}</h5>
+                        <p class="card-text">Categoría: {{ getCategoriaNombre(producto.CategoriaId) }}</p>
+                        <p class="card-text text-warning">Cantidad Disponible: {{ producto.CantidadDisponible }}</p>
+                        <div class="alert alert-warning">¡Por agotarse!</div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button (click)="editarProducto(producto)" class="btn btn-outline-primary btn-sm">Editar</button>
+                            <button (click)="eliminarProducto(producto.Id!)" class="btn btn-outline-danger btn-sm">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+      
   
       <!-- Modal para agregar productos -->
       <div class="modal fade" id="agregarProductoModal" tabindex="-1" aria-labelledby="agregarProductoModalLabel" aria-hidden="true">

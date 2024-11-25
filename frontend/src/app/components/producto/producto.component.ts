@@ -31,6 +31,10 @@ export class ProductoComponent implements OnInit {
   productosFiltrados: Producto[] = []; // Lista de productos filtrados
   categoriaSeleccionada: number = 0; // ID de la categoría seleccionada
   busquedaProducto: string = '';
+  productosAgotados: Producto[] = [];
+productosPorAgotarse: Producto[] = [];
+productosDisponibles: Producto[] = [];
+
 
   constructor(
     private productoService: ProductoService,
@@ -61,13 +65,20 @@ export class ProductoComponent implements OnInit {
 
   cargarProductos() {
     this.productoService.obtenerProductos().subscribe((productos) => {
-      console.log('Productos obtenidos:', productos); // Verifica aquí si CantidadDisponible existe
+      console.log('Productos obtenidos:', productos);
       this.productos = productos.map((producto) => {
         this.evaluarEstado(producto); // Evalúa el estado para cada producto
         return producto;
       });
+      this.clasificarProductosPorEstado();
       this.filtrarProductos();
     });
+  }
+  
+  clasificarProductosPorEstado() {
+    this.productosAgotados = this.productos.filter(p => p.estado === 'Agotado');
+    this.productosPorAgotarse = this.productos.filter(p => p.estado === 'PorAgotarse');
+    this.productosDisponibles = this.productos.filter(p => p.estado === 'Disponible');
   }
   
 
@@ -158,6 +169,7 @@ actualizarProducto() {
   
 
   setDefaultImage(event: any) {
+    const element = event.target as HTMLImageElement;
     event.target.src = 'assets/default.jpg';
   }
 

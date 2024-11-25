@@ -13,8 +13,11 @@ export interface Producto {
   ImagenURL?: string; 
   CodigoBarras?: string; 
   estado?: string; // Nombre del estado actual
-  sugerencia?: string; // Recomendación basada en el estado
+
+  sugerencia?: string; // Recomendación basada en el estado
+
 }
+
 
 
 @Injectable({

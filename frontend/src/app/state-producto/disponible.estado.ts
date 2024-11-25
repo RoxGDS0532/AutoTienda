@@ -11,5 +11,9 @@ export class Disponible implements EstadoProducto {
 
   solicitar(producto: Producto): void {
     // No se requiere ninguna acción específica
+
   }
 }
+
+
+

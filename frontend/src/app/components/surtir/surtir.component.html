@@ -63,7 +63,7 @@
                  }">
                 <div class="card-body">
                     <h5 class="card-title">{{ producto.Nombre }}</h5>
-                    <p class="card-text">Cantidad disponible: <strong>{{ producto.Cantidad }}</strong></p>
+                    <p class="card-text">Cantidad disponible: <strong>{{ producto.CantidadDisponible }}</strong></p>
                     
                     <p class="card-text">Cantidad a pedir: </p>
                     <input type="number" [(ngModel)]="producto.cantidadSolicitada" min="1" max="{{ producto.Cantidad }}" placeholder="Cantidad a solicitar" class="form-control" />

@@ -1,12 +1,16 @@
 import { EstadoProducto } from './producto.interface';
 import { Producto } from '../services/producto.service';
-/*Falta acciones aún, solo es estructura :) */
+
 export class Agotado implements EstadoProducto {
-  manejarEstado(producto: Producto): void {
-    console.log(`El producto ${producto.Nombre} está agotado.`);
+  verificarEstado(producto: Producto): void {
+    console.log(`El producto "${producto.Nombre}" está agotado.`);
+  }
+
+  solicitar(producto: Producto): void {
+    console.log(`No se puede solicitar el producto "${producto.Nombre}" porque está agotado.`);
   }
 
   sugerirAccion(): string {
-    return 'Solicitar urgentemente al proveedor.';
-  }
+    return 'El producto está agotado. Sugerencia: Solicitar al proveedor.';
+  }
 }

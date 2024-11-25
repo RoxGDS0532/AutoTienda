@@ -14,6 +14,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../../database")); // Asegúrate de que esta ruta sea correcta
 class ProveedorController {
+    constructor() {
+        this.delete = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { Id } = req.params;
+            try {
+                const result = yield database_1.default.query('DELETE FROM Proveedores WHERE Id = ?', [Id]);
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({ message: 'Proveedor no encontrado' });
+                }
+                res.json({ message: 'Proveedor eliminado' });
+            }
+            catch (error) {
+                console.error(error);
+                res.status(500).json({ message: 'Error al eliminar proveedor', error });
+            }
+        });
+    }
     list(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const proveedor = yield database_1.default.query('SELECT * FROM proveedores');
@@ -25,13 +41,6 @@ class ProveedorController {
             console.log(req.body);
             yield database_1.default.query('INSERT INTO proveedores SET ?', [req.body]);
             res.json({ message: 'Proveedor guardado' });
-        });
-    }
-    delete(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { Id } = req.params;
-            yield database_1.default.query('DELETE FROM proveedores WHERE Id = ?', [Id]);
-            res.json({ message: 'Proveedor eliminado' });
         });
     }
     update(req, res) {

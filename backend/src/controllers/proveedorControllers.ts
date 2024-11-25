@@ -13,11 +13,23 @@ class ProveedorController {
         res.json({ message: 'Proveedor guardado' });
     }
 
-    public async delete(req: Request, res: Response) {
+    public delete = async (req: Request, res: Response) => {
         const { Id } = req.params;
-        await pool.query('DELETE FROM proveedores WHERE Id = ?', [Id]);
-        res.json({ message: 'Proveedor eliminado' });
-    }
+
+        try {
+            const result = await pool.query('DELETE FROM Proveedores WHERE Id = ?', [Id]);
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ message: 'Proveedor no encontrado' });
+            }
+
+            res.json({ message: 'Proveedor eliminado' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Error al eliminar proveedor', error });
+        }
+    };
+    
 
     public async update(req: Request, res: Response): Promise<void> {
         const { Id } = req.params;

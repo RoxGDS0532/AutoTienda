@@ -61,6 +61,7 @@ export class ProductoComponent implements OnInit {
 
   cargarProductos() {
     this.productoService.obtenerProductos().subscribe((productos) => {
+      console.log('Productos obtenidos:', productos); // Verifica aquí si CantidadDisponible existe
       this.productos = productos.map((producto) => {
         this.evaluarEstado(producto); // Evalúa el estado para cada producto
         return producto;
@@ -68,6 +69,7 @@ export class ProductoComponent implements OnInit {
       this.filtrarProductos();
     });
   }
+  
 
 
   cargarCategorias() {
@@ -107,9 +109,9 @@ agregarProducto() {
 }
 
 actualizarProducto() {
-  const Id = this.productoSeleccionado.Id; // Assuming `productoSeleccionado` has an `Id` property
+  const Id = this.productoSeleccionado.Id; // Assuming productoSeleccionado has an Id property
 
-  if (Id ) { // Check if `Id` and `ImagenURL` are valid
+  if (Id ) { // Check if Id and ImagenURL are valid
     this.productoService.actualizarProducto(Id, this.productoSeleccionado).subscribe(() => {
       this.cargarProductos(); // Refresh the list of products or perfthis.productoSeleccionado = { Id: 0, Nombre: '', Precio: 0, Cantidad: 0, Stock: 0, CategoriaId: 0 };orm another action
       const editarModal = bootstrap.Modal.getInstance(document.getElementById('editarProductoModal')!);
@@ -188,4 +190,3 @@ actualizarProducto() {
   }
 
 }
-  

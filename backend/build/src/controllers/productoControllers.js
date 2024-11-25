@@ -20,13 +20,13 @@ class ProductoController {
             try {
                 const producto = yield database_1.default.query('SELECT * FROM productos WHERE CodigoBarras = ?', [codigoBarras]);
                 if (producto.length > 0) {
-                    const { Id, Nombre, CategoriaId, Precio, Cantidad, CodigoBarras, ImagenURL } = producto[0];
+                    const { Id, Nombre, CategoriaId, Precio, CantidadDisponible, CodigoBarras, ImagenURL } = producto[0];
                     resp.json({
                         Id,
                         Nombre,
                         CategoriaId,
                         Precio,
-                        CantidadDisponible: Cantidad, // Asignando 'Cantidad' a 'CantidadDisponible'
+                        CantidadDisponible, // Asignando 'Cantidad' a 'CantidadDisponible'
                         CodigoBarras,
                         ImagenURL
                     });
@@ -55,15 +55,15 @@ class ProductoController {
     }
     create(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { Nombre, Precio, Cantidad, CodigoBarras, CategoriaId, ImagenURL } = req.body;
+            const { Nombre, Precio, CantidadDisponible, CodigoBarras, CategoriaId, ImagenURL } = req.body;
             // Validación de campos obligatorios
-            if (!Nombre || Precio === undefined || Cantidad === undefined || CategoriaId === undefined || !ImagenURL) {
+            if (!Nombre || Precio === undefined || CantidadDisponible === undefined || CategoriaId === undefined || !ImagenURL) {
                 resp.status(400).json({ message: 'Todos los campos son requeridos' });
                 return;
             }
             try {
                 yield database_1.default.query('INSERT INTO Productos SET ?', [
-                    { Nombre, Precio, Cantidad, ImagenURL, CodigoBarras, CategoriaId }
+                    { Nombre, Precio, CantidadDisponible, ImagenURL, CodigoBarras, CategoriaId }
                 ]);
                 resp.json({ message: 'Producto guardado' });
             }
@@ -93,14 +93,14 @@ class ProductoController {
     update(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
             const { Id } = req.params;
-            const { Nombre, Precio, Cantidad, CodigoBarras, CategoriaId, ImagenURL } = req.body;
+            const { Nombre, Precio, CantidadDisponible, CodigoBarras, CategoriaId, ImagenURL } = req.body;
             // Validación de campos obligatorios
-            if (!Nombre || Precio === undefined || Cantidad === undefined || CategoriaId === undefined || !ImagenURL) {
+            if (!Nombre || Precio === undefined || CantidadDisponible === undefined || CategoriaId === undefined || !ImagenURL) {
                 resp.status(400).json({ message: 'Todos los campos son requeridos' });
                 return;
             }
             try {
-                const result = yield database_1.default.query('UPDATE Productos SET Nombre = ?, Precio = ?, Cantidad = ?, CodigoBarras = ?, CategoriaId = ?, ImagenURL = ? WHERE Id = ?', [Nombre, Precio, Cantidad, CodigoBarras, CategoriaId, ImagenURL, Id]);
+                const result = yield database_1.default.query('UPDATE Productos SET Nombre = ?, Precio = ?, CantidadDisponible = ?, CodigoBarras = ?, CategoriaId = ?, ImagenURL = ? WHERE Id = ?', [Nombre, Precio, CantidadDisponible, CodigoBarras, CategoriaId, ImagenURL, Id]);
                 if (result.affectedRows === 0) {
                     resp.status(404).json({ message: 'Producto no encontrado o no actualizado' });
                     return;

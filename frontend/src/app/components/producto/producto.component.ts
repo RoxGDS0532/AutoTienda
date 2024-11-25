@@ -5,6 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { CategoryFilterPipe } from '../../category-filter.pipe';
+import { Agotado } from '../../state-producto/agotado.estado';
+import { PorAgotarse } from '../../state-producto/porAgotarse.estado';
+import { Disponible } from '../../state-producto/disponible.estado';
+import { ContextoProducto } from '../../state-producto/contexto';
+import { EstadoProducto } from '../../state-producto/producto.interface';
 
 import * as bootstrap from 'bootstrap';
 import { Router } from '@angular/router';
@@ -38,12 +43,32 @@ export class ProductoComponent implements OnInit {
     this.cargarCategorias();
   }
 
+  evaluarEstado(producto: Producto): void {
+    let estado: EstadoProducto;
+  
+    if (producto.CantidadDisponible === 0) {
+      estado = new Agotado();
+    } else if (producto.CantidadDisponible > 0 && producto.CantidadDisponible <= 5) {
+      estado = new PorAgotarse();
+    } else {
+      estado = new Disponible();
+    }
+  
+    const contexto = new ContextoProducto(estado);
+    producto.estado = estado.constructor.name; // Almacena el estado actual
+    producto.sugerencia = contexto.sugerirAccion(); // Almacena la sugerencia
+  }
+
   cargarProductos() {
-    this.productoService.obtenerProductos().subscribe(productos => {
-      this.productos = productos;
-      this.filtrarProductos(); // Filtrar productos al cargar
+    this.productoService.obtenerProductos().subscribe((productos) => {
+      this.productos = productos.map((producto) => {
+        this.evaluarEstado(producto); // Evalúa el estado para cada producto
+        return producto;
+      });
+      this.filtrarProductos();
     });
   }
+
 
   cargarCategorias() {
     this.categoriaService.obtenerCategorias().subscribe(categorias => this.categorias = categorias);
@@ -127,6 +152,8 @@ actualizarProducto() {
       this.imagenFile = input.files[0]; // Guardar el archivo de imagen
     }
   }
+
+  
 
   setDefaultImage(event: any) {
     event.target.src = 'assets/default.jpg';

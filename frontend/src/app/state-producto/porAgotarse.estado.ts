@@ -5,7 +5,8 @@ export class PorAgotarse implements EstadoProducto {
     return 'El producto está en punto de agotarse. Sugerencia: Reabastecer pronto.';
   }
 
-  verificarEstado(producto: Producto): void {
+  verificarEstado(producto: Producto): boolean {
+    return producto.CantidadDisponible > 0 && producto.CantidadDisponible <= 5;
     console.log(`El producto "${producto.Nombre}" está agotado.`);
   }
 

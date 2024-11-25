@@ -5,7 +5,8 @@ export class Disponible implements EstadoProducto {
     return 'El producto está disponible. Sugerencia: No es necesario tomar acción inmediata.';
   }
 
-  verificarEstado(producto: Producto): void {
+  verificarEstado(producto: Producto): boolean  {
+    return producto.CantidadDisponible > 5;
     console.log(`El producto ${producto.Nombre} está disponible.`);
   }
 

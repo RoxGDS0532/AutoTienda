@@ -83,10 +83,9 @@
         </div>
     </nav>
 
-    <!-- Contenido principal -->
     <div class="container mt-5">
         <div class="row">
-            <!-- Card del producto principal (Izquierda) -->
+            <!-- Card del producto principal -->
             <div class="col-lg-6">
                 <div class="card">
                     <img [src]="producto?.ImagenURL" alt="{{ producto?.Nombre }}" class="img-fluid">
@@ -94,50 +93,22 @@
                         <h5 class="card-title">{{ producto?.Nombre }}</h5>
                         <p class="card-text">Categoría: {{ producto?.CategoriaId }}</p>
                         <p class="card-text">Precio: {{ producto?.Precio | currency }}</p>
+                        <p *ngIf="sugerencia">{{ sugerencia }}</p>
                     </div>
                 </div>
             </div>
-
-            <!-- Card de productos recomendados (Derecha) -->
-            <div class="col-lg-6">
+    
+            <!-- Card de productos recomendados -->
+            <div class="col-lg-6" *ngIf="mostrarRecomendaciones">
+                <h4>Productos recomendados:</h4>
                 <div class="row">
-                    <!-- Producto recomendado 1 -->
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-6 mb-3" *ngFor="let producto of productosRecomendados">
                         <div class="card">
-                            <img src="https://via.placeholder.com/150" alt="Producto recomendado" class="card-img-top">
+                            <img [src]="producto.ImagenURL" alt="{{ producto.Nombre }}" class="card-img-top">
                             <div class="card-body">
-                                <h5 class="card-title">Producto 1</h5>
-                                <p class="card-text">Descripción breve del producto 1.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Producto recomendado 2 -->
-                    <div class="col-md-6 mb-3">
-                        <div class="card">
-                            <img src="https://via.placeholder.com/150" alt="Producto recomendado" class="card-img-top">
-                            <div class="card-body">
-                                <h5 class="card-title">Producto 2</h5>
-                                <p class="card-text">Descripción breve del producto 2.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Producto recomendado 3 -->
-                    <div class="col-md-6 mb-3">
-                        <div class="card">
-                            <img src="https://via.placeholder.com/150" alt="Producto recomendado" class="card-img-top">
-                            <div class="card-body">
-                                <h5 class="card-title">Producto 3</h5>
-                                <p class="card-text">Descripción breve del producto 3.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Producto recomendado 4 -->
-                    <div class="col-md-6 mb-3">
-                        <div class="card">
-                            <img src="https://via.placeholder.com/150" alt="Producto recomendado" class="card-img-top">
-                            <div class="card-body">
-                                <h5 class="card-title">Producto 4</h5>
-                                <p class="card-text">Descripción breve del producto 4.</p>
+                                <h5 class="card-title">{{ producto.Nombre }}</h5>
+                                <p class="card-text">Categoría: {{ producto.Categoria }}</p>
+                                <p class="card-text">Precio: {{ producto.Precio | currency }}</p>
                             </div>
                         </div>
                     </div>
@@ -145,6 +116,7 @@
             </div>
         </div>
     </div>
+    
 
     <footer>
         <p>© 2024 SUPERAMA. Todos los derechos reservados.</p>

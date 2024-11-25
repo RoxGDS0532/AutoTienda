@@ -1,10 +1,9 @@
-import { Producto } from '../services/producto.service'; // Ajusta la ruta según tu estructura
+import { Producto } from '../services/producto.service'; 
 
 export interface EstadoProducto {
-  verificarEstado(producto: Producto): void;
-  solicitar(producto: Producto): void; // Para manejar acciones específicas según el estado
-
+  verificarEstado(producto: Producto): boolean;
   sugerirAccion(): string;
+  solicitar(producto: Producto): void; 
 }
 
 

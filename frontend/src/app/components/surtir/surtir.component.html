@@ -90,18 +90,21 @@
 
 <!-- Panel lateral para sugerencias -->
 <div class="container mt-5">
-    <h5 class="mb-4">Sugerencias para pedido</h5>
-    <div *ngFor="let sugerencia of sugerencias" class="card p-3 mb-3 shadow-sm">
-        <p>
-            Producto: <strong>{{ sugerencia.productoNombre }}</strong>
-        </p>
-        <select [(ngModel)]="sugerencia.proveedorId" class="form-control">
-            <option value="">Seleccionar Proveedor</option>
-            <option *ngFor="let proveedor of proveedores" [value]="proveedor.Id">{{ proveedor.Nombre }}</option>
-        </select>
-        <button class="btn btn-success mt-2" (click)="solicitarSugerencia(sugerencia)">Realizar pedido</button>
-    </div>
+  <h5 class="mb-4">Sugerencias para pedido</h5>
+  <div *ngFor="let sugerencia of sugerencias" class="card p-3 mb-3 shadow-sm">
+      <p>Producto: <strong>{{ sugerencia.productoNombre }}</strong></p>
+      <p>Cantidad propuesta: <strong>{{ sugerencia.cantidadPropuesta }}</strong></p>
+      <select [(ngModel)]="sugerencia.proveedorId" class="form-control">
+          <option value="">Seleccionar Proveedor</option>
+          <option *ngFor="let proveedor of proveedores" [value]="proveedor.Id">{{ proveedor.Nombre }}</option>
+      </select>
+      <div class="d-flex justify-content-between mt-2">
+          <button class="btn btn-success" (click)="aceptarSugerencia(sugerencia)">Aceptar</button>
+          <button class="btn btn-danger" (click)="rechazarSugerencia(sugerencia)">Rechazar</button>
+      </div>
+  </div>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>

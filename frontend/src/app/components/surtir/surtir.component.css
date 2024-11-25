@@ -128,6 +128,18 @@ html, body {
     font-family: 'Lobster', cursive;
   }
   
+  .card.p-3 {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+  }
+  .btn-success {
+    background-color: #28a745;
+  }
+  .btn-danger {
+    background-color: #dc3545;
+  }
+  
+
   body {
     font-family: 'Roboto', sans-serif;
   }

@@ -9,11 +9,11 @@ export interface Producto {
   Nombre: string;
   CategoriaId: number; 
   Precio: number;
-  Cantidad: number;
+  CantidadDisponible: number;  // Cantidad disponible en inventario
+  CantidadEnCarrito?: number;  // Cantidad agregada al carrito
   ImagenURL?: string; 
   CodigoBarras?: string; 
   estado?: string; // Nombre del estado actual
-
   sugerencia?: string; // Recomendación basada en el estado
 
 }

@@ -12,7 +12,8 @@ interface Producto {
   Nombre: string;
   CategoriaId: number; // Asegúrate de que esta propiedad exista aquí
   Precio: number;
-  Cantidad: number;
+  CantidadDisponible: number;
+  CantidadEnCarrito?: number;
   CodigoBarras?: string; 
 }
 

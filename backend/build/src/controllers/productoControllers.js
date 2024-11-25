@@ -20,7 +20,16 @@ class ProductoController {
             try {
                 const producto = yield database_1.default.query('SELECT * FROM productos WHERE CodigoBarras = ?', [codigoBarras]);
                 if (producto.length > 0) {
-                    resp.json(producto[0]);
+                    const { Id, Nombre, CategoriaId, Precio, Cantidad, CodigoBarras, ImagenURL } = producto[0];
+                    resp.json({
+                        Id,
+                        Nombre,
+                        CategoriaId,
+                        Precio,
+                        CantidadDisponible: Cantidad, // Asignando 'Cantidad' a 'CantidadDisponible'
+                        CodigoBarras,
+                        ImagenURL
+                    });
                 }
                 else {
                     resp.status(404).json({ message: 'Producto no encontrado' });

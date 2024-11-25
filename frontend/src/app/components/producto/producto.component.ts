@@ -21,7 +21,7 @@ import { Router } from '@angular/router';
 export class ProductoComponent implements OnInit {
   productos: Producto[] = [];
   categorias: Categoria[] = [];
-  productoSeleccionado: Producto = { Id: 0, ImagenURL:'', Nombre: '', Precio: 0, Cantidad: 0, CategoriaId: 0 , CodigoBarras:''}; // Inicialización
+  productoSeleccionado: Producto = { Id: 0, ImagenURL:'', Nombre: '', Precio: 0, CantidadDisponible: 0, CategoriaId: 0 , CodigoBarras:''}; // Inicialización
   imagenFile: File | null = null; // Almacenar el archivo de imagen
   productosFiltrados: Producto[] = []; // Lista de productos filtrados
   categoriaSeleccionada: number = 0; // ID de la categoría seleccionada
@@ -116,7 +116,7 @@ actualizarProducto() {
 
   limpiarFormulario() {
 
-    this.productoSeleccionado = { Id: 0, ImagenURL:'', Nombre: '', Precio: 0, Cantidad: 0, CategoriaId: 0, CodigoBarras:'' };
+    this.productoSeleccionado = { Id: 0, ImagenURL:'', Nombre: '', Precio: 0, CantidadDisponible: 0, CategoriaId: 0, CodigoBarras:'' };
     
 
   }

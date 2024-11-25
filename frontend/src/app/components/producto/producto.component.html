@@ -59,10 +59,10 @@
                   <div class="card-body">
                       <h5 class="card-title">{{ producto.Nombre }}</h5>
                       <p class="card-text">Categoría: <span class="font-weight-bold">{{ getCategoriaNombre(producto.CategoriaId) }}</span></p>
-                      <p class="card-text" [ngClass]="{'text-danger': producto.Cantidad < 5}">
+                      <p class="card-text" [ngClass]="{'text-danger': producto.CantidadDisponible < 5}">
                         Cantidad: 
-                        <span class="font-weight-bold">{{ producto.Cantidad }}</span>
-                        <span *ngIf="producto.Cantidad < 5" class="text-danger"> - Esta por agotarse</span>
+                        <span class="font-weight-bold">{{ producto.CantidadDisponible }}</span>
+                        <span *ngIf="producto.CantidadDisponible < 5" class="text-danger"> - Esta por agotarse</span>
                       </p>
                       <div class="d-flex justify-content-between align-items-center">
                           <button (click)="editarProducto(producto)" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#modalEditar">Editar</button>
@@ -95,7 +95,7 @@
                 </div>
                 <div class="form-group">
                   <label for="Cantidad">Cantidad</label>
-                  <input type="number" [(ngModel)]="productoSeleccionado.Cantidad" name="cantidad" required class="form-control" />
+                  <input type="number" [(ngModel)]="productoSeleccionado.CantidadDisponible" name="cantidad" required class="form-control" />
                 </div>
                 
                 <div class="form-group">
@@ -141,7 +141,7 @@
                 </div>
                 <div class="form-group">
                   <label for="Cantidad">Cantidad</label>
-                  <input type="number" [(ngModel)]="productoSeleccionado.Cantidad" name="Cantidad" required class="form-control" />
+                  <input type="number" [(ngModel)]="productoSeleccionado.CantidadDisponible" name="Cantidad" required class="form-control" />
                 </div>
                 
                 <div class="form-group">

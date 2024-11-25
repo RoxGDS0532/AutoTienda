@@ -6,5 +6,7 @@ import { NgChartsModule } from 'ng2-charts';
 import { CommonModule } from '@angular/common';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes),provideHttpClient(),provideZoneChangeDetection({ eventCoalescing: true }),NgChartsModule,CommonModule]
+  providers: [provideRouter(routes),provideHttpClient(),provideZoneChangeDetection({ eventCoalescing: true }),NgChartsModule,CommonModule,
+    
+  ]
 };

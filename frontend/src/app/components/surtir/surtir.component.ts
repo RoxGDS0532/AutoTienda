@@ -43,9 +43,9 @@ export class SurtirComponent implements OnInit {
   evaluarEstado(producto: Producto): void {
     let estado: EstadoProducto;
   
-    if (producto.Cantidad === 0) {
+    if (producto.CantidadDisponible === 0) {
       estado = new Agotado();
-    } else if (producto.Cantidad > 0 && producto.Cantidad <= 5) {
+    } else if (producto.CantidadDisponible > 0 && producto.CantidadDisponible <= 5) {
       estado = new PorAgotarse();
     } else {
       estado = new Disponible();

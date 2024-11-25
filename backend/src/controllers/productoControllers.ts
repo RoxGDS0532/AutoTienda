@@ -4,11 +4,20 @@ import pool from "../../database";
 class ProductoController {
 
     public async getOneByCodigoBarras(req: Request, resp: Response): Promise<void> {
-        const { codigoBarras } = req.params; 
+        const { codigoBarras } = req.params;
         try {
             const producto = await pool.query('SELECT * FROM productos WHERE CodigoBarras = ?', [codigoBarras]);
             if (producto.length > 0) {
-                resp.json(producto[0]); 
+                const { Id, Nombre, CategoriaId, Precio, Cantidad, CodigoBarras, ImagenURL } = producto[0];
+                resp.json({
+                    Id,
+                    Nombre,
+                    CategoriaId,
+                    Precio,
+                    CantidadDisponible: Cantidad,  // Asignando 'Cantidad' a 'CantidadDisponible'
+                    CodigoBarras,
+                    ImagenURL
+                });
             } else {
                 resp.status(404).json({ message: 'Producto no encontrado' });
             }
@@ -17,6 +26,7 @@ class ProductoController {
             resp.status(500).json({ message: 'Error al buscar producto por código de barras', error });
         }
     }
+   
 
     public async list(req: Request, resp: Response): Promise<void> {
         try {

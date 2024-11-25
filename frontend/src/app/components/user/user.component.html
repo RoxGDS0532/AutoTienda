@@ -79,7 +79,7 @@
           <h2>{{ productoSeleccionado.Nombre }}</h2>
           <p>Categoría: {{ productoSeleccionado.CategoriaId }}</p>
           <p>Precio: {{ productoSeleccionado.Precio | currency }}</p>
-          <p>Stock: {{ productoSeleccionado.Cantidad }}</p>
+          <p>Stock: {{ productoSeleccionado.CantidadEnCarrito }}</p>
         </div>
         <ng-template #noProducto>
           <p *ngIf="mensajeError">{{ mensajeError }}</p>

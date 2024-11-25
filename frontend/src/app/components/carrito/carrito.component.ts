@@ -88,7 +88,7 @@ export class CarritoComponent implements OnInit {
       tipo_pago: 'paypal',
       detalles: this.productos.map(producto => ({
         id_producto: producto.Id ?? 0, 
-        cantidad: producto.Cantidad,
+        cantidad: producto.CantidadEnCarrito ?? 0,
         precio_unitario: producto.Precio
       }))
     };
@@ -125,12 +125,12 @@ export class CarritoComponent implements OnInit {
 
     if (productoExistente) {
       console.log('Producto existente encontrado:', productoExistente); // producto existe
-      productoExistente.Cantidad += 1;
+      productoExistente.CantidadEnCarrito = (productoExistente.CantidadEnCarrito || 0) + 1;
     } else {
       this.productoService.obtenerProductoPorCodigoBarras(codigoBarras).subscribe({
         next: (data) => {
           console.log('Producto encontrado en la base de datos:', data); // producto recuperado
-          data.Cantidad = 1; 
+          data.CantidadEnCarrito = 1; 
           this.productos.push(data); 
           console.log('Producto agregado al carrito:', this.productos); // carrito actualizado
 
@@ -141,12 +141,28 @@ export class CarritoComponent implements OnInit {
   }
 
   incrementarCantidad(producto: Producto): void {
-    producto.Cantidad += 1;
+    if (producto.CantidadEnCarrito === undefined) {
+      producto.CantidadEnCarrito = 0; // Inicializa en 0 si es undefined
+    }
+
+    console.log('Cantidad en carrito:', producto.CantidadEnCarrito);
+    console.log('Cantidad disponible:', producto.CantidadDisponible);
+
+    if (producto.CantidadEnCarrito < producto.CantidadDisponible) {
+      producto.CantidadEnCarrito += 1;
+    } else {
+      console.log('No se puede incrementar más la cantidad. Stock agotado.');
+    }
   }
   
+  
   decrementarCantidad(producto: Producto): void {
-    if (producto.Cantidad > 1) {
-      producto.Cantidad -= 1;
+    if (producto.CantidadEnCarrito === undefined) {
+      producto.CantidadEnCarrito = 0; // Inicializa en 0 si es undefined
+    }
+
+    if (producto.CantidadEnCarrito > 1) {
+      producto.CantidadEnCarrito -= 1;
     }else{
       this.eliminarProducto(producto);
     }
@@ -157,12 +173,17 @@ export class CarritoComponent implements OnInit {
   }
 
     obtenerSubtotal(): number {
-      return this.productos.reduce((acc, producto) => acc + producto.Precio * producto.Cantidad, 0);
+      return this.productos.reduce((acc, producto) => {const cantidadEnCarrito = producto.CantidadEnCarrito ?? 0; // Si es undefined, asigna 0
+      const precio = producto.Precio ?? 0; // Si es undefined, asigna 0
+      return acc + precio * cantidadEnCarrito;
+    }, 0);
     }
   
     obtenerAhorros(): number {
       if (this.descuentoAplicado) {
-        return this.productos.reduce((acc, producto) => acc + producto.Precio * producto.Cantidad * 0.1, 0); 
+        return this.productos.reduce((acc, producto) => {const cantidadEnCarrito = producto.CantidadEnCarrito ?? 0; // Si es undefined, asigna 0
+        const precio = producto.Precio ?? 0; // Si es undefined, asigna 0
+        return acc + precio * cantidadEnCarrito * 0.1;}, 0); 
       } 
       return 0;
     }
@@ -234,9 +255,9 @@ export class CarritoComponent implements OnInit {
     const detallesVenta: DetalleVentaSinID[] = this.productos.map(producto => ({
       id_producto: producto.Id?? 0, 
       nombre: producto.Nombre,
-      cantidad: producto.Cantidad,
+      cantidad: producto.CantidadEnCarrito ??0,
       precio_unitario: producto.Precio,
-      total_pago: producto.Cantidad * producto.Precio
+      total_pago: (producto.CantidadEnCarrito ?? 0) * (producto.Precio ?? 0)
     }));
   
     this.ventas.sendEmail(this.correoCliente, detallesVenta).subscribe({
@@ -267,13 +288,14 @@ export class CarritoComponent implements OnInit {
   
     if (productoExistente) {
       console.log('Producto existente encontrado en el carrito:', productoExistente);
-      productoExistente.Cantidad += 1; // Incrementa la cantidad del producto existente
+      productoExistente.CantidadEnCarrito = (productoExistente.CantidadEnCarrito || 0) + 1;
+      // Incrementa la cantidad del producto existente
     } else {
       // Si no está en el carrito, busca en la base de datos
       this.productoService.obtenerProductoPorCodigoBarras(codigoBarras).subscribe({
         next: (data) => {
           console.log('Producto encontrado en la base de datos:', data);
-          data.Cantidad = 1; // Inicializa la cantidad en 1
+          data.CantidadEnCarrito = 1; // Inicializa la cantidad en 1
           this.productos.push(data); // Agrega el nuevo producto al carrito
           console.log('Producto agregado al carrito:', this.productos); // Muestra el carrito actualizado
         },

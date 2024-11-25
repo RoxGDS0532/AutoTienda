@@ -7,6 +7,8 @@ import { BrowserMultiFormatReader } from '@zxing/browser';
 import { Producto, ProductoService } from '../../services/producto.service';
 import { DetalleVentaSinID, Venta, VentasService } from '../../services/ventas.service';
 import { FacturaService } from '../../services/factura.service';
+import { ToastrService } from 'ngx-toastr';
+
 
 declare var paypal:any;
 @Component({
@@ -38,6 +40,7 @@ export class CarritoComponent implements OnInit {
     private ventas: VentasService,
     private httpclient: HttpClient,
     private facturaService: FacturaService,
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -151,7 +154,7 @@ export class CarritoComponent implements OnInit {
     if (producto.CantidadEnCarrito < producto.CantidadDisponible) {
       producto.CantidadEnCarrito += 1;
     } else {
-      console.log('No se puede incrementar más la cantidad. Stock agotado.');
+      this.toastr.error('No se puede incrementar más la cantidad. Stock agotado.', '¡Error!');
     }
   }
   

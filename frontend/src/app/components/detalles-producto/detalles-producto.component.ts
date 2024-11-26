@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { Categoria, CategoriaService } from '../../services/categoria.service';
 import { SugerenciasService } from '../../services/sugerencias.service';
 import { ProveedorService, Proveedor } from '../../services/proveedor.service';
+import { ProductosRecomendadosService, ProductoRecomendado } from '../../services/productos-recomendados.service';
 import { HttpClientModule } from '@angular/common/http';
 import { EstadoProducto } from '../../state-producto/producto.interface';
 import { CategoryFilterPipe } from '../../category-filter.pipe'; 
@@ -27,15 +28,11 @@ import { CategoryFilterPipe } from '../../category-filter.pipe';
 })
 
 export class DetallesProductoComponent implements OnInit {
-  productosSimilares: ProductoSimilar[] = [];  
   producto: Producto | null = null;
   productoR: Producto = { Id: 0, Nombre: '', Precio: 0, CantidadDisponible: 0, CategoriaId: 0, CodigoBarras: '', ImagenURL: '' };
   categorias: Categoria[] = [];
   proveedores: Proveedor[] = []; 
-  productosRecomendados = [
-    { CodigoBarras: '7589654710005',Nombre: 'Sabritas', CategoriaId: '1', Precio: 25.00, CantidadDisponible:10, ImagenURL: 'https://i5.walmartimages.com.mx/gr/images/product-images/img_large/00750101116765L.jpg' },
-    { CodigoBarras: '7288554700004',Nombre: 'Coca Cola', CategoriaId: '1', Precio: 18.00,CantidadDisponible:15 ,ImagenURL: 'https://www.coca-cola.com/content/dam/onexp/co/es/brands/coca-cola/coca-cola-original/ccso_600ml_750x750.png' }
-  ];
+  productosRecomendados: ProductoRecomendado[] = []; 
 
   contexto: ContextoProducto;
   sugerencia: string | null = null;
@@ -43,7 +40,7 @@ export class DetallesProductoComponent implements OnInit {
   sugerencias: any | null = null;
   mostrarSugerencias = false;
   sugerenciass: any[] = []; 
-
+  
   constructor(
     private productoService: ProductoService,
     private route: ActivatedRoute, 
@@ -51,6 +48,7 @@ export class DetallesProductoComponent implements OnInit {
     private sugerenciasService: SugerenciasService,
     private categoriaService: CategoriaService,
     private proveedorService: ProveedorService,
+    private productosRecomendadosService: ProductosRecomendadosService,
   ) {
     this.contexto = new ContextoProducto(new Disponible());
   }
@@ -65,6 +63,7 @@ export class DetallesProductoComponent implements OnInit {
     }
     this.cargarCategorias();
     this.cargarProveedores();
+    this.cargarProductosRecomendados();
   }
 
   obtenerProducto(id: number): void {
@@ -73,6 +72,7 @@ export class DetallesProductoComponent implements OnInit {
         console.log('Producto obtenido:', producto);
         this.producto = producto;
         this.actualizarEstado(this.producto);
+        this.cargarProductosRecomendados();
       },
       error: (error) => {
         console.error('Error al obtener el producto:', error);
@@ -90,13 +90,33 @@ export class DetallesProductoComponent implements OnInit {
   actualizarEstado(producto: Producto): void {
     this.contexto.verificarEstado(producto);
     if (this.contexto['estado'] instanceof Agotado) {
-      this.sugerencia = this.contexto.sugerirAccion();
-      this.mostrarRecomendaciones = this.contexto['estado'] instanceof Agotado;
+      this.mostrarRecomendaciones = true;
+      this.cargarProductosRecomendados();
     } else if (this.contexto['estado'] instanceof PorAgotarse) {
       this.sugerencias = this.sugerenciasService.generateSugerencias(producto);
       this.mostrarSugerencias = true;
     }
   }
+
+  cargarProductosRecomendados(): void {
+    this.productosRecomendadosService.obtenerProductos().subscribe(
+      (productoRecomendado) => {
+        console.log('Productos recomendados obtenidos:', productoRecomendado);
+        // Filtrar los productos recomendados para que coincidan con la categoría del producto seleccionado
+        if (this.producto) {
+          this.productosRecomendados = productoRecomendado.filter(producto =>
+            producto.categoria_id === this.producto?.CategoriaId
+          );
+        }
+      },
+      (error) => {
+        console.error('Error al obtener productos recomendados:', error);
+      }
+    );
+  }
+  
+
+
 
   aceptarSugerencia(sugerencia: any): void {
     console.log('Sugerencia aceptada:', sugerencia);
@@ -146,10 +166,14 @@ export class DetallesProductoComponent implements OnInit {
     this.categoriaService.obtenerCategorias().subscribe(categorias => this.categorias = categorias);
   }
 
-  getCategoriaNombre(categoriaId: number): string {
+  getCategoriaNombre(categoriaId: number | undefined): string {
+    if (categoriaId === undefined) {
+      return 'Sin categoría'; // O cualquier valor predeterminado que desees
+    }
     const categoria = this.categorias.find(cat => cat.Id === categoriaId);
-    return categoria ? categoria.Nombre : 'Sin categoría';
+    return categoria ? categoria.Nombre : 'Categoría no encontrada';
   }
+  
 
   limpiarFormulario() {
     this.producto = { Id: 0, ImagenURL: '', Nombre: '', Precio: 0, CantidadDisponible: 0, CategoriaId: 0, CodigoBarras: '' };

@@ -92,7 +92,7 @@
                     <img [src]="producto?.ImagenURL" alt="{{ producto?.Nombre }}" class="img-fluid">
                     <div class="card-body">
                         <h5 class="card-title">{{ producto?.Nombre }}</h5>
-                        <p class="card-text">Categoría: {{ producto?.CategoriaId }}</p>
+                        <p class="card-text">Categoría: {{ getCategoriaNombre(producto?.CategoriaId) }}</p>
                         <p class="card-text">Precio: {{ producto?.Precio | currency }}</p>
                         <p *ngIf="sugerencia">{{ sugerencia }}</p>
                     </div>
@@ -102,19 +102,20 @@
             <!-- Card de productos recomendados -->
             <div class="col-lg-6" *ngIf="mostrarRecomendaciones">
                 <h4>Productos recomendados:</h4>
+                <div *ngIf="productosRecomendados.length > 0">
                 <div class="row">
                     <div class="col-md-6 mb-3" *ngFor="let producto of productosRecomendados">
                         <div class="card">
-                            <img [src]="producto.ImagenURL" alt="{{ producto.Nombre }}" class="card-img-top">
+                            <img [src]="producto.imagenUrl" alt="{{ producto.nombre }}" class="card-img-top">
                             <div class="card-body">
-                                <h5 class="card-title">{{ producto.Nombre }}</h5>
-                                <p class="card-text">Cantidad: {{ producto.CantidadDisponible }}</p>
-                                <p class="card-text">Precio: {{ producto.Precio | currency }}</p>
+                                <h5 class="card-title">{{ producto.nombre }}</h5>
+                                <p class="card-text">Precio: {{ producto.precio | currency }}</p>
                                 <button class="btn btn-primary" (click)="abrirModalAgregar(productoR)">Agregar Producto</button>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
             
 

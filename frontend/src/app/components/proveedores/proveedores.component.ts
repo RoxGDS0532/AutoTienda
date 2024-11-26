@@ -30,17 +30,16 @@ export class ProveedoresComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.listarProveedores();
     this.obtenerCategorias();
+    this.listarProveedores();
+    
   }
 
   listarProveedores() {
     this.proveedorService.listarProveedores().subscribe((proveedores: any[]) => {
       this.proveedores = proveedores.map(proveedor => {
-        // Busca la categoría correspondiente al CategoriaId del proveedor
         const categoria = this.categorias.find(categoria => categoria.Id === proveedor.CategoriaId);
-        // Asigna el nombre de la categoría al proveedor
-        proveedor.CategoriaNombre = categoria ? categoria.Nombre : 'Sin categoría';
+        proveedor.CategoriaNombre = categoria ? categoria.Nombre : 'Sin categoría'; // Aquí se asigna el nombre de la categoría
         return proveedor;
       });
     });
@@ -94,7 +93,10 @@ export class ProveedoresComponent implements OnInit {
 
   obtenerCategorias() {
     this.categoriaService.obtenerCategorias().subscribe(
-      (data) => (this.categorias = data),
+      (data) => {
+        this.categorias = data;
+        this.listarProveedores(); // Llamamos a listarProveedores solo cuando las categorías estén cargadas
+      },
       () => this.toastr.error('Error al obtener categorías')
     );
   }

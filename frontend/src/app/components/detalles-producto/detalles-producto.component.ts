@@ -10,6 +10,7 @@ import * as bootstrap from 'bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';  
 import { Categoria, CategoriaService } from '../../services/categoria.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-detalles-producto',
@@ -35,7 +36,7 @@ export class DetallesProductoComponent implements OnInit {
   sugerencia: string | null = null;
   mostrarRecomendaciones = false;
   
-  constructor(private productoService: ProductoService, private route: ActivatedRoute, private toastr:ToastrService,  private categoriaService: CategoriaService) {
+  constructor(private productoService: ProductoService, private route: ActivatedRoute, private toastr:ToastrService,  private categoriaService: CategoriaService, private cdRef: ChangeDetectorRef) {
     this.contexto = new ContextoProducto(new Disponible());
   }
 
@@ -70,11 +71,19 @@ actualizarEstado(producto: Producto): void {
   this.mostrarRecomendaciones = this.contexto['estado'] instanceof Agotado;
 }
 
-abrirModalAgregar(productoRecomendado: Producto): void {
-  this.producto = { ...productoRecomendado }; 
-  const agregarModal = new bootstrap.Modal(document.getElementById('agregarProductoModal')!);
-  agregarModal.show();
+
+abrirModalAgregar(producto: Producto): void {
+  const productoClonado = { ...producto, CategoriaId: +producto.CategoriaId }; // Convertir a número
+  this.productoR = productoClonado;
+  console.log('Producto a autollenar:', this.productoR);
+
+  setTimeout(() => {
+    const agregarModal = new bootstrap.Modal(document.getElementById('agregarProductoModal')!);
+    agregarModal.show();
+  }, 0);
 }
+
+
 
 cargarCategorias() {
   this.categoriaService.obtenerCategorias().subscribe(categorias => this.categorias = categorias);

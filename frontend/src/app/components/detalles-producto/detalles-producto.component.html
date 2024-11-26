@@ -119,50 +119,50 @@
     </div>
     
     <!-- Modal para agregar productos -->
-<div class="modal fade" id="agregarProductoModal" tabindex="-1" aria-labelledby="agregarProductoModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+    <div class="modal fade" id="agregarProductoModal" tabindex="-1" aria-labelledby="agregarProductoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="agregarProductoModalLabel">Agregar Producto</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="limpiarFormulario()">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+              <h5 class="modal-title" id="agregarProductoModalLabel">Agregar Producto</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="limpiarFormulario()">
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
             <div class="modal-body">
-                <form (ngSubmit)="agregarProducto()">
-                    <div class="form-group">
-                        <label for="Nombre">Nombre</label>
-                        <input type="text" [(ngModel)]="productoR.Nombre" name="nombre" required class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label for="Precio">Precio</label>
-                        <input type="number" [(ngModel)]="productoR.Precio" name="precio" required class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label for="Cantidad">Cantidad</label>
-                        <input type="number" [(ngModel)]="productoR.CantidadDisponible" name="CantidadDisponible" required class="form-control" />
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="Categoria">Categoría</label>
-                        <select [(ngModel)]="productoR.CategoriaId" name="Categoria" required class="form-control">
-                            <option *ngFor="let categoria of categorias" [value]="categoria.Id">{{ categoria.Nombre }}</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="CodigoQR">Código de Barras</label>
-                        <input type="text" [(ngModel)]="productoR.CodigoBarras" name="codigoBarras" class="form-control" required />
-                    </div>                
-                    <div class="form-group">
-                        <label for="Imagen">URL de la Imagen</label>
-                        <input type="text" [(ngModel)]="productoR.ImagenURL" name="Imagen" class="form-control" placeholder="Ingrese la URL de la imagen" />
-                    </div>
-                    <button type="submit" class="btn btn-success btn-block">Agregar</button>
-                </form>
+              <form (ngSubmit)="agregarProducto()">
+                <div class="form-group">
+                  <label for="Nombre">Nombre</label>
+                  <input type="text" [(ngModel)]="productoR.Nombre" name="nombre" required class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="Precio">Precio</label>
+                  <input type="number" [(ngModel)]="productoR.Precio" name="precio" required class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="Cantidad">Cantidad</label>
+                  <input type="number" [(ngModel)]="productoR.CantidadDisponible" name="CantidadDisponible" required class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="Categoria">Categoría</label>
+                  <select [(ngModel)]="productoR.CategoriaId" name="Categoria" required class="form-control">
+                    <option *ngFor="let categoria of categorias" [value]="categoria.Id">{{ categoria.Nombre }}</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="CodigoQR">Código de Barras</label>
+                  <input type="text" [(ngModel)]="productoR.CodigoBarras" name="codigoBarras" class="form-control" required />
+                </div>
+                <div class="form-group">
+                  <label for="Imagen">URL de la Imagen</label>
+                  <input type="text" [(ngModel)]="productoR.ImagenURL" name="Imagen" class="form-control" placeholder="Ingrese la URL de la imagen" />
+                </div>
+                <button type="submit" class="btn btn-success btn-block">Agregar</button>
+              </form>
             </div>
+          </div>
         </div>
-    </div>
-</div>
+      </div>
+      
 
     <footer>
         <p>© 2024 SUPERAMA. Todos los derechos reservados.</p>

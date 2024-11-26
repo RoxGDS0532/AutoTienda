@@ -155,7 +155,6 @@ export class DetallesProductoComponent implements OnInit {
     this.productosRecomendadosService.obtenerProductos().subscribe(
       (productoRecomendado) => {
         console.log('Productos recomendados obtenidos:', productoRecomendado);
-        // Filtrar los productos recomendados para que coincidan con la categoría del producto seleccionado
         if (this.producto) {
           this.productosRecomendados = productoRecomendado.filter(producto =>
             producto.categoria_id === this.producto?.CategoriaId
@@ -179,7 +178,7 @@ export class DetallesProductoComponent implements OnInit {
 
   getCategoriaNombre(categoriaId: number | undefined): string {
     if (categoriaId === undefined) {
-      return 'Sin categoría'; // O cualquier valor predeterminado que desees
+      return 'Sin categoría'; 
     }
     const categoria = this.categorias.find(cat => cat.Id === categoriaId);
     return categoria ? categoria.Nombre : 'Categoría no encontrada';
@@ -189,15 +188,43 @@ export class DetallesProductoComponent implements OnInit {
   limpiarFormulario() {
     this.producto = { Id: 0, ImagenURL: '', Nombre: '', Precio: 0, CantidadDisponible: 0, CategoriaId: 0, CodigoBarras: '' };
   }
-  abrirModalAgregar(producto: Producto): void {
-    this.productoR = { ...producto };
-    console.log('Producto a autollenar:', this.productoR);
-    
+  
+  abrirModalAgregar(producto: Producto | undefined): void {
+    if (producto && producto.Id !== undefined && producto.Id > 0 && producto.Nombre !== '') {
+      this.productoR = { ...producto };
+      console.log('Producto a autollenar:', this.productoR);
+    } else {
+      console.error('Producto no válido:', producto);
+      this.toastr.error('Producto no válido. Por favor, selecciona un producto antes de proceder.', '¡Error!');
+    }
+  
     setTimeout(() => {
       const agregarModal = new bootstrap.Modal(document.getElementById('agregarProductoModal')!);
-      agregarModal.show(); // Abrir el modal con los datos pre-llenados
+      agregarModal.show();
     }, 0);
   }
+  
+  
+
+  seleccionarProducto(producto: ProductoRecomendado): void {
+    console.log('Producto recomendado seleccionado:', producto);
+    
+    const productoTransformado: Producto = {
+      Id: producto.id,
+      Nombre: producto.nombre,
+      Precio: producto.precio,
+      CategoriaId: producto.categoria_id,
+      CantidadDisponible: 0,  
+      CodigoBarras: producto.CodigoBarras,
+      ImagenURL: producto.imagenUrl
+    };
+  
+    this.abrirModalAgregar(productoTransformado);
+  }
+  
+  
+  
+  
 
   agregarProducto(): void {
     if (this.productoR) {

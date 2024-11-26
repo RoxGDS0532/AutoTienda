@@ -20,47 +20,46 @@ interface Venta {
   correoCliente: string;
 }
 
-class VentasController {
-  public async create(req: Request, resp: Response): Promise<void> {
-    const mexicoCityTimeZone = 'America/Mexico_City';
-    const fechaActual = new Date();
-    const fechaEnMexico = toZonedTime(fechaActual, mexicoCityTimeZone);
-    // Formatea la fecha y hora como cadenas
-    const fechaVenta = format(fechaEnMexico, 'yyyy-MM-dd HH:mm:ss', { timeZone: mexicoCityTimeZone });
-    const horaVenta = format(fechaEnMexico, 'HH:mm:ss', { timeZone: mexicoCityTimeZone });
+class VentasController {public async create(req: Request, resp: Response): Promise<void> {
+  const mexicoCityTimeZone = 'America/Mexico_City';
+  const fechaActual = new Date();
+  const fechaEnMexico = toZonedTime(fechaActual, mexicoCityTimeZone);
+  const fechaVenta = format(fechaEnMexico, 'yyyy-MM-dd HH:mm:ss', { timeZone: mexicoCityTimeZone });
+  const horaVenta = format(fechaEnMexico, 'HH:mm:ss', { timeZone: mexicoCityTimeZone });
 
-    const { pago_total, tipo_pago, detalles } = req.body as Venta;
+  const { pago_total, tipo_pago, detalles } = req.body as Venta;
 
-    const connection = await getConnection();
-    try {
-        await connection.beginTransaction();
+  console.log('Datos recibidos:', { pago_total, tipo_pago, detalles });
 
-        const ventaResult = await connection.query(
-            'INSERT INTO venta (fecha_venta, hora_venta, pago_total, tipo_pago) VALUES (?, ?, ?, ?)',
-            [fechaVenta, horaVenta, pago_total, tipo_pago]
-        );
+  const connection = await getConnection();
+  try {
+      await connection.beginTransaction();
 
-        const idVenta = (ventaResult as any).insertId; // ID de la venta
+      const ventaResult = await connection.query(
+          'INSERT INTO venta (fecha_venta, hora_venta, pago_total, tipo_pago) VALUES (?, ?, ?, ?)',
+          [fechaVenta, horaVenta, pago_total, tipo_pago]
+      );
 
-        for (const detalle of detalles) {
-            await connection.query(
-                'INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)',
-                [idVenta, detalle.id_producto, detalle.cantidad, detalle.precio_unitario]
-            );
-        }
+      const idVenta = (ventaResult as any).insertId;
 
-        await connection.commit();
+      for (const detalle of detalles) {
+          console.log('Insertando detalle:', detalle); // <-- Log de cada detalle
+          await connection.query(
+              'INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)',
+              [idVenta, detalle.id_producto, detalle.cantidad, detalle.precio_unitario]
+          );
+      }
 
-        resp.status(201).json({ message: 'Venta registrada exitosamente', ventaId: idVenta });
-    } catch (error) {
-        await connection.rollback();
-        console.error('Error al registrar la venta:', error);
-        resp.status(500).json({ message: 'Error al registrar la venta' });
-    } finally {
-        connection.release();
-    }
-    
+      await connection.commit();
+      resp.status(201).json({ message: 'Venta registrada exitosamente', ventaId: idVenta });
+  } catch (error) {
+      await connection.rollback();
+      console.error('Error al registrar la venta:', error); // <-- Inspecciona el error aquí
+      resp.status(500).json({ message: 'Error al registrar la venta' });
+  } finally {
+      connection.release();
   }
+}
 }
 
 const ventasController = new VentasController();

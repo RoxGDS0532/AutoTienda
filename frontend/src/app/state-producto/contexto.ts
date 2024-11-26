@@ -33,4 +33,25 @@ export class ContextoProducto {
   sugerirAccion(): string {
     return this.estado.sugerirAccion();
   }
+
+generateSugerencias(producto: Producto): any[] {
+  // Función auxiliar para generar un número aleatorio entre min y max
+  const randomInRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+  return [
+    {
+      productoId: producto.Id,
+      productoNombre: producto.Nombre,
+      proveedorId: 1, // Ejemplo: ID de proveedor
+      cantidadPropuesta: randomInRange(10, 50),
+      productoCategoriaId: producto.CategoriaId
+    }
+  ];
+}
+
+
+
+
+
+
 }

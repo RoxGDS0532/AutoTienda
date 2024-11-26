@@ -100,41 +100,11 @@ export class DetallesProductoComponent implements OnInit {
 
   aceptarSugerencia(sugerencia: any): void {
     console.log('Sugerencia aceptada:', sugerencia);
-    if (!sugerencia.proveedorId) {
-      alert('Selecciona un proveedor antes de aceptar la sugerencia.');
-      return;
-    }
-  
-    const solicitud = {
-      productoId: sugerencia.productoId,
-      cantidad: sugerencia.cantidadPropuesta,
-      proveedorId: sugerencia.proveedorId
-    };
-  
-    this.productoService.solicitarProductos([solicitud]).subscribe(() => {
-      this.sugerencias = this.sugerenciass.filter(s => s.productoId !== sugerencia.productoId);
-      alert(`Pedido aceptado para el producto: ${sugerencia.productoNombre}`);
-    });
     this.toastr.success('Sugerencia aceptada correctamente', '¡Éxito!');
   }
 
   rechazarSugerencia(sugerencia: any): void {
     console.log('Sugerencia rechazada:', sugerencia);
-    this.sugerencias = this.sugerenciass.filter(s => s.productoId !== sugerencia.productoId);
-
-    // Generar una nueva sugerencia con un proveedor diferente que tenga la misma categoría
-    const nuevoProveedor = this.obtenerProveedorPorCategoria(sugerencia.productoCategoriaId);
-    if (nuevoProveedor) {
-      this.sugerencias.push({
-        productoId: sugerencia.productoId,
-        productoNombre: sugerencia.productoNombre,
-        proveedorId: nuevoProveedor.Id,
-        cantidadPropuesta: 10
-      });
-      alert(`Sugerencia actualizada con un nuevo proveedor para el producto: ${sugerencia.productoNombre}`);
-    } else {
-      alert('No hay más proveedores disponibles para sugerir.');
-    }
     this.toastr.warning('Sugerencia rechazada', 'Información');
   }
 

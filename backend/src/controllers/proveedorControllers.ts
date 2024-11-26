@@ -13,7 +13,9 @@ class ProveedorController {
         res.json({ message: 'Proveedor guardado' });
     }
 
-    public delete = async (req: Request, res: Response) => {
+
+
+    public async delete(req: Request, res: Response): Promise<Response> {
         const { Id } = req.params;
 
         try {
@@ -23,27 +25,29 @@ class ProveedorController {
                 return res.status(404).json({ message: 'Proveedor no encontrado' });
             }
 
-            res.json({ message: 'Proveedor eliminado' });
+            return res.json({ message: 'Proveedor eliminado' });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Error al eliminar proveedor', error });
+            return res.status(500).json({ message: 'Error al eliminar proveedor', error });
         }
-    };
+    }
+    
+    
     
 
     public async update(req: Request, res: Response): Promise<void> {
         const { Id } = req.params;
-        const { Nombre, Contacto, Telefono, Email } = req.body;
+        const { Nombre, Contacto, Telefono, Email ,CategoriaId} = req.body;
 
         // Validación de campos
-        if (!Nombre || !Contacto || !Telefono || !Email) {
+        if (!Nombre || !Contacto || !Telefono || !Email || !CategoriaId) {
             res.status(400).json({ message: 'Todos los campos son requeridos' });
             return; // Asegúrate de retornar aquí para no continuar
         }
 
         try {
             const result = await pool.query(
-                'UPDATE Proveedores SET Nombre = ?, Contacto = ?, Telefono = ?, Email = ? WHERE Id = ?',
+                'UPDATE Proveedores SET Nombre = ?, Contacto = ?, Telefono = ?, Email = ?, CategoriaId = ?, WHERE Id = ?',
                 [Nombre, Contacto, Telefono, Email, Id]
             );
 
@@ -70,6 +74,7 @@ class ProveedorController {
         }
         return res.status(404).json({ message: 'El proveedor no existe' });
     }
+    
 }
 
 const proveedorController = new ProveedorController();

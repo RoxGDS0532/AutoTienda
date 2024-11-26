@@ -285,28 +285,40 @@ export class CarritoComponent implements OnInit {
     const codigoBarras = this.codigoProductoBuscado;
   
     console.log('Buscando producto manualmente con código de barras:', codigoBarras);
-    
-    // Primero, verifica si el producto ya está en el carrito
+  
+    // Verifica si el producto ya está en el carrito
     const productoExistente = this.productos.find(p => p.CodigoBarras === codigoBarras);
   
     if (productoExistente) {
       console.log('Producto existente encontrado en el carrito:', productoExistente);
-      productoExistente.CantidadEnCarrito = (productoExistente.CantidadEnCarrito || 0) + 1;
-      // Incrementa la cantidad del producto existente
+  
+      // Validar que no se exceda el stock disponible
+      if (productoExistente.CantidadEnCarrito! < productoExistente.CantidadDisponible!) {
+        productoExistente.CantidadEnCarrito = (productoExistente.CantidadEnCarrito || 0) + 1;
+        console.log('Cantidad actualizada en el carrito:', productoExistente.CantidadEnCarrito);
+      } else {
+        this.toastr.error('No se puede incrementar más la cantidad. Stock agotado.', '¡Error!');
+      }
     } else {
       // Si no está en el carrito, busca en la base de datos
       this.productoService.obtenerProductoPorCodigoBarras(codigoBarras).subscribe({
         next: (data) => {
           console.log('Producto encontrado en la base de datos:', data);
-          data.CantidadEnCarrito = 1; // Inicializa la cantidad en 1
-          this.productos.push(data); // Agrega el nuevo producto al carrito
-          console.log('Producto agregado al carrito:', this.productos); // Muestra el carrito actualizado
+  
+          // Validar que haya stock disponible antes de agregar al carrito
+          if (data.CantidadDisponible! > 0) {
+            data.CantidadEnCarrito = 1; // Inicializa la cantidad en 1
+            this.productos.push(data); // Agrega el nuevo producto al carrito
+            console.log('Producto agregado al carrito:', this.productos); // Muestra el carrito actualizado
+          } else {
+            this.toastr.error('El producto está agotado y no puede añadirse al carrito.', '¡Error!');
+          }
         },
         error: (err) => this.toastr.error('Producto no encontrado', '¡Error!')
-
       });
     }
   }
+  
   
     generarFacturaCompra() {
       const facturaData = {

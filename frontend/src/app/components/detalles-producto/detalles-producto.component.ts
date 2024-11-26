@@ -31,7 +31,7 @@ export class DetallesProductoComponent implements OnInit {
   producto: Producto | null = null;
   productoR: Producto = { Id: 0, Nombre: '', Precio: 0, CantidadDisponible: 0, CategoriaId: 0, CodigoBarras: '', ImagenURL: '' };
   categorias: Categoria[] = [];
-  proveedores: Proveedor[] = []; // Lista de proveedores
+  proveedores: Proveedor[] = []; 
   productosRecomendados = [
     { CodigoBarras: '7589654710005',Nombre: 'Sabritas', CategoriaId: '1', Precio: 25.00, CantidadDisponible:10, ImagenURL: 'https://i5.walmartimages.com.mx/gr/images/product-images/img_large/00750101116765L.jpg' },
     { CodigoBarras: '7288554700004',Nombre: 'Coca Cola', CategoriaId: '1', Precio: 18.00,CantidadDisponible:15 ,ImagenURL: 'https://www.coca-cola.com/content/dam/onexp/co/es/brands/coca-cola/coca-cola-original/ccso_600ml_750x750.png' }

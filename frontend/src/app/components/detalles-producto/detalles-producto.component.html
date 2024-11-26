@@ -110,7 +110,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ producto.nombre }}</h5>
                                 <p class="card-text">Precio: {{ producto.precio | currency }}</p>
-                                <button class="btn btn-primary" (click)="abrirModalAgregar(productoR)">Agregar Producto</button>
+                                <button class="btn btn-primary" (click)="seleccionarProducto(producto)">Agregar Producto</button>
                             </div>
                         </div>
                     </div>

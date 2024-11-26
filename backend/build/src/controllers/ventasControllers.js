@@ -17,16 +17,17 @@ class VentasController {
             const mexicoCityTimeZone = 'America/Mexico_City';
             const fechaActual = new Date();
             const fechaEnMexico = (0, date_fns_tz_1.toZonedTime)(fechaActual, mexicoCityTimeZone);
-            // Formatea la fecha y hora como cadenas
             const fechaVenta = (0, date_fns_tz_1.format)(fechaEnMexico, 'yyyy-MM-dd HH:mm:ss', { timeZone: mexicoCityTimeZone });
             const horaVenta = (0, date_fns_tz_1.format)(fechaEnMexico, 'HH:mm:ss', { timeZone: mexicoCityTimeZone });
             const { pago_total, tipo_pago, detalles } = req.body;
+            console.log('Datos recibidos:', { pago_total, tipo_pago, detalles });
             const connection = yield (0, database_1.getConnection)();
             try {
                 yield connection.beginTransaction();
                 const ventaResult = yield connection.query('INSERT INTO venta (fecha_venta, hora_venta, pago_total, tipo_pago) VALUES (?, ?, ?, ?)', [fechaVenta, horaVenta, pago_total, tipo_pago]);
-                const idVenta = ventaResult.insertId; // ID de la venta
+                const idVenta = ventaResult.insertId;
                 for (const detalle of detalles) {
+                    console.log('Insertando detalle:', detalle); // <-- Log de cada detalle
                     yield connection.query('INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)', [idVenta, detalle.id_producto, detalle.cantidad, detalle.precio_unitario]);
                 }
                 yield connection.commit();
@@ -34,7 +35,7 @@ class VentasController {
             }
             catch (error) {
                 yield connection.rollback();
-                console.error('Error al registrar la venta:', error);
+                console.error('Error al registrar la venta:', error); // <-- Inspecciona el error aquí
                 resp.status(500).json({ message: 'Error al registrar la venta' });
             }
             finally {

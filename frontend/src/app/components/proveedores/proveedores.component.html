@@ -85,7 +85,8 @@
             <p class="card-text text-secondary">Contacto: {{ proveedor.Contacto }}</p>
             <p class="card-text text-secondary">Teléfono: {{ proveedor.Telefono }}</p>
             <p class="card-text text-secondary">Email: {{ proveedor.Email }}</p>
-            <p class="card-text text-secondary">Categoría: {{ proveedor.CategoriaId }}</p>
+            <p class="card-text text-secondary">Categoría: {{ proveedor.CategoriaNombre }}</p>
+
             <div class="d-flex justify-content-between">
               <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#providerModal" (click)="editarProveedor(proveedor)">Editar</button>
               <button class="btn btn-danger btn-sm" (click)="eliminarProveedor(proveedor.id)">Eliminar</button>

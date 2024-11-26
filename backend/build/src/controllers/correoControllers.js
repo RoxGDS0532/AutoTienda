@@ -27,6 +27,15 @@ const envioCorreo = (req, resp) => {
                 <th style="border: 1px solid #ddd; padding: 8px;">Total</th>
             </tr>
     `;
+    let mensajeHtmlProveedor = `
+        <h1>Pedido de productos</h1>
+        <h2>Detalles del pedido:</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <th style="border: 1px solid #ddd; padding: 8px;">Nombre del Producto</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Cantidad</th>
+            </tr>
+    `;
     detalles.forEach((detalle) => {
         mensajeHtml += `
             <tr>
@@ -34,6 +43,12 @@ const envioCorreo = (req, resp) => {
                 <td style="border: 1px solid #ddd; padding: 8px;">${detalle.cantidad}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">$${detalle.precio_unitario.toFixed(2)}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">$${detalle.total_pago.toFixed(2)}</td>
+            </tr>
+        `;
+        mensajeHtmlProveedor += `
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">${detalle.nombre}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">${detalle.cantidad}</td>
             </tr>
         `;
     });

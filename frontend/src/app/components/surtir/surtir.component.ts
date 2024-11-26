@@ -8,9 +8,10 @@ import { CategoriaService, Categoria } from '../../services/categoria.service';
 import { Agotado } from '../../state-producto/agotado.estado';
 import { PorAgotarse } from '../../state-producto/porAgotarse.estado';
 import { Disponible } from '../../state-producto/disponible.estado';
-import { ContextoProducto } from '../../state-producto/contexto';
+
 import { EstadoProducto } from '../../state-producto/producto.interface';
 import { CategoryFilterPipe } from '../../category-filter.pipe'; // Asegúrate de importar tu pipe
+import { ContextoProducto } from '../../state-producto/contexto';
 
 @Component({
   selector: 'app-surtir',
@@ -26,92 +27,40 @@ export class SurtirComponent implements OnInit {
   selectedCategoriaId: number = 0;
   productosFiltrados: (Producto & { cantidadSolicitada: number; proveedorId: number | null })[] = []; // Agregado
   sugerencias: any[] = []; // Almacena las sugerencias generadas para productos
+  contexto: ContextoProducto;
 
   constructor(
     private productoService: ProductoService,
     private proveedorService: ProveedorService,
-    private categoriaService: CategoriaService
-  ) {}
+    private categoriaService: CategoriaService,
+  ) {this.contexto = new ContextoProducto(new Disponible());}
 
   ngOnInit(): void {
     this.cargarProductos();
     this.cargarProveedores();
     this.cargarCategorias();
+    
   }
 
   valuarEstado(producto: Producto): void {
+    this.contexto.verificarEstado(producto);
     let estado: EstadoProducto;
   
-    if (producto.CantidadDisponible === 0) {
+    if (this.contexto['estado'] instanceof Agotado) {
       estado = new Agotado();
-    } else if (producto.CantidadDisponible > 0 && producto.CantidadDisponible <= 5) {
+    } else if (this.contexto['estado'] instanceof PorAgotarse) {
       estado = new PorAgotarse();
-      // Generación de sugerencia solo si hay proveedores y si el proveedor tiene la categoría correcta
-      if (this.proveedores.length > 0) {
-        const proveedor = this.obtenerProveedorPorCategoria(producto.CategoriaId);
-        if (proveedor) {
-          this.sugerencias.push({
-            productoId: producto.Id,
-            productoNombre: producto.Nombre,
-            proveedorId: proveedor.Id,
-            cantidadPropuesta: 10
-          });
-        }
-      } else {
-        console.error(`No hay proveedores disponibles para el producto: ${producto.Nombre}`);
-      }
     } else {
       estado = new Disponible();
     }
-  
     const contexto = new ContextoProducto(estado);
     producto.estado = estado.constructor.name; // Almacena el estado actual
-    producto.sugerencia = contexto.sugerirAccion(); // Almacena la sugerencia
+    producto.sugerencia = contexto.sugerirAccion();
   }
 
   obtenerProveedorPorCategoria(categoriaId: number): Proveedor | undefined {
     return this.proveedores.find(proveedor => proveedor.Id === categoriaId);
   }
-
-  aceptarSugerencia(sugerencia: any): void {
-    if (!sugerencia.proveedorId) {
-      alert('Selecciona un proveedor antes de aceptar la sugerencia.');
-      return;
-    }
-  
-    const solicitud = {
-      productoId: sugerencia.productoId,
-      cantidad: sugerencia.cantidadPropuesta,
-      proveedorId: sugerencia.proveedorId
-    };
-  
-    this.productoService.solicitarProductos([solicitud]).subscribe(() => {
-      this.sugerencias = this.sugerencias.filter(s => s.productoId !== sugerencia.productoId);
-      alert(`Pedido aceptado para el producto: ${sugerencia.productoNombre}`);
-    });
-  }
-  
-  rechazarSugerencia(sugerencia: any): void {
-    // Eliminar la sugerencia actual
-    this.sugerencias = this.sugerencias.filter(s => s.productoId !== sugerencia.productoId);
-
-    // Generar una nueva sugerencia con un proveedor diferente que tenga la misma categoría
-    const nuevoProveedor = this.obtenerProveedorPorCategoria(sugerencia.productoCategoriaId);
-    if (nuevoProveedor) {
-      this.sugerencias.push({
-        productoId: sugerencia.productoId,
-        productoNombre: sugerencia.productoNombre,
-        proveedorId: nuevoProveedor.Id,
-        cantidadPropuesta: 10
-      });
-      alert(`Sugerencia actualizada con un nuevo proveedor para el producto: ${sugerencia.productoNombre}`);
-    } else {
-      alert('No hay más proveedores disponibles para sugerir.');
-    }
-  }
-
-  
-  
 
   cargarProductos() {
     this.proveedorService.listarProveedores().subscribe(proveedores => {
@@ -170,22 +119,5 @@ export class SurtirComponent implements OnInit {
     });
   }
 
-  solicitarSugerencia(sugerencia: any): void {
-    const proveedorId = sugerencia.proveedorId;
-    if (!proveedorId) {
-      alert('Selecciona un proveedor antes de realizar el pedido.');
-      return;
-    }
-
-    const solicitud = {
-      productoId: sugerencia.productoId,
-      cantidad: 10, // Ejemplo: siempre 10 unidades para sugerencias
-      proveedorId: proveedorId
-    };
-
-    this.productoService.solicitarProductos([solicitud]).subscribe(() => {
-      this.sugerencias = this.sugerencias.filter((s) => s.productoId !== sugerencia.productoId);
-      alert(`Pedido realizado para el producto: ${sugerencia.productoNombre}`);
-    });
-  }
+  
 }

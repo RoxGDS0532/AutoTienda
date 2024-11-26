@@ -35,11 +35,17 @@ export class ProveedoresComponent implements OnInit {
   }
 
   listarProveedores() {
-    this.proveedorService.listarProveedores().subscribe(
-      (data) => (this.proveedores = data),
-      (error) => this.toastr.error('Error al listar proveedores')
-    );
+    this.proveedorService.listarProveedores().subscribe((proveedores: any[]) => {
+      this.proveedores = proveedores.map(proveedor => {
+        // Busca la categoría correspondiente al CategoriaId del proveedor
+        const categoria = this.categorias.find(categoria => categoria.Id === proveedor.CategoriaId);
+        // Asigna el nombre de la categoría al proveedor
+        proveedor.CategoriaNombre = categoria ? categoria.Nombre : 'Sin categoría';
+        return proveedor;
+      });
+    });
   }
+  
 
   guardarProveedor() {
     if (this.proveedorSeleccionado.id) {

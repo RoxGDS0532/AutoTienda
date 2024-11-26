@@ -7,7 +7,8 @@ export interface Proveedor {
   Nombre: string;         // Nombre del proveedor
   Contacto?: string;      // Nombre de contacto (opcional)
   Telefono?: string;      // Número de teléfono (opcional)
-  Email?: string;         // Correo electrónico (opcional)
+  Email?: string;
+  CategoriaId:number;         // Correo electrónico (opcional)
 }
 
 @Injectable({

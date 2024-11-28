@@ -10,10 +10,6 @@ export class Disponible implements EstadoProducto {
     console.log(`El producto ${producto.Nombre} está disponible.`);
   }
 
-  solicitar(producto: Producto): void {
-    // No se requiere ninguna acción específica
-
-  }
 }
 
 

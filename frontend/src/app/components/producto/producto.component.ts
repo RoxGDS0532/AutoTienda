@@ -59,20 +59,18 @@ verDetalleProducto(id: number | undefined): void {
   }
 
   evaluarEstado(producto: Producto): void {
-    this.contexto.verificarEstado(producto);
-    let estado: EstadoProducto;
-  
-    if (this.contexto['estado'] instanceof Agotado) {
-      estado = new Agotado();
-    } else if (this.contexto['estado'] instanceof PorAgotarse) {
-      estado = new PorAgotarse();
+    if (producto.CantidadDisponible === 0) {
+      this.contexto.setEstado(new Agotado());
+    } else if (producto.CantidadDisponible > 0 && producto.CantidadDisponible <= 5) {
+      this.contexto.setEstado(new PorAgotarse());
     } else {
-      estado = new Disponible();
+      this.contexto.setEstado(new Disponible());
     }
-    const contexto = new ContextoProducto(estado);
-    producto.estado = estado.constructor.name; // Almacena el estado actual
-    producto.sugerencia = contexto.sugerirAccion();
+    this.contexto.verificarEstado(producto);
+    producto.estado = this.contexto['estado'].constructor.name;
+    producto.sugerencia = this.contexto.sugerirAccion();
   }
+  
 
   cargarProductos() {
     this.productoService.obtenerProductos().subscribe((productos) => {

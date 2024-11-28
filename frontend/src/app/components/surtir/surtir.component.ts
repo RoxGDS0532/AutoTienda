@@ -43,16 +43,16 @@ export class SurtirComponent implements OnInit {
   }
 
   valuarEstado(producto: Producto): void {
-    this.contexto.verificarEstado(producto);
-    let estado: EstadoProducto;
-  
-    if (this.contexto['estado'] instanceof Agotado) {
-      estado = new Agotado();
-    } else if (this.contexto['estado'] instanceof PorAgotarse) {
-      estado = new PorAgotarse();
-    } else {
-      estado = new Disponible();
-    }
+  this.contexto.verificarEstado(producto);
+  let estado: EstadoProducto;
+
+  if (this.contexto['estado'] instanceof Agotado) {
+    estado = new Agotado();
+  } else if (this.contexto['estado'] instanceof PorAgotarse) {
+    estado = new PorAgotarse();
+  } else {
+    estado = new Disponible();
+  }
     const contexto = new ContextoProducto(estado);
     producto.estado = estado.constructor.name; // Almacena el estado actual
     producto.sugerencia = contexto.sugerirAccion();

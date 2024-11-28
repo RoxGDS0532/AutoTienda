@@ -24,13 +24,11 @@ export class ContextoProducto {
       this.estado = new Disponible(); 
     }
   }
-  
+
 
   sugerirAccion(): string {
     return this.estado.sugerirAccion();
   }
-
-
 
 
 }

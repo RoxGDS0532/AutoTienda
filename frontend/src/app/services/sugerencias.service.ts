@@ -39,7 +39,7 @@ export class SugerenciasService {
   
     if (proveedor) {
       // Generar nueva sugerencia
-      const cantidadPropuesta = this.randomInRange(10, 50);
+      const cantidadPropuesta = this.randomInRange(10, 80);
       const sugerencia = {
         productoId: producto.Id,
         productoNombre: producto.Nombre,

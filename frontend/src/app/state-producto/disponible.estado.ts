@@ -13,17 +13,12 @@ export class Disponible implements EstadoProducto {
     }
     return producto.CantidadDisponible > 5;
   }
-  
-
-  solicitar(producto: Producto): void {
-    // No se requiere ninguna acción específica
-  }
 
   // Método para aplicar un descuento automático
   private aplicarDescuento(producto: Producto): void {
     // Verificamos si DiasDisponible está definido
     if (producto.DiasDisponible !== undefined && producto.DiasDisponible > 30 && producto.CantidadDisponible > 5) {
-      producto.DescuentoAplicado = 0.10;  // 10% de descuento
+      producto.DescuentoAplicado = 0.10; 
     }
   }
 }

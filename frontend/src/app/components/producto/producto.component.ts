@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-producto',
   standalone: true,
-  imports: [FormsModule, HttpClientModule, CommonModule, CategoryFilterPipe],
+  imports: [FormsModule, HttpClientModule, CommonModule],
   templateUrl: './producto.component.html',
   styleUrls: ['./producto.component.css'],
   providers: [ProductoService, CategoriaService, CategoryFilterPipe]

@@ -15,8 +15,11 @@ export interface Producto {
   CodigoBarras?: string; 
   estado?: string; // Nombre del estado actual
   sugerencia?: string; // Recomendación basada en el estado
-
+  FechaIngreso?: Date; 
+  DiasDisponible?: number; 
+  DescuentoAplicado?: number; 
 }
+
 
 export interface ProductoSimilar {
   titulo: string;

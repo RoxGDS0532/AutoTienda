@@ -10,7 +10,4 @@ export class PorAgotarse implements EstadoProducto {
     return producto.CantidadDisponible > 0 && producto.CantidadDisponible <= 5;
   }
 
-  solicitar(producto: Producto): void {
-    console.log(`No se puede solicitar el producto "${producto.Nombre}" porque está agotado.`);
-  }
 }

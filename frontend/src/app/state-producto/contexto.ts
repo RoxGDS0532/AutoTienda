@@ -14,7 +14,7 @@ export class ContextoProducto {
   setEstado(estado: EstadoProducto): void {
     this.estado = estado;
   }
-  
+
   verificarEstado(producto: Producto): void {
     if (producto.CantidadDisponible === 0) {
       this.estado = new Agotado(); 
@@ -25,8 +25,10 @@ export class ContextoProducto {
     }
   }
 
+
   sugerirAccion(): string {
     return this.estado.sugerirAccion();
   }
+
 
 }

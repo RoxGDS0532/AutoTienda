@@ -18,6 +18,7 @@ export interface Producto {
   FechaIngreso?: Date; 
   DiasDisponible?: number; 
   DescuentoAplicado?: number; 
+  PrecioConDescuento?: number;
 }
 
 

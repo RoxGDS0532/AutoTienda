@@ -35,6 +35,7 @@ export class ProductoComponent implements OnInit {
   productosAgotados: Producto[] = [];
 productosPorAgotarse: Producto[] = [];
 productosDisponibles: Producto[] = [];
+contexto: ContextoProducto;
 
 verDetalleProducto(id: number | undefined): void {
   if (id !== undefined) {
@@ -48,8 +49,9 @@ verDetalleProducto(id: number | undefined): void {
     private productoService: ProductoService,
     private categoriaService: CategoriaService,
     private toastr: ToastrService,
-    private router:Router
-  ) {}
+    private router:Router,
+    
+  ) {this.contexto = new ContextoProducto(new Disponible())}
 
   ngOnInit(): void {
     this.cargarProductos();
@@ -57,21 +59,18 @@ verDetalleProducto(id: number | undefined): void {
   }
 
   evaluarEstado(producto: Producto): void {
-    let estado: EstadoProducto;
-  
     if (producto.CantidadDisponible === 0) {
-      estado = new Agotado();
+      this.contexto.setEstado(new Agotado());
     } else if (producto.CantidadDisponible > 0 && producto.CantidadDisponible <= 5) {
-      estado = new PorAgotarse();
+      this.contexto.setEstado(new PorAgotarse());
     } else {
-      estado = new Disponible();
+      this.contexto.setEstado(new Disponible());
     }
-    
-  
-    const contexto = new ContextoProducto(estado);
-    producto.estado = estado.constructor.name; // Almacena el estado actual
-    producto.sugerencia = contexto.sugerirAccion(); // Almacena la sugerencia
+    this.contexto.verificarEstado(producto);
+    producto.estado = this.contexto['estado'].constructor.name;
+    producto.sugerencia = this.contexto.sugerirAccion();
   }
+  
 
   cargarProductos() {
     this.productoService.obtenerProductos().subscribe((productos) => {

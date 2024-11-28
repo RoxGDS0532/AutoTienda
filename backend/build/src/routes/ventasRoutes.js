@@ -14,6 +14,9 @@ class VentasRoutes {
     config() {
         this.router.post('/', ventasControllers_1.default.create);
         this.router.post('/envio', correoControllers_1.envioCorreo);
+        this.router.get('/', (req, res) => {
+            res.status(200).json({ message: 'Ruta /ventas disponible, pero usa POST para registrar ventas.' });
+        });
     }
 }
 const ventasRoutes = new VentasRoutes();

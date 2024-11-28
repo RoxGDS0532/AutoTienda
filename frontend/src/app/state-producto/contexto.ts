@@ -26,11 +26,11 @@ export class ContextoProducto {
   }
   
 
-  solicitar(producto: Producto): void {
-    this.estado.solicitar(producto);
-  }
-
   sugerirAccion(): string {
     return this.estado.sugerirAccion();
   }
+
+
+
+
 }

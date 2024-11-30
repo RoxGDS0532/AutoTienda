@@ -61,6 +61,21 @@
             max-width: 100%;
             height: auto;
         }
+        .discount-section {
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-left: 30px;
+        }
+        .discount-section h5 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        .discount-section p {
+            font-size: 1.2rem;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -99,121 +114,101 @@
                 </div>
             </div>
     
+            <!-- Sección de descuento al lado -->
+            <div *ngIf="producto">
+                <div class="col-lg-4 discount-section" *ngIf="producto.DescuentoAplicado != null && producto.DescuentoAplicado > 0">
+                  <h5>¡Descuento aplicado!</h5>
+                  <p><strong>Descuento: </strong>{{ producto.DescuentoAplicado * 100 }}%</p>
+                  <p><strong>Precio con descuento: </strong>{{ producto.PrecioConDescuento | currency }}</p>
+                </div>
+              </div>
+              
+              
+
             <!-- Card de productos recomendados -->
             <div class="col-lg-6" *ngIf="mostrarRecomendaciones">
                 <h4>Productos recomendados:</h4>
                 <div *ngIf="productosRecomendados.length > 0">
-                <div class="row">
-                    <div class="col-md-6 mb-3" *ngFor="let producto of productosRecomendados">
-                        <div class="card">
-                            <img [src]="producto.imagenUrl" alt="{{ producto.nombre }}" class="card-img-top">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ producto.nombre }}</h5>
-                                <p class="card-text">Precio: {{ producto.precio | currency }}</p>
-                                <button class="btn btn-primary" (click)="seleccionarProducto(producto)">Agregar Producto</button>
+                    <div class="row">
+                        <div class="col-md-6 mb-3" *ngFor="let producto of productosRecomendados">
+                            <div class="card">
+                                <img [src]="producto.imagenUrl" alt="{{ producto.nombre }}" class="card-img-top">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ producto.nombre }}</h5>
+                                    <p class="card-text">Precio: {{ producto.precio | currency }}</p>
+                                    <button class="btn btn-primary" (click)="seleccionarProducto(producto)">Agregar Producto</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            </div>
-            
-
 
             <div class="container mt-5" *ngIf="mostrarSugerencias">
                 <h5 class="mb-4">Sugerencias para pedido</h5>
-                <div
-                  *ngFor="let sugerencia of sugerencias"
-                  class="card p-3 mb-3 shadow-sm"
-                >
-                  <p>Producto: <strong>{{ sugerencia.productoNombre }}</strong></p>
-                  <p>Cantidad propuesta: <strong>{{ sugerencia.cantidadPropuesta }}</strong></p>
-                  <select
-                    [(ngModel)]="sugerencia.proveedorId"
-                    class="form-control"
-                  >
-                    <option value="">Seleccionar Proveedor</option>
-                    <option
-                      *ngFor="let proveedor of proveedores"
-                      [value]="proveedor.Id"
-                    >
-                      {{ proveedor.Nombre }}
-                    </option>
-                  </select>
-                  <div class="d-flex justify-content-between mt-2">
-                    <button
-                      class="btn btn-success"
-                      (click)="aceptarSugerencia(sugerencia)"
-                    >
-                      Aceptar Sugerencia
-                    </button>
-                    <button class="btn btn-danger" (click)="rechazarSugerencia(sugerencia)">Rechazar Sugerencia</button>
-
-                  </div>
+                <div *ngFor="let sugerencia of sugerencias" class="card p-3 mb-3 shadow-sm">
+                    <p>Producto: <strong>{{ sugerencia.productoNombre }}</strong></p>
+                    <p>Cantidad propuesta: <strong>{{ sugerencia.cantidadPropuesta }}</strong></p>
+                    <select [(ngModel)]="sugerencia.proveedorId" class="form-control">
+                        <option value="">Seleccionar Proveedor</option>
+                        <option *ngFor="let proveedor of proveedores" [value]="proveedor.Id">{{ proveedor.Nombre }}</option>
+                    </select>
+                    <div class="d-flex justify-content-between mt-2">
+                        <button class="btn btn-success" (click)="aceptarSugerencia(sugerencia)">Aceptar Sugerencia</button>
+                        <button class="btn btn-danger" (click)="rechazarSugerencia(sugerencia)">Rechazar Sugerencia</button>
+                    </div>
                 </div>
-              </div>
-              
-              
-              
-              
-
+            </div>
         </div>
     </div>
-    
+
     <!-- Modal para agregar productos -->
     <div class="modal fade" id="agregarProductoModal" tabindex="-1" aria-labelledby="agregarProductoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-              <h5 class="modal-title" id="agregarProductoModalLabel">Agregar Producto</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="limpiarFormulario()">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="agregarProductoModalLabel">Agregar Producto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="limpiarFormulario()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
 
-            
+                <div class="modal-body">
+                    <form (ngSubmit)="agregarProducto()">
+                        <div class="form-group">
+                            <label for="Nombre">Nombre</label>
+                            <input type="text" [(ngModel)]="productoR.Nombre" name="nombre" required class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Precio">Precio</label>
+                            <input type="number" [(ngModel)]="productoR.Precio" name="precio" required class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Cantidad">Cantidad</label>
+                            <input type="number" [(ngModel)]="productoR.CantidadDisponible" name="CantidadDisponible" required class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Categoria">Categoría</label>
+                            <select [(ngModel)]="productoR.CategoriaId" name="Categoria" required class="form-control">
+                                <option *ngFor="let categoria of categorias" [value]="categoria.Id">{{ categoria.Nombre }}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="CodigoQR">Código de Barras</label>
+                            <input type="text" [(ngModel)]="productoR.CodigoBarras" name="CodigoBarras" required class="form-control" />
+                        </div>
+                    </form>
+                </div>
 
-            <div class="modal-body">
-              <form (ngSubmit)="agregarProducto()">
-                <div class="form-group">
-                  <label for="Nombre">Nombre</label>
-                  <input type="text" [(ngModel)]="productoR.Nombre" name="nombre" required class="form-control" />
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="limpiarFormulario()">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Agregar Producto</button>
                 </div>
-                <div class="form-group">
-                  <label for="Precio">Precio</label>
-                  <input type="number" [(ngModel)]="productoR.Precio" name="precio" required class="form-control" />
-                </div>
-                <div class="form-group">
-                  <label for="Cantidad">Cantidad</label>
-                  <input type="number" [(ngModel)]="productoR.CantidadDisponible" name="CantidadDisponible" required class="form-control" />
-                </div>
-                <div class="form-group">
-                  <label for="Categoria">Categoría</label>
-                  <select [(ngModel)]="productoR.CategoriaId" name="Categoria" required class="form-control">
-                    <option *ngFor="let categoria of categorias" [value]="categoria.Id">{{ categoria.Nombre }}</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="CodigoQR">Código de Barras</label>
-                  <input type="text" [(ngModel)]="productoR.CodigoBarras" name="codigoBarras" class="form-control" required />
-                </div>
-                <div class="form-group">
-                  <label for="Imagen">URL de la Imagen</label>
-                  <input type="text" [(ngModel)]="productoR.ImagenURL" name="Imagen" class="form-control" placeholder="Ingrese la URL de la imagen" />
-                </div>
-                <button type="submit" class="btn btn-success btn-block">Agregar</button>
-              </form>
             </div>
-          </div>
         </div>
-      </div>
-      
+    </div>
 
-
-    <footer>
-        <p>© 2024 SUPERAMA. Todos los derechos reservados.</p>
-    </footer>
-
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

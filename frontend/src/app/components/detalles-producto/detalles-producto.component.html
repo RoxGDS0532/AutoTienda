@@ -113,7 +113,42 @@
                     </div>
                 </div>
             </div>
-    
+                        <!-- Card de productos recomendados -->
+                        <div class="col-lg-6" *ngIf="mostrarRecomendaciones">
+                            <h4>Productos recomendados:</h4>
+                            <div *ngIf="productosRecomendados.length > 0">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3" *ngFor="let producto of productosRecomendados">
+                                        <div class="card">
+                                            <img [src]="producto.imagenUrl" alt="{{ producto.nombre }}" class="card-img-top">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ producto.nombre }}</h5>
+                                                <p class="card-text">Precio: {{ producto.precio | currency }}</p>
+                                                <button class="btn btn-primary" (click)="seleccionarProducto(producto)">Agregar Producto</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <div class="container mt-5" *ngIf="mostrarSugerencias">
+                            <h5 class="mb-4">Sugerencias para pedido</h5>
+                            <div *ngFor="let sugerencia of sugerencias" class="card p-3 mb-3 shadow-sm">
+                                <p>Producto: <strong>{{ sugerencia.productoNombre }}</strong></p>
+                                <p>Cantidad propuesta: <strong>{{ sugerencia.cantidadPropuesta }}</strong></p>
+                                <select [(ngModel)]="sugerencia.proveedorId" class="form-control">
+                                    <option value="">Seleccionar Proveedor</option>
+                                    <option *ngFor="let proveedor of proveedores" [value]="proveedor.Id">{{ proveedor.Nombre }}</option>
+                                </select>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <button class="btn btn-success" (click)="aceptarSugerencia(sugerencia)">Aceptar Sugerencia</button>
+                                    <button class="btn btn-danger" (click)="rechazarSugerencia(sugerencia)">Rechazar Sugerencia</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             <!-- Sección de descuento al lado -->
             <div *ngIf="producto">
                 <div class="col-lg-4 discount-section" *ngIf="producto.DescuentoAplicado != null && producto.DescuentoAplicado > 0">
@@ -122,45 +157,6 @@
                   <p><strong>Precio con descuento: </strong>{{ producto.PrecioConDescuento | currency }}</p>
                 </div>
               </div>
-              
-              
-
-            <!-- Card de productos recomendados -->
-            <div class="col-lg-6" *ngIf="mostrarRecomendaciones">
-                <h4>Productos recomendados:</h4>
-                <div *ngIf="productosRecomendados.length > 0">
-                    <div class="row">
-                        <div class="col-md-6 mb-3" *ngFor="let producto of productosRecomendados">
-                            <div class="card">
-                                <img [src]="producto.imagenUrl" alt="{{ producto.nombre }}" class="card-img-top">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ producto.nombre }}</h5>
-                                    <p class="card-text">Precio: {{ producto.precio | currency }}</p>
-                                    <button class="btn btn-primary" (click)="seleccionarProducto(producto)">Agregar Producto</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="container mt-5" *ngIf="mostrarSugerencias">
-                <h5 class="mb-4">Sugerencias para pedido</h5>
-                <div *ngFor="let sugerencia of sugerencias" class="card p-3 mb-3 shadow-sm">
-                    <p>Producto: <strong>{{ sugerencia.productoNombre }}</strong></p>
-                    <p>Cantidad propuesta: <strong>{{ sugerencia.cantidadPropuesta }}</strong></p>
-                    <select [(ngModel)]="sugerencia.proveedorId" class="form-control">
-                        <option value="">Seleccionar Proveedor</option>
-                        <option *ngFor="let proveedor of proveedores" [value]="proveedor.Id">{{ proveedor.Nombre }}</option>
-                    </select>
-                    <div class="d-flex justify-content-between mt-2">
-                        <button class="btn btn-success" (click)="aceptarSugerencia(sugerencia)">Aceptar Sugerencia</button>
-                        <button class="btn btn-danger" (click)="rechazarSugerencia(sugerencia)">Rechazar Sugerencia</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal para agregar productos -->
     <div class="modal fade" id="agregarProductoModal" tabindex="-1" aria-labelledby="agregarProductoModalLabel" aria-hidden="true">

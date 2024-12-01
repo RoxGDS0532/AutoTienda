@@ -11,7 +11,6 @@ import { Disponible } from '../../state-producto/disponible.estado';
 import { ContextoProducto } from '../../state-producto/contexto';
 import { EstadoProducto } from '../../state-producto/producto.interface';
 import { ToastrService } from 'ngx-toastr';
-
 import * as bootstrap from 'bootstrap';
 import { Router } from '@angular/router';
 
@@ -28,14 +27,14 @@ export class ProductoComponent implements OnInit {
   productos: Producto[] = [];
   categorias: Categoria[] = [];
   productoSeleccionado: Producto = { Id: 0, ImagenURL:'', Nombre: '', Precio: 0, CantidadDisponible: 0, CategoriaId: 0 , CodigoBarras:''}; // Inicialización
-  imagenFile: File | null = null; // Almacenar el archivo de imagen
+  imagenFile: File | null = null; 
   productosFiltrados: Producto[] = []; // Lista de productos filtrados
   categoriaSeleccionada: number = 0; // ID de la categoría seleccionada
   busquedaProducto: string = '';
   productosAgotados: Producto[] = [];
-productosPorAgotarse: Producto[] = [];
-productosDisponibles: Producto[] = [];
-contexto: ContextoProducto;
+  productosPorAgotarse: Producto[] = [];
+  productosDisponibles: Producto[] = [];
+  contexto: ContextoProducto;
 
 verDetalleProducto(id: number | undefined): void {
   if (id !== undefined) {
@@ -135,11 +134,11 @@ agregarProducto() {
 actualizarProducto() {
   const Id = this.productoSeleccionado.Id; // Assuming productoSeleccionado has an Id property
 
-  if (Id ) { // Check if Id and ImagenURL are valid
+  if (Id ) { 
     this.productoService.actualizarProducto(Id, this.productoSeleccionado).subscribe(() => {
-      this.cargarProductos(); // Refresh the list of products or perfthis.productoSeleccionado = { Id: 0, Nombre: '', Precio: 0, Cantidad: 0, Stock: 0, CategoriaId: 0 };orm another action
+      this.cargarProductos(); 
       const editarModal = bootstrap.Modal.getInstance(document.getElementById('editarProductoModal')!);
-      editarModal?.hide(); // Hide the modal after update
+      editarModal?.hide(); 
       this.toastr.success('Producto actualizado correctamente.', '¡Éxito!');
     }, error => {
       console.error('Error updating product:', error);
@@ -208,7 +207,6 @@ actualizarProducto() {
       const coincideBusqueda = producto.Nombre.toLowerCase().includes(this.busquedaProducto.toLowerCase());
       return coincideCategoria && coincideBusqueda;
     });
-    
     console.log('Productos filtrados:', this.productosFiltrados);
   }
   irASurtirProductos(): void {

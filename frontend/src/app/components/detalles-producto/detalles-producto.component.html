@@ -114,18 +114,7 @@
                 </div>
             </div>
     
-            <!-- Sección de descuento al lado -->
-            <div *ngIf="producto">
-                <div class="col-lg-4 discount-section" *ngIf="producto.DescuentoAplicado != null && producto.DescuentoAplicado > 0">
-                  <h5>¡Descuento aplicado!</h5>
-                  <p><strong>Descuento: </strong>{{ producto.DescuentoAplicado * 100 }}%</p>
-                  <p><strong>Precio con descuento: </strong>{{ producto.PrecioConDescuento | currency }}</p>
-                </div>
-              </div>
-              
-              
-
-            <!-- Card de productos recomendados -->
+           <!-- Card de productos recomendados -->
             <div class="col-lg-6" *ngIf="mostrarRecomendaciones">
                 <h4>Productos recomendados:</h4>
                 <div *ngIf="productosRecomendados.length > 0">

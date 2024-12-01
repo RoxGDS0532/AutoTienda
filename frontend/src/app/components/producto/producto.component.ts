@@ -76,7 +76,7 @@ verDetalleProducto(id: number | undefined): void {
     this.productoService.obtenerProductos().subscribe((productos) => {
       console.log('Productos obtenidos:', productos);
       this.productos = productos.map((producto) => {
-        this.evaluarEstado(producto); // Evalúa el estado para cada producto
+        this.evaluarEstado(producto);
         return producto;
       });
       this.clasificarProductosPorEstado();
@@ -170,16 +170,13 @@ actualizarProducto() {
 }
 
   limpiarFormulario() {
-
     this.productoSeleccionado = { Id: 0, ImagenURL:'', Nombre: '', Precio: 0, CantidadDisponible: 0, CategoriaId: 0, CodigoBarras:'' };
-    
-
   }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files) {
-      this.imagenFile = input.files[0]; // Guardar el archivo de imagen
+      this.imagenFile = input.files[0]; 
     }
   }
 
@@ -192,7 +189,7 @@ actualizarProducto() {
 
   onCategoriaChange(event: Event) {
     const selectElement = event.target as HTMLSelectElement; // Casting al tipo correcto
-    this.categoriaSeleccionada = Number(selectElement.value); // Asegúrate de convertir el valor a número
+    this.categoriaSeleccionada = Number(selectElement.value); 
     this.filtrarProductos(); // Filtra los productos cada vez que se cambia de categoría
 }
 

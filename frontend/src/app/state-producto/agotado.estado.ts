@@ -12,7 +12,6 @@ export class Agotado implements EstadoProducto {
    }
 
 
-
 }
 
 

@@ -74,10 +74,6 @@ export class DetallesProductoComponent implements OnInit {
         this.producto = producto;
         this.actualizarEstado(this.producto);
         this.cargarProductosRecomendados();
-
-        if (producto.DescuentoAplicado && producto.DescuentoAplicado > 0) {
-          this.producto.PrecioConDescuento = producto.Precio * (1 - producto.DescuentoAplicado);
-        }
       },
       error: (error) => {
         console.error('Error al obtener el producto:', error);
@@ -93,12 +89,7 @@ export class DetallesProductoComponent implements OnInit {
   }
 
   actualizarEstado(producto: Producto): void {
-    this.contexto.verificarEstado(producto);
-
-    if (producto.DescuentoAplicado != null && producto.DescuentoAplicado > 0) {
-      this.toastr.success(`¡Descuento aplicado! ${producto.DescuentoAplicado * 100}% de descuento. El nuevo precio es: ${producto.PrecioConDescuento}`, 'Descuento');
-    }
-    
+    this.contexto.verificarEstado(producto);  
 
     if (this.contexto['estado'] instanceof Agotado) {
       this.mostrarRecomendaciones = true;

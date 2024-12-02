@@ -9,7 +9,6 @@ import { RestrablecerComponent } from './components/restrablecer/restrablecer.co
 import { ProductoComponent } from './components/producto/producto.component';
 import { ConsultasComponent } from './components/consultas/consultas.component';
 import { SurtirComponent } from './components/surtir/surtir.component';
-import { InventarioComponent } from './components/inventario/inventario.component';
 import { DetallesProductoComponent } from './components/detalles-producto/detalles-producto.component';
 import { ProductosPromocionComponent } from './productos-promocion/productos-promocion.component';
 

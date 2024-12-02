@@ -134,18 +134,30 @@ class ProductoController {
     getProductosEnPromocion(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const [productos] = yield database_1.default.query('SELECT * FROM Productos WHERE EnPromocion = TRUE');
-                // Verificar si 'productos' es un arreglo
-                if (Array.isArray(productos)) {
-                    resp.json(productos); // Solo devolver si es un arreglo
+                console.log('Recibiendo solicitud para obtener productos en promoción');
+                // Consulta SQL para obtener productos en promoción
+                const productos = yield database_1.default.query('SELECT * FROM Productos WHERE EnPromocion = 1 and CantidadDisponible > 5');
+                console.log('Productos obtenidos:', productos); // Añadir log de los productos obtenidos
+                // Verifica si 'productos' es un arreglo y si tiene elementos
+                if (Array.isArray(productos) && productos.length > 0) {
+                    resp.json(productos);
                 }
                 else {
-                    resp.status(500).json({ message: 'Los datos obtenidos no son un arreglo' });
+                    console.error('No se encontraron productos en promoción');
+                    resp.status(404).json({ message: 'No se encontraron productos en promoción' });
                 }
             }
             catch (error) {
-                console.error('Error al obtener productos en promoción:', error);
-                resp.status(500).json({ message: 'Error al obtener productos en promoción', error });
+                // Verificar si el error es una instancia de Error
+                if (error instanceof Error) {
+                    console.error('Error al obtener productos en promoción:', error.message);
+                    resp.status(500).json({ message: 'Error al obtener productos en promoción', error: error.message });
+                }
+                else {
+                    // Si el error no es un Error conocido, devolvemos un mensaje genérico
+                    console.error('Error desconocido:', error);
+                    resp.status(500).json({ message: 'Error desconocido', error });
+                }
             }
         });
     }

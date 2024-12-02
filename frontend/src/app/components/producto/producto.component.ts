@@ -62,7 +62,7 @@ constructor(
     this.productoService,
     this.productosRecomendadosService,  
     this.proveedorService,
-    this.categoriaService
+    this.categoriaService 
   );
 }
 

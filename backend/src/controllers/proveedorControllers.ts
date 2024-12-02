@@ -15,39 +15,43 @@ class ProveedorController {
 
 
 
-    public async delete(req: Request, res: Response): Promise<Response> {
+    public async delete(req: Request, res: Response): Promise<void> {
         const { Id } = req.params;
-
         try {
-            const result = await pool.query('DELETE FROM Proveedores WHERE Id = ?', [Id]);
-
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ message: 'Proveedor no encontrado' });
+            const [rows] = await pool.query('SELECT * FROM solicitudes WHERE proveedorId = ?', [Id]);
+            if (rows.length > 0) {
+                res.status(400).json({ message: 'No se puede eliminar el proveedor porque está relacionado con solicitudes' });
+                return;
             }
-
-            return res.json({ message: 'Proveedor eliminado' });
+            const result = await pool.query('DELETE FROM proveedores WHERE Id = ?', [Id]);
+            if (result.affectedRows === 0) {
+                res.status(404).json({ message: 'Proveedor no encontrado' });
+                return;
+            }
+            res.json({ message: 'Proveedor eliminado' });
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ message: 'Error al eliminar proveedor', error });
+            res.status(500).json({ message: 'Error al eliminar el proveedor', error });
         }
     }
+    
     
     
     
 
     public async update(req: Request, res: Response): Promise<void> {
         const { Id } = req.params;
-        const { Nombre, Contacto, Telefono, Email ,CategoriaId} = req.body;
+        const { Nombre, Contacto, Telefono, Email ,CategoriaId, NombreProveedor} = req.body;
 
         // Validación de campos
-        if (!Nombre || !Contacto || !Telefono || !Email || !CategoriaId) {
+        if (!Nombre || !Contacto || !Telefono || !Email || !CategoriaId || !NombreProveedor) {
             res.status(400).json({ message: 'Todos los campos son requeridos' });
             return; // Asegúrate de retornar aquí para no continuar
         }
 
         try {
             const result = await pool.query(
-                'UPDATE Proveedores SET Nombre = ?, Contacto = ?, Telefono = ?, Email = ?, CategoriaId = ?, WHERE Id = ?',
+                'UPDATE Proveedores SET Nombre = ?, Contacto = ?, Telefono = ?, Email = ?, CategoriaId = ?, NombreProveedor = ?, WHERE Id = ?',
                 [Nombre, Contacto, Telefono, Email, Id]
             );
 

@@ -82,6 +82,7 @@
         <div class="card shadow-sm border-light">
           <div class="card-body">
             <h5 class="card-title text-dark">{{ proveedor.Nombre }}</h5>
+            <p class="card-text text-secondary">Nombre del proveedor: {{ proveedor.NombreProveedor }}</p>
             <p class="card-text text-secondary">Contacto: {{ proveedor.Contacto }}</p>
             <p class="card-text text-secondary">Teléfono: {{ proveedor.Telefono }}</p>
             <p class="card-text text-secondary">Email: {{ proveedor.Email }}</p>
@@ -89,7 +90,7 @@
 
             <div class="d-flex justify-content-between">
               <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#providerModal" (click)="editarProveedor(proveedor)">Editar</button>
-              <button class="btn btn-danger btn-sm" (click)="eliminarProveedor(proveedor.id)">Eliminar</button>
+              <button class="btn btn-danger btn-sm" (click)="eliminarProveedor(proveedor.Id)">Eliminar {{ proveedor.id }}</button>
             </div>
           </div>
         </div>
@@ -110,6 +111,10 @@
           <input type="hidden" [(ngModel)]="proveedorSeleccionado.id" name="providerId">
           <div class="mb-3">
             <label for="providerName" class="form-label">Nombre del Proveedor</label>
+            <input type="text" [(ngModel)]="proveedorSeleccionado.NombreProveedor" name="providerName" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="providerName" class="form-label">Proveedor</label>
             <input type="text" [(ngModel)]="proveedorSeleccionado.Nombre" name="providerName" class="form-control" required>
           </div>
           <div class="mb-3">

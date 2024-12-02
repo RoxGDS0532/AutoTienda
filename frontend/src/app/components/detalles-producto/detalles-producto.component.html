@@ -114,13 +114,13 @@
             </div>
     
             <!-- Sección de descuento al lado -->
-            <div *ngIf="producto">
+            <!-- <div *ngIf="producto">
                 <div class="col-lg-4 discount-section" *ngIf="producto.DescuentoAplicado != null && producto.DescuentoAplicado > 0">
                   <h5>¡Descuento aplicado!</h5>
                   <p><strong>Descuento: </strong>{{ producto.DescuentoAplicado * 100 }}%</p>
                   <p><strong>Precio con descuento: </strong>{{ producto.PrecioConDescuento | currency }}</p>
                 </div>
-              </div>
+              </div> -->
               
               
 
@@ -146,18 +146,24 @@
             <div class="container mt-5" *ngIf="mostrarSugerencias">
                 <h5 class="mb-4">Sugerencias para pedido</h5>
                 <div *ngFor="let sugerencia of sugerencias" class="card p-3 mb-3 shadow-sm">
-                    <p>Producto: <strong>{{ sugerencia.productoNombre }}</strong></p>
-                    <p>Cantidad propuesta: <strong>{{ sugerencia.cantidadPropuesta }}</strong></p>
-                    <select [(ngModel)]="sugerencia.proveedorId" class="form-control">
-                        <option value="">Seleccionar Proveedor</option>
-                        <option *ngFor="let proveedor of proveedores" [value]="proveedor.Id">{{ proveedor.Nombre }}</option>
-                    </select>
-                    <div class="d-flex justify-content-between mt-2">
-                        <button class="btn btn-success" (click)="aceptarSugerencia(sugerencia)">Aceptar Sugerencia</button>
-                        <button class="btn btn-danger" (click)="rechazarSugerencia(sugerencia)">Rechazar Sugerencia</button>
-                    </div>
+                  <p>Producto: <strong>{{ sugerencia.productoNombre }}</strong></p>
+                  <p>Cantidad propuesta: <strong>{{ sugerencia.cantidadPropuesta }}</strong></p>
+                  <p>Proveedor: <strong>{{ sugerencia.proveedorNombre }}</strong></p>
+                  <p>Nombre del Proveedor: <strong>{{ sugerencia.proveedorNombreProveedor }}</strong></p>
+                  <select [(ngModel)]="sugerencia.proveedorId" class="form-control">
+                    <option value="">Seleccionar Proveedor</option>
+                    <option *ngFor="let proveedor of proveedores" [value]="proveedor.Id">{{ proveedor.Nombre }}</option>
+                  </select>
+                  <div class="d-flex justify-content-between mt-2">
+                    <button class="btn btn-success" (click)="aceptarSugerencia(sugerencia)">Aceptar Sugerencia</button>
+                    <button class="btn btn-danger" (click)="rechazarSugerencia(sugerencia)">Rechazar Sugerencia</button>
+                  </div>
                 </div>
-            </div>
+                <p *ngIf="mensaje" class="alert alert-info mt-3">{{ mensaje }}</p>
+              </div>
+              
+
+
         </div>
     </div>
 

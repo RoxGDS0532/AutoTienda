@@ -80,17 +80,33 @@ export class ProveedoresComponent implements OnInit {
     this.modalProveedor.show();
   }
 
-  eliminarProveedor(id: number) {
-    this.proveedorService.eliminarProveedor(id).subscribe(
-      () => {
-        this.toastr.success('Proveedor eliminado');
-        this.listarProveedores();
+
+  eliminarProveedor(Id: number) {
+    console.log("ID recibido para eliminar:", Id); // Depura aquí
+    this.proveedorService.eliminarProveedor(Id).subscribe(
+      response => {
+        console.log('Proveedor eliminado', response);
+        this.listarProveedores(); // Actualiza la lista de proveedores
       },
-      () => this.toastr.error('Error al eliminar proveedor')
-      
+      error => {
+        console.log('Error eliminando el proveedor', error);
+      }
     );
   }
+  
 
+  cargarProveedor() {
+    this.proveedorService.obtenerProveedor().subscribe({
+      next: (proveedores) => {
+        console.log('Proveedores obtenidos:', proveedores); // Verifica la estructura
+        this.proveedores = proveedores; // Asegúrate de que los datos están correctos
+      },
+      error: (err) => {
+        console.error('Error al cargar proveedores:', err);
+      }
+    });
+  }
+  
   obtenerCategorias() {
     this.categoriaService.obtenerCategorias().subscribe(
       (data) => {

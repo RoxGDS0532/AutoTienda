@@ -43,8 +43,10 @@ export class ContextoProducto {
     this.estado.verificarEstado(producto);
   }
 
-
   sugerirAccion(producto: Producto): void {
     return this.estado.sugerirAccion(producto);
   }
+
+  
+
 }

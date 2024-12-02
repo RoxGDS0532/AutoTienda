@@ -60,6 +60,7 @@ export class DetallesProductoComponent implements OnInit {
     );
   }
 
+
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id !== null) {
@@ -106,10 +107,10 @@ export class DetallesProductoComponent implements OnInit {
             // Iteramos sobre los proveedores y sus productos
             for (const proveedorId in productosPorProveedor) {
               const productosDelProveedor = productosPorProveedor[proveedorId];
-              console.log(`Productos recomendados del proveedor ${proveedorId}:, productosDelProveedor`);
+              console.log(`Productos recomendados del proveedor ${proveedorId}:`, productosDelProveedor);
               
-              // Puedes agregar los productos recomendados por proveedor a la lista general
-              this.productosRecomendados.push(...productosDelProveedor);
+              // // Puedes agregar los productos recomendados por proveedor a la lista general
+              // this.productosRecomendados.push(...productosDelProveedor);
             }
             this.sugerencia = estadoAgotado.sugerirAccion();
             this.mostrarRecomendaciones = true;
@@ -156,8 +157,7 @@ export class DetallesProductoComponent implements OnInit {
     this.mostrarSugerencias = false;
     this.sugerencias = []; // Limpiar sugerencias
   
-    // Mostrar mensaje de espera
-    this.mensaje =` En espera de surtir el producto "${sugerencia.productoNombre}".`;
+    
   }
 
   rechazarSugerencia(sugerencia: any): void {

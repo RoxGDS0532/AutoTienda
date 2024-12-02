@@ -59,10 +59,10 @@ constructor(
 ) { 
   this.contexto = new ContextoProducto(
     new Disponible(this.productoService), 
-    this.productoService,
-    this.productosRecomendadosService.obtenerRecomendaciones,  
+    this.productosRecomendadosService,  
     this.proveedorService,
-    this.categoriaService
+    this.productoService,
+    this.categoriaService,
   );
 }
 
@@ -193,9 +193,6 @@ actualizarProducto() {
       this.imagenFile = input.files[0]; 
     }
   }
-
-  
-
   setDefaultImage(event: any) {
     const element = event.target as HTMLImageElement;
     event.target.src = 'assets/default.jpg';

@@ -53,10 +53,10 @@ export class DetallesProductoComponent implements OnInit {
   ) {
     this.contexto = new ContextoProducto(
       new Disponible(this.productoService), 
-      this.productoService,                
-      this.productosRecomendadosService.actualizarProducto,
+      this.productosRecomendadosService,  
       this.proveedorService,
-      this.sugerenciasService
+      this.productoService,
+      this.categoriaService,
     );
   }
 

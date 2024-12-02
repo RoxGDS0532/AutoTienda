@@ -5,22 +5,28 @@ export class Disponible implements EstadoProducto {
   constructor(private productoService: ProductoService) {}
 
   sugerirAccion(producto: Producto): void {
-    this.productoService.obtenerProductosPromocion().subscribe((productosEnPromocion) => {
-      const estaEnPromocion = productosEnPromocion.some(
-        (p) => p.Id === producto.Id
-      );
+    if (this.verificarEstado(producto)) {
+      this.productoService.obtenerProductosPromocion().subscribe((productosEnPromocion) => {
+        const estaEnPromocion = productosEnPromocion.some(
+          (p) => p.Id === producto.Id
+        );
 
-      if (estaEnPromocion) {
-        console.log(
-          `El producto "${producto.Nombre}" está en promoción con un precio reducido de $${producto.PrecioConDescuento}.`
-        );
-        this.destacarProducto(producto); // Acción adicional
-      } else {
-        console.log(
-          `El producto "${producto.Nombre}" está disponible pero no tiene promoción activa.`
-        );
-      }
-    });
+        if (estaEnPromocion) {
+          console.log(
+            `El producto "${producto.Nombre}" está en promoción con un precio reducido de $${producto.PrecioConDescuento}.`
+          );
+          this.destacarProducto(producto); 
+        } else {
+          console.log(
+            `El producto "${producto.Nombre}" está disponible pero no tiene promoción activa.`
+          );
+        }
+      });
+    } else {
+      console.log(
+        `El producto "${producto.Nombre}" no está disponible con más de 5 unidades.`
+      );
+    }
   }
 
   verificarEstado(producto: Producto): boolean {

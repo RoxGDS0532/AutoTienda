@@ -118,23 +118,35 @@ class ProductoController {
     }
 
       
-      public async getProductosEnPromocion(req: Request, resp: Response): Promise<void> {
+    public async getProductosEnPromocion(req: Request, resp: Response): Promise<void> {
         try {
-            const [productos] = await pool.query('SELECT * FROM Productos WHERE EnPromocion = TRUE');
+            console.log('Recibiendo solicitud para obtener productos en promoción');
             
-            // Verificar si 'productos' es un arreglo
-            if (Array.isArray(productos)) {
-                resp.json(productos);  // Solo devolver si es un arreglo
-            } else {
-                resp.status(500).json({ message: 'Los datos obtenidos no son un arreglo' });
-            }
-        } catch (error) {
-            console.error('Error al obtener productos en promoción:', error);
-            resp.status(500).json({ message: 'Error al obtener productos en promoción', error });
-        }
-    }
+            // Consulta SQL para obtener productos en promoción
+            const productos = await pool.query('SELECT * FROM Productos WHERE EnPromocion = 1 and CantidadDisponible > 5');
+            
+            console.log('Productos obtenidos:', productos); // Añadir log de los productos obtenidos
     
-}
+            // Verifica si 'productos' es un arreglo y si tiene elementos
+            if (Array.isArray(productos) && productos.length > 0) {
+                resp.json(productos);  
+            } else {
+                console.error('No se encontraron productos en promoción');
+                resp.status(404).json({ message: 'No se encontraron productos en promoción' });
+            }
+        } catch (error: unknown) {
+            // Verificar si el error es una instancia de Error
+            if (error instanceof Error) {
+                console.error('Error al obtener productos en promoción:', error.message);
+                resp.status(500).json({ message: 'Error al obtener productos en promoción', error: error.message });
+            } else {
+                // Si el error no es un Error conocido, devolvemos un mensaje genérico
+                console.error('Error desconocido:', error);
+                resp.status(500).json({ message: 'Error desconocido', error });
+            }   
+        }
+    }    
 
+}
 const productoController = new ProductoController();
 export default productoController;

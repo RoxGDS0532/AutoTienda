@@ -60,7 +60,7 @@ constructor(
   this.contexto = new ContextoProducto(
     new Disponible(this.productoService), 
     this.productoService,
-    this.productosRecomendadosService.obtenerRecomendaciones,  
+    this.productosRecomendadosService,  
     this.proveedorService,
     this.categoriaService
   );

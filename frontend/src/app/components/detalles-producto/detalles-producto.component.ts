@@ -33,8 +33,7 @@ export class DetallesProductoComponent implements OnInit {
   categorias: Categoria[] = [];
   proveedores: Proveedor[] = []; 
   productosRecomendados: ProductoRecomendado[] = []; 
-  
-
+  productosDelProveedor: { [proveedorId: number]: ProductoRecomendado[] } = {};
   contexto: ContextoProducto;
   sugerencia: string | null = null;
   mostrarRecomendaciones = false;
@@ -95,8 +94,17 @@ export class DetallesProductoComponent implements OnInit {
         const estadoAgotado = this.contexto['estado'] as Agotado;
         estadoAgotado.setProducto(producto);
         estadoAgotado.cargarProductosRecomendados().subscribe(
-          productosRecomendados => {
-            this.productosRecomendados = productosRecomendados;  
+          productosPorProveedor => {
+            // Ahora 'productosPorProveedor' es un objeto con la estructura { proveedorId: Producto[] }
+            this.productosRecomendados = []; // Reinicia la lista de productos recomendados
+            // Iteramos sobre los proveedores y sus productos
+            for (const proveedorId in productosPorProveedor) {
+              const productosDelProveedor = productosPorProveedor[proveedorId];
+              console.log(`Productos recomendados del proveedor ${proveedorId}:`, productosDelProveedor);
+              
+              // Puedes agregar los productos recomendados por proveedor a la lista general
+              this.productosRecomendados.push(...productosDelProveedor);
+            }
             this.sugerencia = estadoAgotado.sugerirAccion();
             this.mostrarRecomendaciones = true;
           },
@@ -121,10 +129,6 @@ export class DetallesProductoComponent implements OnInit {
       console.error('Producto es null');
     }
   }
-  
-  
-  
-
   
 
   generarSugerencia(producto: Producto): void {
@@ -227,10 +231,6 @@ export class DetallesProductoComponent implements OnInit {
     this.abrirModalAgregar(productoTransformado);
   }
   
-  
-  
-  
-
   agregarProducto(): void {
     if (this.productoR) {
       console.log('Producto a agregar:', this.productoR);

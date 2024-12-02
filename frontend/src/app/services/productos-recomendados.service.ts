@@ -9,6 +9,7 @@ export interface ProductoRecomendado {
   precio: number;
   imagenUrl?: string; 
   CodigoBarras?: string; 
+  id_proveedor: number;
 }
 
 @Injectable({

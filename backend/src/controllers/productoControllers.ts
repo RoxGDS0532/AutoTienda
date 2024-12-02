@@ -4,9 +4,6 @@ import axios from 'axios';
 
 class ProductoController {
 
-    private googleAPIKey = 'AIzaSyB67d-9zvUMLVvnDpOEBEVXXjtPQs6VOSU'; // clave de API
-    private searchEngineId = '95b22fc4523ca4cec'; // Tu ID del motor de búsqueda
-
     public async getOneByCodigoBarras(req: Request, resp: Response): Promise<void> {
         const { codigoBarras } = req.params;
         try {
@@ -120,32 +117,6 @@ class ProductoController {
         }
     }
 
-    // Método para obtener productos similares
-    public async obtenerProductosSimilares(req: Request, res: Response): Promise<void> {
-        const { nombreProducto } = req.query; 
-        if (!nombreProducto) {
-          res.status(400).json({ message: 'El nombre del producto es obligatorio' });
-          return;
-        }
-      
-        const query = `${nombreProducto} producto similar`; 
-        const url = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query)}&key=${this.googleAPIKey}&cx=${this.searchEngineId}`;
-      
-        try {
-          const response = await axios.get(url); 
-          const resultados = response.data.items.map((item: any) => ({
-            titulo: item.title,
-            enlace: item.link,
-            descripcion: item.snippet,
-            imagen: item.pagemap?.cse_image?.[0]?.src || '', 
-          }));
-      
-          res.json(resultados); 
-        } catch (error) {
-          console.error('Error al buscar productos similares:', error);
-          res.status(500).json({ message: 'Error al obtener productos similares', error });
-        }
-      }
       
       public async getProductosEnPromocion(req: Request, resp: Response): Promise<void> {
         try {

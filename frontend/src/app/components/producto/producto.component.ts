@@ -10,10 +10,12 @@ import { PorAgotarse } from '../../state-producto/porAgotarse.estado';
 import { Disponible } from '../../state-producto/disponible.estado';
 import { ContextoProducto } from '../../state-producto/contexto';
 import { EstadoProducto } from '../../state-producto/producto.interface';
+import { ProveedorService } from '../../services/proveedor.service';
 import { ToastrService } from 'ngx-toastr';
 import * as bootstrap from 'bootstrap';
 import { Router } from '@angular/router';
 import { ProductosRecomendadosService } from '../../services/productos-recomendados.service';
+import { SugerenciasService } from '../../services/sugerencias.service';
 
 @Component({
   selector: 'app-producto',
@@ -21,7 +23,7 @@ import { ProductosRecomendadosService } from '../../services/productos-recomenda
   imports: [FormsModule, HttpClientModule, CommonModule],
   templateUrl: './producto.component.html',
   styleUrls: ['./producto.component.css'],
-  providers: [ProductoService, CategoriaService, CategoryFilterPipe]
+  providers: [ProductoService, CategoriaService, CategoryFilterPipe,ProveedorService]
 })
 
 export class ProductoComponent implements OnInit {
@@ -36,6 +38,7 @@ export class ProductoComponent implements OnInit {
   productosPorAgotarse: Producto[] = [];
   productosDisponibles: Producto[] = [];
   contexto: ContextoProducto;
+  
 
 verDetalleProducto(id: number | undefined): void {
   if (id !== undefined) {
@@ -50,9 +53,15 @@ verDetalleProducto(id: number | undefined): void {
     private categoriaService: CategoriaService,
     private toastr: ToastrService,
     private router:Router,
+    private proveedorService: ProveedorService,
     private productosRecomendadosService: ProductosRecomendadosService,
-    
-  ) {this.contexto = new ContextoProducto(new Disponible(), this.productosRecomendadosService)}
+    private sugerenciasService: SugerenciasService
+  ) {this.contexto = new ContextoProducto(
+    new Disponible(),
+    this.productosRecomendadosService,
+    this.proveedorService,
+    this.categoriaService
+  );}
 
   ngOnInit(): void {
     this.cargarProductos();
@@ -63,7 +72,7 @@ verDetalleProducto(id: number | undefined): void {
     if (producto.CantidadDisponible === 0) {
       this.contexto.setEstado(new Agotado(this.productosRecomendadosService));
     } else if (producto.CantidadDisponible > 0 && producto.CantidadDisponible <= 5) {
-      this.contexto.setEstado(new PorAgotarse());
+      this.contexto.setEstado(new PorAgotarse(this.proveedorService, this.sugerenciasService));
     } else {
       this.contexto.setEstado(new Disponible());
     }

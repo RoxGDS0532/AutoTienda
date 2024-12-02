@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Producto, ProductoService } from '../../services/producto.service';
-import { ProductoSimilar } from '../../services/producto.service'; 
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common'
 import { Agotado } from '../../state-producto/agotado.estado'
@@ -14,9 +13,7 @@ import { Categoria, CategoriaService } from '../../services/categoria.service';
 import { SugerenciasService } from '../../services/sugerencias.service';
 import { ProveedorService, Proveedor } from '../../services/proveedor.service';
 import { ProductosRecomendadosService, ProductoRecomendado } from '../../services/productos-recomendados.service';
-import { HttpClientModule } from '@angular/common/http';
-import { EstadoProducto } from '../../state-producto/producto.interface';
-import { CategoryFilterPipe } from '../../category-filter.pipe'; 
+
 
 @Component({
   selector: 'app-detalles-producto',
@@ -50,9 +47,15 @@ export class DetallesProductoComponent implements OnInit {
     private sugerenciasService: SugerenciasService,
     private categoriaService: CategoriaService,
     private proveedorService: ProveedorService,
+    private porAgotarse: PorAgotarse,
     private productosRecomendadosService: ProductosRecomendadosService,
   ) {
-    this.contexto = new ContextoProducto(new Disponible(), this.productosRecomendadosService);
+    this.contexto = new ContextoProducto(
+      new Disponible(),
+      this.productosRecomendadosService,
+      this.proveedorService,
+      this.categoriaService
+    );
   }
 
   ngOnInit(): void {
@@ -105,17 +108,12 @@ export class DetallesProductoComponent implements OnInit {
           }
         );
       } else if (this.contexto['estado'] instanceof PorAgotarse) {
-        const sugerencia = this.sugerenciasService.generateSugerencias(producto);
-        if (sugerencia) {
-          this.sugerencias = [sugerencia];
-          this.mostrarSugerencias = true;
-        } else {
-          console.error('No se pudo generar sugerencias iniciales');
-          this.mostrarSugerencias = false;
-        }
+        const estadoPorAgotarse = this.contexto['estado'] as PorAgotarse;
+        estadoPorAgotarse.generarSugerencia(producto);
+        this.sugerencia = estadoPorAgotarse.sugerirAccion();
+        this.mostrarSugerencias = true;
       } else {
         this.sugerencia = this.contexto.sugerirAccion();
-        this.mostrarRecomendaciones = false;
       }
     } else {
       console.error('Producto es null');
@@ -123,55 +121,20 @@ export class DetallesProductoComponent implements OnInit {
   }
   
   
-  
 
-  
-
-  generarSugerencia(producto: Producto): void {
-    const nuevaSugerencia = this.sugerenciasService.generateSugerencias(producto);
-    if (nuevaSugerencia) {
-      this.sugerencias = [nuevaSugerencia];
-      this.mostrarSugerencias = true;
-    } else {
-      this.mostrarSugerencias = false;
-      console.error('No se pudo generar una sugerencia');
-    }
-  }
 
   aceptarSugerencia(sugerencia: any): void {
+    this.porAgotarse.aceptarSugerencia(sugerencia);
     console.log('Sugerencia aceptada:', sugerencia);
-  
-    // Actualizar estado del producto
-    this.contexto.setEstado(new Disponible());
-    this.mostrarSugerencias = false;
-    this.sugerencias = []; // Limpiar sugerencias
-  
-    // Mostrar mensaje de espera
-    this.mensaje = `En espera de surtir el producto "${sugerencia.productoNombre}".`;
   }
 
   rechazarSugerencia(sugerencia: any): void {
-    const index = this.sugerencias.findIndex((s: any) => s === sugerencia);
-
-    if (index > -1) {
-      this.sugerencias.splice(index, 1);
-    }
-  
-    if (this.sugerencias.length === 0) {
-      const nuevaSugerencia = this.sugerenciasService.generarMultiplesSugerencias({
-        Id: sugerencia.productoId,
-        Nombre: sugerencia.productoNombre,
-        CategoriaId: sugerencia.productoCategoriaId,
-        Precio: 0,
-        CantidadDisponible: 0,
-        CodigoBarras: '',
-      });
-  
-      this.sugerencias = nuevaSugerencia;
-      this.mostrarSugerencias = this.sugerencias.length > 0;
-    }
+    this.porAgotarse.rechazarSugerencia(sugerencia);
+    console.log('Sugerencia rechazada:', sugerencia);
   }
+
   
+
 
   obtenerProveedorPorCategoria(categoriaId: number): Proveedor | undefined {
     return this.proveedores.find(proveedor => proveedor.Id === categoriaId);

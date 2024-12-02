@@ -8,7 +8,7 @@ import { CategoriaService, Categoria } from '../../services/categoria.service';
 import { Agotado } from '../../state-producto/agotado.estado';
 import { PorAgotarse } from '../../state-producto/porAgotarse.estado';
 import { Disponible } from '../../state-producto/disponible.estado';
-
+import { ProductosRecomendadosService } from '../../services/productos-recomendados.service';
 import { EstadoProducto } from '../../state-producto/producto.interface';
 import { CategoryFilterPipe } from '../../category-filter.pipe'; // Asegúrate de importar tu pipe
 import { ContextoProducto } from '../../state-producto/contexto';
@@ -33,7 +33,8 @@ export class SurtirComponent implements OnInit {
     private productoService: ProductoService,
     private proveedorService: ProveedorService,
     private categoriaService: CategoriaService,
-  ) {this.contexto = new ContextoProducto(new Disponible());}
+    private productosRecomendadosService: ProductosRecomendadosService,
+  ) {this.contexto = new ContextoProducto(new Disponible(), this.productosRecomendadosService);}
 
   ngOnInit(): void {
     this.cargarProductos();
@@ -47,13 +48,13 @@ export class SurtirComponent implements OnInit {
   let estado: EstadoProducto;
 
   if (this.contexto['estado'] instanceof Agotado) {
-    estado = new Agotado();
+    estado = new Agotado(this.productosRecomendadosService);
   } else if (this.contexto['estado'] instanceof PorAgotarse) {
     estado = new PorAgotarse();
   } else {
     estado = new Disponible();
   }
-    const contexto = new ContextoProducto(estado);
+    const contexto = new ContextoProducto(estado, this.productosRecomendadosService);
     producto.estado = estado.constructor.name; // Almacena el estado actual
     producto.sugerencia = contexto.sugerirAccion();
   }

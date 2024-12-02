@@ -127,21 +127,25 @@
             <!-- Card de productos recomendados -->
             <div class="col-lg-6" *ngIf="mostrarRecomendaciones">
                 <h4>Productos recomendados:</h4>
-                <div *ngIf="productosRecomendados.length > 0">
-                    <div class="row">
-                        <div class="col-md-6 mb-3" *ngFor="let producto of productosRecomendados">
-                            <div class="card">
-                                <img [src]="producto.imagenUrl" alt="{{ producto.nombre }}" class="card-img-top">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ producto.nombre }}</h5>
-                                    <p class="card-text">Precio: {{ producto.precio | currency }}</p>
-                                    <button class="btn btn-primary" (click)="seleccionarProducto(producto)">Agregar Producto</button>
-                                </div>
-                            </div>
+                <div *ngIf="productosRecomendados.length > 0; else noRecomendaciones">
+                  <div class="row">
+                    <div class="col-md-6 mb-3" *ngFor="let producto of productosRecomendados">
+                      <div class="card">
+                        <img [src]="producto.imagenUrl" alt="{{ producto.nombre }}" class="card-img-top">
+                        <div class="card-body">
+                          <h5 class="card-title">{{ producto.nombre }}</h5>
+                          <p class="card-text">Precio: {{ producto.precio | currency }}</p>
+                          <button class="btn btn-primary" (click)="seleccionarProducto(producto)">Agregar Producto</button>
                         </div>
+                      </div>
                     </div>
+                  </div>
                 </div>
-            </div>
+                <ng-template #noRecomendaciones>
+                  <p>No hay productos recomendados.</p>
+                </ng-template>
+              </div>
+              
 
             <div class="container mt-5" *ngIf="mostrarSugerencias">
                 <h5 class="mb-4">Sugerencias para pedido</h5>

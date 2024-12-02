@@ -52,7 +52,7 @@ export class DetallesProductoComponent implements OnInit {
     private proveedorService: ProveedorService,
     private productosRecomendadosService: ProductosRecomendadosService,
   ) {
-    this.contexto = new ContextoProducto(new Disponible());
+    this.contexto = new ContextoProducto(new Disponible(), this.productosRecomendadosService);
   }
 
   ngOnInit(): void {
@@ -65,7 +65,6 @@ export class DetallesProductoComponent implements OnInit {
     }
     this.cargarCategorias();
     this.cargarProveedores();
-    this.cargarProductosRecomendados();
   }
 
   obtenerProducto(id: number): void {
@@ -74,7 +73,6 @@ export class DetallesProductoComponent implements OnInit {
         console.log('Producto obtenido:', producto);
         this.producto = producto;
         this.actualizarEstado(this.producto);
-        this.cargarProductosRecomendados();
       },
       error: (error) => {
         console.error('Error al obtener el producto:', error);
@@ -89,22 +87,44 @@ export class DetallesProductoComponent implements OnInit {
     });
   }
 
-  actualizarEstado(producto: Producto): void {
-    this.contexto.verificarEstado(producto);  
-
-    if (this.contexto['estado'] instanceof Agotado) {
-      this.mostrarRecomendaciones = true;
-      this.cargarProductosRecomendados();
-    }  else if (this.contexto['estado'] instanceof PorAgotarse) {
-      const nuevaSugerencia = this.sugerenciasService.generateSugerencias(producto);
-      if (nuevaSugerencia) {
-          this.sugerencias = [nuevaSugerencia];
+  actualizarEstado(producto: Producto | null): void {
+    if (producto !== null) {
+      this.contexto.verificarEstado(producto);
+  
+      if (this.contexto['estado'] instanceof Agotado) {
+        const estadoAgotado = this.contexto['estado'] as Agotado;
+        estadoAgotado.setProducto(producto);
+        estadoAgotado.cargarProductosRecomendados().subscribe(
+          productosRecomendados => {
+            this.productosRecomendados = productosRecomendados;  
+            this.sugerencia = estadoAgotado.sugerirAccion();
+            this.mostrarRecomendaciones = true;
+          },
+          error => {
+            console.error('Error al cargar productos recomendados:', error);
+          }
+        );
+      } else if (this.contexto['estado'] instanceof PorAgotarse) {
+        const sugerencia = this.sugerenciasService.generateSugerencias(producto);
+        if (sugerencia) {
+          this.sugerencias = [sugerencia];
           this.mostrarSugerencias = true;
+        } else {
+          console.error('No se pudo generar sugerencias iniciales');
+          this.mostrarSugerencias = false;
+        }
       } else {
-          console.warn('No se generó ninguna sugerencia para el producto:', producto.Nombre);
+        this.sugerencia = this.contexto.sugerirAccion();
+        this.mostrarRecomendaciones = false;
       }
+    } else {
+      console.error('Producto es null');
+    }
   }
-  }
+  
+  
+  
+
   
 
   generarSugerencia(producto: Producto): void {
@@ -150,23 +170,6 @@ export class DetallesProductoComponent implements OnInit {
       this.sugerencias = nuevaSugerencia;
       this.mostrarSugerencias = this.sugerencias.length > 0;
     }
-  }
-  
-
-  cargarProductosRecomendados(): void {
-    this.productosRecomendadosService.obtenerProductos().subscribe(
-      (productoRecomendado) => {
-        console.log('Productos recomendados obtenidos:', productoRecomendado);
-        if (this.producto) {
-          this.productosRecomendados = productoRecomendado.filter(producto =>
-            producto.categoria_id === this.producto?.CategoriaId
-          );
-        }
-      },
-      (error) => {
-        console.error('Error al obtener productos recomendados:', error);
-      }
-    );
   }
   
 

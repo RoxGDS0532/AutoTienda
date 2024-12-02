@@ -8,7 +8,8 @@ export interface Proveedor {
   Contacto?: string;      // Nombre de contacto (opcional)
   Telefono?: string;      // Número de teléfono (opcional)
   Email?: string;
-  CategoriaId:number;         // Correo electrónico (opcional)
+  CategoriaId:number;
+  NombreProveedor:string         // Correo electrónico (opcional)
 }
 
 @Injectable({
@@ -35,12 +36,15 @@ export class ProveedorService {
   }  
 
   // Eliminar un proveedor
-  public eliminarProveedor(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  eliminarProveedor(Id: number): Observable<any> {
+    const url = `http://localhost:3000/proveedor/${Id}`;
+    return this.http.delete(url);
   }
 
   // Obtener un proveedor específico
-  public obtenerProveedor(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  public obtenerProveedor(): Observable<Proveedor[]> {
+    return this.http.get<Proveedor[]>(`${this.apiUrl}`);
   }
+
+
 }

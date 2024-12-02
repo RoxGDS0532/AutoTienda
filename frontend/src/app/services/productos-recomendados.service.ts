@@ -9,6 +9,7 @@ export interface ProductoRecomendado {
   precio: number;
   imagenUrl?: string; 
   CodigoBarras?: string; 
+  id_proveedor: number;
 }
 
 @Injectable({
@@ -24,7 +25,7 @@ export class ProductosRecomendadosService {
     return this.http.get<ProductoRecomendado[]>(this.apiUrl);
   }
 
-  obtenerProductosRecomendadosPorCategoria(categoriaId: number): Observable<ProductoRecomendado[]> {
+  obtenerRecomendaciones(categoriaId: number): Observable<ProductoRecomendado[]> {
     return this.http.get<ProductoRecomendado[]>(`${this.apiUrl}?categoriaId=${categoriaId}`);
   }
 

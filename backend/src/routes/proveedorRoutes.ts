@@ -11,7 +11,7 @@ class ProveedorRoutes {
     config(): void {
         this.router.get('/', proveedorController.list.bind(proveedorController)); // Usar bind
         this.router.post('/', proveedorController.create.bind(proveedorController)); // Usar bind
-        this.router.delete('/:Id',proveedorController.create.bind(proveedorController));        
+        this.router.delete('/:Id', proveedorController.delete.bind(proveedorController));
         this.router.put('/:Id', proveedorController.update.bind(proveedorController)); // Usar bind
     }
 }

@@ -32,28 +32,47 @@ export class SugerenciasService {
     });
   }
 
-  // Generar sugerencias de productos basadas en la disponibilidad de proveedores
   generateSugerencias(producto: Producto): any | null {
-    // Encontrar un proveedor adecuado para la categoría del producto
     const proveedor = this.obtenerProveedorPorCategoria(producto.CategoriaId);
-  
     if (proveedor) {
-      // Generar nueva sugerencia
       const cantidadPropuesta = this.randomInRange(10, 80);
-      const sugerencia = {
+      return {
         productoId: producto.Id,
         productoNombre: producto.Nombre,
+        proveedorNombreProveedor: proveedor.NombreProveedor,
         proveedorId: proveedor.Id,
+        proveedorNombre: proveedor.Nombre,
         cantidadPropuesta: cantidadPropuesta,
         productoCategoriaId: producto.CategoriaId,
       };
-      return sugerencia;
     } else {
-      console.error(
-        `No hay proveedores disponibles para la categoría del producto: ${producto.Nombre}`
-      );
-      return null; // Indica que no hay sugerencias válidas
+      console.error(`No hay proveedores disponibles para la categoría del producto: ${producto.Nombre}`);
+      return null;
     }
+  }
+
+  
+
+  generarMultiplesSugerencias(producto: Producto): any[] {
+    const sugerencias: any[] = [];
+    const proveedoresCategoria = this.proveedores.filter(
+      (proveedor) => proveedor.CategoriaId === producto.CategoriaId
+    );
+  
+    proveedoresCategoria.forEach((proveedor) => {
+      const cantidadPropuesta = this.randomInRange(10, 80);
+      sugerencias.push({
+        productoId: producto.Id,
+        productoNombre: producto.Nombre,
+        proveedorNombreProveedor: proveedor.NombreProveedor,
+        proveedorId: proveedor.Id,
+        proveedorNombre: proveedor.Nombre,
+        cantidadPropuesta: cantidadPropuesta,
+        productoCategoriaId: producto.CategoriaId,
+      });
+    });
+  
+    return sugerencias;
   }
   
   // Función para generar un número aleatorio dentro de un rango

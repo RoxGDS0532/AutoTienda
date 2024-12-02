@@ -120,37 +120,46 @@
             <!-- Card de productos recomendados -->
             <div class="col-lg-6" *ngIf="mostrarRecomendaciones">
                 <h4>Productos recomendados:</h4>
-                <div *ngIf="productosRecomendados.length > 0">
-                    <div class="row">
-                        <div class="col-md-6 mb-3" *ngFor="let producto of productosRecomendados">
-                            <div class="card">
-                                <img [src]="producto.imagenUrl" alt="{{ producto.nombre }}" class="card-img-top">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ producto.nombre }}</h5>
-                                    <p class="card-text">Precio: {{ producto.precio | currency }}</p>
-                                    <button class="btn btn-primary" (click)="seleccionarProducto(producto)">Agregar Producto</button>
-                                </div>
-                            </div>
+                <div *ngIf="productosRecomendados.length > 0; else noRecomendaciones">
+                  <div class="row">
+                    <div class="col-md-6 mb-3" *ngFor="let producto of productosRecomendados">
+                      <div class="card">
+                        <img [src]="producto.imagenUrl" alt="{{ producto.nombre }}" class="card-img-top">
+                        <div class="card-body">
+                          <h5 class="card-title">{{ producto.nombre }}</h5>
+                          <p class="card-text">Precio: {{ producto.precio | currency }}</p>
+                          <button class="btn btn-primary" (click)="seleccionarProducto(producto)">Agregar Producto</button>
                         </div>
+                      </div>
                     </div>
+                  </div>
                 </div>
-            </div>
+                <ng-template #noRecomendaciones>
+                  <p>No hay productos recomendados.</p>
+                </ng-template>
+              </div>              
 
             <div class="container mt-5" *ngIf="mostrarSugerencias">
                 <h5 class="mb-4">Sugerencias para pedido</h5>
                 <div *ngFor="let sugerencia of sugerencias" class="card p-3 mb-3 shadow-sm">
-                    <p>Producto: <strong>{{ sugerencia.productoNombre }}</strong></p>
-                    <p>Cantidad propuesta: <strong>{{ sugerencia.cantidadPropuesta }}</strong></p>
-                    <select [(ngModel)]="sugerencia.proveedorId" class="form-control">
-                        <option value="">Seleccionar Proveedor</option>
-                        <option *ngFor="let proveedor of proveedores" [value]="proveedor.Id">{{ proveedor.Nombre }}</option>
-                    </select>
-                    <div class="d-flex justify-content-between mt-2">
-                        <button class="btn btn-success" (click)="aceptarSugerencia(sugerencia)">Aceptar Sugerencia</button>
-                        <button class="btn btn-danger" (click)="rechazarSugerencia(sugerencia)">Rechazar Sugerencia</button>
-                    </div>
+                  <p>Producto: <strong>{{ sugerencia.productoNombre }}</strong></p>
+                  <p>Cantidad propuesta: <strong>{{ sugerencia.cantidadPropuesta }}</strong></p>
+                  <p>Proveedor: <strong>{{ sugerencia.proveedorNombre }}</strong></p>
+                  <p>Nombre del Proveedor: <strong>{{ sugerencia.proveedorNombreProveedor }}</strong></p>
+                  <select [(ngModel)]="sugerencia.proveedorId" class="form-control">
+                    <option value="">Seleccionar Proveedor</option>
+                    <option *ngFor="let proveedor of proveedores" [value]="proveedor.Id">{{ proveedor.Nombre }}</option>
+                  </select>
+                  <div class="d-flex justify-content-between mt-2">
+                    <button class="btn btn-success" (click)="aceptarSugerencia(sugerencia)">Aceptar Sugerencia</button>
+                    <button class="btn btn-danger" (click)="rechazarSugerencia(sugerencia)">Rechazar Sugerencia</button>
+                  </div>
                 </div>
-            </div>
+                <p *ngIf="mensaje" class="alert alert-info mt-3">{{ mensaje }}</p>
+              </div>
+              
+
+
         </div>
     </div>
 

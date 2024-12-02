@@ -33,14 +33,14 @@ export class DetallesProductoComponent implements OnInit {
   categorias: Categoria[] = [];
   proveedores: Proveedor[] = []; 
   productosRecomendados: ProductoRecomendado[] = []; 
-  
-
+  productosDelProveedor: { [proveedorId: number]: ProductoRecomendado[] } = {};
   contexto: ContextoProducto;
   sugerencia: string | null = null;
   mostrarRecomendaciones = false;
   sugerencias: any | null = null;
   mostrarSugerencias = false;
   sugerenciass: any[] = []; 
+  mensaje: string = '';
   
   constructor(
     private productoService: ProductoService,
@@ -53,7 +53,8 @@ export class DetallesProductoComponent implements OnInit {
   ) {
     this.contexto = new ContextoProducto(
       new Disponible(this.productoService),  // EstadoProducto (como 'Disponible')
-      this.productoService                  // ProductoService
+      this.productoService,
+      this.productosRecomendadosService
     );
   }
 
@@ -67,7 +68,6 @@ export class DetallesProductoComponent implements OnInit {
     }
     this.cargarCategorias();
     this.cargarProveedores();
-    this.cargarProductosRecomendados();
   }
 
   obtenerProducto(id: number): void {
@@ -76,7 +76,6 @@ export class DetallesProductoComponent implements OnInit {
         console.log('Producto obtenido:', producto);
         this.producto = producto;
         this.actualizarEstado(this.producto);
-        this.cargarProductosRecomendados();
       },
       error: (error) => {
         console.error('Error al obtener el producto:', error);
@@ -91,21 +90,47 @@ export class DetallesProductoComponent implements OnInit {
     });
   }
 
-  actualizarEstado(producto: Producto): void {
-    this.contexto.verificarEstado(producto);  
-
-    if (this.contexto['estado'] instanceof Agotado) {
-      this.mostrarRecomendaciones = true;
-      this.cargarProductosRecomendados();
-    } else if (this.contexto['estado'] instanceof PorAgotarse) {
-      const sugerencia = this.sugerenciasService.generateSugerencias(producto);
-      if (sugerencia) {
-        this.sugerencias = [sugerencia];
-        this.mostrarSugerencias = true;
+  actualizarEstado(producto: Producto | null): void {
+    if (producto !== null) {
+      this.contexto.verificarEstado(producto);
+  
+      if (this.contexto['estado'] instanceof Agotado) {
+        const estadoAgotado = this.contexto['estado'] as Agotado;
+        estadoAgotado.setProducto(producto);
+        estadoAgotado.cargarProductosRecomendados().subscribe(
+          productosPorProveedor => {
+            // Ahora 'productosPorProveedor' es un objeto con la estructura { proveedorId: Producto[] }
+            this.productosRecomendados = []; // Reinicia la lista de productos recomendados
+            // Iteramos sobre los proveedores y sus productos
+            for (const proveedorId in productosPorProveedor) {
+              const productosDelProveedor = productosPorProveedor[proveedorId];
+              console.log(`Productos recomendados del proveedor ${proveedorId}:, productosDelProveedor`);
+              
+              // Puedes agregar los productos recomendados por proveedor a la lista general
+              this.productosRecomendados.push(...productosDelProveedor);
+            }
+            this.sugerencia = estadoAgotado.sugerirAccion();
+            this.mostrarRecomendaciones = true;
+          },
+          error => {
+            console.error('Error al cargar productos recomendados:', error);
+          }
+        );
+      } else if (this.contexto['estado'] instanceof PorAgotarse) {
+        const sugerencia = this.sugerenciasService.generateSugerencias(producto);
+        if (sugerencia) {
+          this.sugerencias = [sugerencia];
+          this.mostrarSugerencias = true;
+        } else {
+          console.error('No se pudo generar sugerencias iniciales');
+          this.mostrarSugerencias = false;
+        }
       } else {
-        console.error('No se pudo generar sugerencias iniciales');
-        this.mostrarSugerencias = false;
+        this.sugerencia = this.contexto.sugerirAccion();
+        this.mostrarRecomendaciones = false;
       }
+    } else {
+      console.error('Producto es null');
     }
   }
   
@@ -123,52 +148,36 @@ export class DetallesProductoComponent implements OnInit {
 
   aceptarSugerencia(sugerencia: any): void {
     console.log('Sugerencia aceptada:', sugerencia);
-    this.mostrarSugerencias = false; // Ocultar las sugerencias
+  
+    // Actualizar estado del producto
+    this.contexto.setEstado(new Disponible());
+    this.mostrarSugerencias = false;
     this.sugerencias = []; // Limpiar sugerencias
-    // Lógica adicional para procesar la sugerencia aceptada
+  
+    // Mostrar mensaje de espera
+    this.mensaje =` En espera de surtir el producto "${sugerencia.productoNombre}".`;
   }
 
   rechazarSugerencia(sugerencia: any): void {
     const index = this.sugerencias.findIndex((s: any) => s === sugerencia);
 
     if (index > -1) {
-      // Eliminar sugerencia rechazada
       this.sugerencias.splice(index, 1);
     }
   
-    // Generar una nueva sugerencia
-    const nuevaSugerencia = this.sugerenciasService.generateSugerencias({
-      Id: sugerencia.productoId,
-      Nombre: sugerencia.productoNombre,
-      CategoriaId: sugerencia.productoCategoriaId,
-      Precio: 0, // Asigna un valor predeterminado
-      CantidadDisponible: 0, // Asigna un valor predeterminado
-      CodigoBarras: '' // Asigna un valor predeterminado
-    });
-    
+    if (this.sugerencias.length === 0) {
+      const nuevaSugerencia = this.sugerenciasService.generarMultiplesSugerencias({
+        Id: sugerencia.productoId,
+        Nombre: sugerencia.productoNombre,
+        CategoriaId: sugerencia.productoCategoriaId,
+        Precio: 0,
+        CantidadDisponible: 0,
+        CodigoBarras: '',
+      });
   
-    if (nuevaSugerencia) {
-      this.sugerencias.push(nuevaSugerencia); // Añadir nueva sugerencia
-    } else {
-      console.error('No se pudo generar una nueva sugerencia');
+      this.sugerencias = nuevaSugerencia;
+      this.mostrarSugerencias = this.sugerencias.length > 0;
     }
-  }
-  
-
-  cargarProductosRecomendados(): void {
-    this.productosRecomendadosService.obtenerProductos().subscribe(
-      (productoRecomendado) => {
-        console.log('Productos recomendados obtenidos:', productoRecomendado);
-        if (this.producto) {
-          this.productosRecomendados = productoRecomendado.filter(producto =>
-            producto.categoria_id === this.producto?.CategoriaId
-          );
-        }
-      },
-      (error) => {
-        console.error('Error al obtener productos recomendados:', error);
-      }
-    );
   }
   
 
@@ -226,10 +235,6 @@ export class DetallesProductoComponent implements OnInit {
     this.abrirModalAgregar(productoTransformado);
   }
   
-  
-  
-  
-
   agregarProducto(): void {
     if (this.productoR) {
       console.log('Producto a agregar:', this.productoR);
@@ -243,7 +248,7 @@ export class DetallesProductoComponent implements OnInit {
           console.error('Error al agregar el producto:', error);
           this.toastr.error('Hubo un error al agregar el producto.', '¡Error!');
         }
-      });
-    }
-  }
+      });
+    }
+  }
 }

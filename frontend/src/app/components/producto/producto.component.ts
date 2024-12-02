@@ -10,9 +10,12 @@ import { PorAgotarse } from '../../state-producto/porAgotarse.estado';
 import { Disponible } from '../../state-producto/disponible.estado';
 import { ContextoProducto } from '../../state-producto/contexto';
 import { EstadoProducto } from '../../state-producto/producto.interface';
+import { ProveedorService } from '../../services/proveedor.service';
 import { ToastrService } from 'ngx-toastr';
 import * as bootstrap from 'bootstrap';
 import { Router } from '@angular/router';
+import { ProductosRecomendadosService } from '../../services/productos-recomendados.service';
+import { SugerenciasService } from '../../services/sugerencias.service';
 
 @Component({
   selector: 'app-producto',
@@ -20,7 +23,7 @@ import { Router } from '@angular/router';
   imports: [FormsModule, HttpClientModule, CommonModule],
   templateUrl: './producto.component.html',
   styleUrls: ['./producto.component.css'],
-  providers: [ProductoService, CategoriaService, CategoryFilterPipe]
+  providers: [ProductoService, CategoriaService, CategoryFilterPipe,ProveedorService]
 })
 
 export class ProductoComponent implements OnInit {
@@ -28,13 +31,14 @@ export class ProductoComponent implements OnInit {
   categorias: Categoria[] = [];
   productoSeleccionado: Producto = { Id: 0, ImagenURL:'', Nombre: '', Precio: 0, CantidadDisponible: 0, CategoriaId: 0 , CodigoBarras:''}; // Inicialización
   imagenFile: File | null = null; 
-  productosFiltrados: Producto[] = []; // Lista de productos filtrados
-  categoriaSeleccionada: number = 0; // ID de la categoría seleccionada
+  productosFiltrados: Producto[] = []; 
+  categoriaSeleccionada: number = 0; 
   busquedaProducto: string = '';
   productosAgotados: Producto[] = [];
   productosPorAgotarse: Producto[] = [];
   productosDisponibles: Producto[] = [];
   contexto: ContextoProducto;
+  
 
 verDetalleProducto(id: number | undefined): void {
   if (id !== undefined) {
@@ -49,10 +53,16 @@ verDetalleProducto(id: number | undefined): void {
     private categoriaService: CategoriaService,
     private toastr: ToastrService,
     private router:Router,
+    private proveedorService: ProveedorService,
+    private productosRecomendadosService: ProductosRecomendadosService,
+    private sugerenciasService: SugerenciasService
     
   ) { this.contexto = new ContextoProducto(
-    new Disponible(this.productoService),  // EstadoProducto (como 'Disponible')
-    this.productoService                  // ProductoService
+    new Disponible(this.productoService), 
+    this.productoService,
+    this.productosRecomendadosService,
+    this.proveedorService,
+    this.categoriaService
   );}
 
   ngOnInit(): void {
@@ -62,9 +72,9 @@ verDetalleProducto(id: number | undefined): void {
 
   evaluarEstado(producto: Producto): void {
     if (producto.CantidadDisponible === 0) {
-      this.contexto.setEstado(new Agotado());
+      this.contexto.setEstado(new Agotado(this.productosRecomendadosService));
     } else if (producto.CantidadDisponible > 0 && producto.CantidadDisponible <= 5) {
-      this.contexto.setEstado(new PorAgotarse());
+      this.contexto.setEstado(new PorAgotarse(this.proveedorService, this.sugerenciasService));
     } else {
       this.contexto.setEstado(new Disponible(this.productoService));
     }

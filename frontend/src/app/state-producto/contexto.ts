@@ -1,5 +1,5 @@
 import { EstadoProducto } from './producto.interface';
-import { Producto } from '../services/producto.service';
+import { Producto, ProductoService } from '../services/producto.service';
 import { Agotado } from './agotado.estado';
 import { Disponible } from './disponible.estado';
 import { PorAgotarse } from './porAgotarse.estado';
@@ -11,17 +11,20 @@ export class ContextoProducto {
   private productosRecomendadosService: ProductosRecomendadosService;
   private proveedorService: ProveedorService;
   private sugerenciasService: any;
+  private productoService:ProductoService;
   
   constructor(
     estado: EstadoProducto,
     productosRecomendadosService: ProductosRecomendadosService,
     proveedorService: ProveedorService,
+    productoService:ProductoService,
     sugerenciasService: any
   ) {
     this.estado = estado;
     this.productosRecomendadosService = productosRecomendadosService;
     this.proveedorService = proveedorService;
     this.sugerenciasService = sugerenciasService;
+    this.productoService=productoService;
   }
 
   setEstado(estado: EstadoProducto): void {
@@ -35,14 +38,15 @@ export class ContextoProducto {
     } else if (producto.CantidadDisponible > 0 && producto.CantidadDisponible <= 5) {
       this.estado = new PorAgotarse(this.proveedorService, this.sugerenciasService); 
     } else {
-      this.estado = new Disponible(); 
+      this.setEstado(new Disponible(this.productoService));
     }
+    this.estado.verificarEstado(producto);
   }
 
-
-  sugerirAccion(): string {
-    return this.estado.sugerirAccion();
-  }
+  sugerirAccion(producto: Producto): void {
+    return this.estado.sugerirAccion(producto);
+  }
 
   
+
 }

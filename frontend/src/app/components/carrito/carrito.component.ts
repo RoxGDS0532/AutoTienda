@@ -8,7 +8,8 @@ import { Producto, ProductoService } from '../../services/producto.service';
 import { DetalleVentaSinID, Venta, VentasService } from '../../services/ventas.service';
 import { FacturaService } from '../../services/factura.service';
 import { ToastrService } from 'ngx-toastr';
-
+import { Categoria, CategoriaService } from '../../services/categoria.service';
+import { Disponible } from '../../state-producto/disponible.estado';
 
 declare var paypal:any;
 @Component({
@@ -16,7 +17,8 @@ declare var paypal:any;
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './carrito.component.html',
-  styleUrl: './carrito.component.css'
+  styleUrl: './carrito.component.css',
+  
 })
 export class CarritoComponent implements OnInit {
   title = 'angular-paypal-payment'
@@ -30,7 +32,10 @@ export class CarritoComponent implements OnInit {
   codigoProductoBuscado: string = ''; // Manual
   // productoEncontrado: Producto | null = null; // Manual
   // productoBuscado: boolean = false; // Manual
-  
+  productosEnPromocion: Producto[] = [];
+  categorias: Categoria[] = [];
+  productosPorCategoria: { [categoria: string]: Producto[] } = {};
+
   @ViewChild('video') videoElement: ElementRef | undefined;
   @ViewChild('paypal', { static: true }) paypalElement!: ElementRef;
 
@@ -41,10 +46,10 @@ export class CarritoComponent implements OnInit {
     private httpclient: HttpClient,
     private facturaService: FacturaService,
     private toastr: ToastrService,
+    private categoriaService:CategoriaService
   ) {}
 
   ngOnInit(): void {
-    
     const codigoBarras = this.route.snapshot.paramMap.get('codigoBarras');
     if (codigoBarras) {
       this.buscarProductoPorCodigo(codigoBarras);
@@ -80,6 +85,38 @@ export class CarritoComponent implements OnInit {
         console.error('Error al pagar:', err);
       }
     }).render(this.paypalElement.nativeElement);
+
+
+    this.categoriaService.obtenerCategorias().subscribe((categorias) => {
+      this.categorias = categorias;
+
+      this.productoService.obtenerProductos().subscribe((productos) => {
+        this.productoService.obtenerProductosPromocion().subscribe((productosPromocion) => {
+          this.productosEnPromocion = productosPromocion;
+          this.verificarPromociones();
+          this.clasificarPorCategoria();
+        });
+      });
+    });
+  }
+
+  verificarPromociones(): void {
+    const estadoDisponible = new Disponible(this.productoService, this.productosEnPromocion);
+
+    this.productos.forEach((producto) => {
+      estadoDisponible.sugerirAccion(producto);
+    });
+  }
+
+  clasificarPorCategoria(): void {
+    this.productosEnPromocion.forEach((producto) => {
+      const categoria = this.categorias.find(c => c.Id === producto.CategoriaId)?.Nombre || 'Sin Categoría';
+
+      if (!this.productosPorCategoria[categoria]) {
+        this.productosPorCategoria[categoria] = [];
+      }
+      this.productosPorCategoria[categoria].push(producto);
+    });
   }
 
   guardarVenta(): void {

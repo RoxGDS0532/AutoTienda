@@ -113,14 +113,7 @@
                 </div>
             </div>
     
-            <!-- Sección de descuento al lado -->
-            <!-- <div *ngIf="producto">
-                <div class="col-lg-4 discount-section" *ngIf="producto.DescuentoAplicado != null && producto.DescuentoAplicado > 0">
-                  <h5>¡Descuento aplicado!</h5>
-                  <p><strong>Descuento: </strong>{{ producto.DescuentoAplicado * 100 }}%</p>
-                  <p><strong>Precio con descuento: </strong>{{ producto.PrecioConDescuento | currency }}</p>
-                </div>
-              </div> -->
+            
               
               
 
@@ -135,6 +128,11 @@
                         <div class="card-body">
                           <h5 class="card-title">{{ producto.nombre }}</h5>
                           <p class="card-text">Precio: {{ producto.precio | currency }}</p>
+                          <p class="card-text">
+                            Proveedor: 
+                            <!-- Buscar el proveedor por el id_proveedor -->
+                            {{ obtenerNombreProveedor(producto.id_proveedor) }}
+                          </p>
                           <button class="btn btn-primary" (click)="seleccionarProducto(producto)">Agregar Producto</button>
                         </div>
                       </div>
@@ -145,6 +143,7 @@
                   <p>No hay productos recomendados.</p>
                 </ng-template>
               </div>
+              
               
 
             <div class="container mt-5" *ngIf="mostrarSugerencias">

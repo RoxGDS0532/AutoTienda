@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Proveedor {
+
   Id: number;              // ID del proveedor
   Nombre: string;          // Nombre del proveedor
   Contacto?: string;       // Nombre de contacto (opcional)
@@ -23,6 +24,13 @@ export interface Producto {
   CodigoBarras?: string; 
   estado?: string; // Nombre del estado actual
   sugerencia?: string; // Recomendación basada en el estado
+       
+  Contacto?: string;     
+  Telefono?: string;      
+  Email?: string;
+
+  NombreProveedor:string         
+
 }
 
 @Injectable({

@@ -35,7 +35,9 @@ class Server{
         this.app.use('/categoria',categoriaRoutes )
         this.app.use('/solicitar',surtirRoutes)
         this.app.use('/consulta',consultasRoutes)
+
         this.app.use('/email',emailRoutes)
+
     }
     start() : void{
         console.log('Iniciando el servidor...');

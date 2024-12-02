@@ -4,9 +4,6 @@ import axios from 'axios';
 
 class ProductoController {
 
-    private googleAPIKey = 'AIzaSyB67d-9zvUMLVvnDpOEBEVXXjtPQs6VOSU'; // clave de API
-    private searchEngineId = '95b22fc4523ca4cec'; // Tu ID del motor de búsqueda
-
     public async getOneByCodigoBarras(req: Request, resp: Response): Promise<void> {
         const { codigoBarras } = req.params;
         try {
@@ -120,34 +117,36 @@ class ProductoController {
         }
     }
 
-    // Método para obtener productos similares
-    public async obtenerProductosSimilares(req: Request, res: Response): Promise<void> {
-        const { nombreProducto } = req.query; 
-        if (!nombreProducto) {
-          res.status(400).json({ message: 'El nombre del producto es obligatorio' });
-          return;
-        }
       
-        const query = `${nombreProducto} producto similar`; 
-        const url = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query)}&key=${this.googleAPIKey}&cx=${this.searchEngineId}`;
-      
+    public async getProductosEnPromocion(req: Request, resp: Response): Promise<void> {
         try {
-          const response = await axios.get(url); 
-          const resultados = response.data.items.map((item: any) => ({
-            titulo: item.title,
-            enlace: item.link,
-            descripcion: item.snippet,
-            imagen: item.pagemap?.cse_image?.[0]?.src || '', 
-          }));
-      
-          res.json(resultados); 
-        } catch (error) {
-          console.error('Error al buscar productos similares:', error);
-          res.status(500).json({ message: 'Error al obtener productos similares', error });
+            console.log('Recibiendo solicitud para obtener productos en promoción');
+            
+            // Consulta SQL para obtener productos en promoción
+            const productos = await pool.query('SELECT * FROM Productos WHERE EnPromocion = 1 and CantidadDisponible > 5');
+            
+            console.log('Productos obtenidos:', productos); // Añadir log de los productos obtenidos
+    
+            // Verifica si 'productos' es un arreglo y si tiene elementos
+            if (Array.isArray(productos) && productos.length > 0) {
+                resp.json(productos);  
+            } else {
+                console.error('No se encontraron productos en promoción');
+                resp.status(404).json({ message: 'No se encontraron productos en promoción' });
+            }
+        } catch (error: unknown) {
+            // Verificar si el error es una instancia de Error
+            if (error instanceof Error) {
+                console.error('Error al obtener productos en promoción:', error.message);
+                resp.status(500).json({ message: 'Error al obtener productos en promoción', error: error.message });
+            } else {
+                // Si el error no es un Error conocido, devolvemos un mensaje genérico
+                console.error('Error desconocido:', error);
+                resp.status(500).json({ message: 'Error desconocido', error });
+            }   
         }
-      }
-      
-}
+    }    
 
+}
 const productoController = new ProductoController();
 export default productoController;

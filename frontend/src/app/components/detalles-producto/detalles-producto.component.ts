@@ -33,7 +33,7 @@ export class DetallesProductoComponent implements OnInit {
   categorias: Categoria[] = [];
   proveedores: Proveedor[] = []; 
   productosRecomendados: ProductoRecomendado[] = []; 
-  productosDelProveedor: { [proveedorId: number]: ProductoRecomendado[] } = {};
+  productosPorProveedor: { [proveedorId: number]: ProductoRecomendado[] } = {};
   contexto: ContextoProducto;
   sugerencia: string | null = null;
   mostrarRecomendaciones = false;
@@ -41,6 +41,7 @@ export class DetallesProductoComponent implements OnInit {
   mostrarSugerencias = false;
   sugerenciass: any[] = []; 
   mensaje: string = '';
+
   
   constructor(
     private productoService: ProductoService,
@@ -49,13 +50,17 @@ export class DetallesProductoComponent implements OnInit {
     private sugerenciasService: SugerenciasService,
     private categoriaService: CategoriaService,
     private proveedorService: ProveedorService,
-    private productosRecomendadosService: ProductosRecomendadosService,
-  ) {this.contexto = new ContextoProducto(
-    new Disponible(),
-    this.productosRecomendadosService,
-    this.proveedorService,
-    this.categoriaService
-  );}
+    private productosRecomendadosService: ProductosRecomendadosService
+  ) {
+    this.contexto = new ContextoProducto(
+      new Disponible(this.productoService), 
+      this.productosRecomendadosService,  
+      this.proveedorService,
+      this.productoService,
+      this.categoriaService,
+    );
+  }
+
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -89,6 +94,11 @@ export class DetallesProductoComponent implements OnInit {
     });
   }
 
+  obtenerNombreProveedor(id: number): string {
+    const proveedor = this.proveedores.find(p => p.Id === id);
+    return proveedor ? proveedor.Nombre : 'Proveedor no encontrado';
+  }
+
   actualizarEstado(producto: Producto | null): void {
     if (producto !== null) {
       this.contexto.verificarEstado(producto);
@@ -105,8 +115,8 @@ export class DetallesProductoComponent implements OnInit {
               const productosDelProveedor = productosPorProveedor[proveedorId];
               console.log(`Productos recomendados del proveedor ${proveedorId}:`, productosDelProveedor);
               
-              // // Puedes agregar los productos recomendados por proveedor a la lista general
-              // this.productosRecomendados.push(...productosDelProveedor);
+              // Puedes agregar los productos recomendados por proveedor a la lista general
+              this.productosRecomendados.push(...productosDelProveedor);
             }
             this.sugerencia = estadoAgotado.sugerirAccion();
             this.mostrarRecomendaciones = true;
@@ -125,7 +135,7 @@ export class DetallesProductoComponent implements OnInit {
           this.mostrarSugerencias = false;
         }
       } else {
-        this.sugerencia = this.contexto.sugerirAccion();
+        //this.sugerencia = this.contexto.sugerirAccion(producto);
         this.mostrarRecomendaciones = false;
       }
     } else {
@@ -144,6 +154,7 @@ export class DetallesProductoComponent implements OnInit {
       console.error('No se pudo generar una sugerencia');
     }
   }
+
 
 
 
@@ -190,6 +201,8 @@ export class DetallesProductoComponent implements OnInit {
         this.toastr.error('Hubo un error al enviar el correo.', '¡Error!');
       },
     });
+
+
   }
 
   
@@ -235,6 +248,8 @@ export class DetallesProductoComponent implements OnInit {
     const categoria = this.categorias.find(cat => cat.Id === categoriaId);
     return categoria ? categoria.Nombre : 'Categoría no encontrada';
   }
+
+  
   
 
   limpiarFormulario() {

@@ -1,0 +1,25 @@
+<div class="productos-promocion">
+  <h2>Productos en Promoción</h2>
+
+  <div *ngIf="productosPorCategoria | keyvalue; else noProductosPromocion">
+    <div *ngFor="let categoria of productosPorCategoria | keyvalue" class="categoria">
+      <h3 class="categoria-titulo">{{ categoria.key }}</h3>
+      <div class="productos-lista">
+        <div *ngFor="let producto of categoria.value" class="producto-card">
+          <img [src]="producto.ImagenURL" alt="{{ producto.Nombre }}" class="producto-imagen" />
+          <div class="producto-detalles">
+            <h4 class="producto-nombre">{{ producto.Nombre }}</h4>
+            <p class="producto-precio-original">Precio: <span>${{ producto.Precio }}</span></p>
+            <p class="producto-precio-descuento">
+              Precio con descuento: <span>${{ producto.PrecioConDescuento }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noProductosPromocion>
+    <p>No hay productos en promoción actualmente.</p>
+  </ng-template>
+</div>

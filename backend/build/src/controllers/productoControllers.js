@@ -13,12 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../../database"));
-const axios_1 = __importDefault(require("axios"));
 class ProductoController {
-    constructor() {
-        this.googleAPIKey = 'AIzaSyB67d-9zvUMLVvnDpOEBEVXXjtPQs6VOSU'; // clave de API
-        this.searchEngineId = '95b22fc4523ca4cec'; // Tu ID del motor de búsqueda
-    }
     getOneByCodigoBarras(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
             const { codigoBarras } = req.params;
@@ -136,32 +131,33 @@ class ProductoController {
             }
         });
     }
-    // Método para obtener productos similares
-    obtenerProductosSimilares(req, res) {
+    getProductosEnPromocion(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { nombreProducto } = req.query;
-            if (!nombreProducto) {
-                res.status(400).json({ message: 'El nombre del producto es obligatorio' });
-                return;
-            }
-            const query = `${nombreProducto} producto similar`;
-            const url = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query)}&key=${this.googleAPIKey}&cx=${this.searchEngineId}`;
             try {
-                const response = yield axios_1.default.get(url);
-                const resultados = response.data.items.map((item) => {
-                    var _a, _b, _c;
-                    return ({
-                        titulo: item.title,
-                        enlace: item.link,
-                        descripcion: item.snippet,
-                        imagen: ((_c = (_b = (_a = item.pagemap) === null || _a === void 0 ? void 0 : _a.cse_image) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.src) || '',
-                    });
-                });
-                res.json(resultados);
+                console.log('Recibiendo solicitud para obtener productos en promoción');
+                // Consulta SQL para obtener productos en promoción
+                const productos = yield database_1.default.query('SELECT * FROM Productos WHERE EnPromocion = 1 and CantidadDisponible > 5');
+                console.log('Productos obtenidos:', productos); // Añadir log de los productos obtenidos
+                // Verifica si 'productos' es un arreglo y si tiene elementos
+                if (Array.isArray(productos) && productos.length > 0) {
+                    resp.json(productos);
+                }
+                else {
+                    console.error('No se encontraron productos en promoción');
+                    resp.status(404).json({ message: 'No se encontraron productos en promoción' });
+                }
             }
             catch (error) {
-                console.error('Error al buscar productos similares:', error);
-                res.status(500).json({ message: 'Error al obtener productos similares', error });
+                // Verificar si el error es una instancia de Error
+                if (error instanceof Error) {
+                    console.error('Error al obtener productos en promoción:', error.message);
+                    resp.status(500).json({ message: 'Error al obtener productos en promoción', error: error.message });
+                }
+                else {
+                    // Si el error no es un Error conocido, devolvemos un mensaje genérico
+                    console.error('Error desconocido:', error);
+                    resp.status(500).json({ message: 'Error desconocido', error });
+                }
             }
         });
     }

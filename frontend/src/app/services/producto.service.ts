@@ -15,6 +15,7 @@ export interface Producto {
   CodigoBarras?: string; 
   estado?: string; // Nombre del estado actual
   sugerencia?: string; // Recomendación basada en el estado
+  PrecioConDescuento?: number;
 }
 
 
@@ -44,9 +45,11 @@ export class ProductoService {
     return this.http.get<any[]>('http://localhost:3000/categoria'); 
   }
 
+
   obtenerProductosSimilares(nombreProducto: string): Observable<ProductoSimilar[]> {
     return this.http.get<ProductoSimilar[]>(`${this.apiUrl}/similares?nombre=${nombreProducto}`);
   }
+
 
 
 
@@ -78,5 +81,9 @@ obtenerProductoPorId(id: number): Observable<Producto> {
 
   solicitarProductos(solicitudes: any[]): Observable<any> { 
     return this.http.post(this.solicitarUrl, solicitudes);
+  }
+
+  obtenerProductosPromocion(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/promocion`);
   }
 }

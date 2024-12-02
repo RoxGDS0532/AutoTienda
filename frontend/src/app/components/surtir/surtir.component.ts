@@ -28,20 +28,14 @@ export class SurtirComponent implements OnInit {
   selectedCategoriaId: number = 0;
   productosFiltrados: (Producto & { cantidadSolicitada: number; proveedorId: number | null })[] = []; // Agregado
   sugerencias: any[] = []; // Almacena las sugerencias generadas para productos
-  contexto: ContextoProducto;
+  //contexto: ContextoProducto;
 
   constructor(
     private productoService: ProductoService,
     private proveedorService: ProveedorService,
     private categoriaService: CategoriaService,
-    private productosRecomendadosService: ProductosRecomendadosService,
-    private sugerenciasService: SugerenciasService
-  ) {this.contexto = new ContextoProducto(
-    new Disponible(),
-    this.productosRecomendadosService,
-    this.proveedorService,
-    this.categoriaService,
-  );}
+  ) {}
+  //{this.contexto = new ContextoProducto(new Disponible());}
 
   ngOnInit(): void {
     this.cargarProductos();
@@ -50,7 +44,7 @@ export class SurtirComponent implements OnInit {
     
   }
 
-  valuarEstado(producto: Producto): void {
+  /*valuarEstado(producto: Producto): void {
   this.contexto.verificarEstado(producto);
   let estado: EstadoProducto;
 
@@ -70,7 +64,7 @@ export class SurtirComponent implements OnInit {
 
     producto.estado = estado.constructor.name; // Almacena el estado actual
     producto.sugerencia = contexto.sugerirAccion();
-  }
+  }*/
 
   obtenerProveedorPorCategoria(categoriaId: number): Proveedor | undefined {
     return this.proveedores.find(proveedor => proveedor.Id === categoriaId);
@@ -81,7 +75,7 @@ export class SurtirComponent implements OnInit {
       this.proveedores = proveedores;
       this.productoService.obtenerProductos().subscribe(productos => {
         this.productos = productos.map(producto => {
-          this.valuarEstado(producto);
+          //this.valuarEstado(producto);
           return { ...producto, cantidadSolicitada: 0, proveedorId: null };
         });
         this.productosFiltrados = [...this.productos];

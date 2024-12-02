@@ -48,20 +48,24 @@ verDetalleProducto(id: number | undefined): void {
   }
 }
 
-  constructor(
-    private productoService: ProductoService,
-    private categoriaService: CategoriaService,
-    private toastr: ToastrService,
-    private router:Router,
-    private proveedorService: ProveedorService,
-    private productosRecomendadosService: ProductosRecomendadosService,
-    private sugerenciasService: SugerenciasService
-  ) {this.contexto = new ContextoProducto(
-    new Disponible(),
+constructor(
+  private categoriaService: CategoriaService,
+  private toastr: ToastrService,
+  private router: Router,
+  private proveedorService: ProveedorService,
+  private productosRecomendadosService: ProductosRecomendadosService,
+  private sugerenciasService: SugerenciasService,
+  private productoService: ProductoService,
+) { 
+  this.contexto = new ContextoProducto(
+    new Disponible(this.productoService),
     this.productosRecomendadosService,
     this.proveedorService,
-    this.categoriaService
-  );}
+    this.productoService,
+    this.categoriaService,
+  );
+}
+
 
   ngOnInit(): void {
     this.cargarProductos();
@@ -74,11 +78,11 @@ verDetalleProducto(id: number | undefined): void {
     } else if (producto.CantidadDisponible > 0 && producto.CantidadDisponible <= 5) {
       this.contexto.setEstado(new PorAgotarse(this.proveedorService, this.sugerenciasService));
     } else {
-      this.contexto.setEstado(new Disponible());
+      this.contexto.setEstado(new Disponible(this.productoService));
     }
     this.contexto.verificarEstado(producto);
     producto.estado = this.contexto['estado'].constructor.name;
-    producto.sugerencia = this.contexto.sugerirAccion();
+    //producto.sugerencia = this.contexto.sugerirAccion(producto);
   }
   
 
@@ -189,9 +193,6 @@ actualizarProducto() {
       this.imagenFile = input.files[0]; 
     }
   }
-
-  
-
   setDefaultImage(event: any) {
     const element = event.target as HTMLImageElement;
     event.target.src = 'assets/default.jpg';

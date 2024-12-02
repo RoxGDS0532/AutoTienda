@@ -9,8 +9,8 @@ import { RestrablecerComponent } from './components/restrablecer/restrablecer.co
 import { ProductoComponent } from './components/producto/producto.component';
 import { ConsultasComponent } from './components/consultas/consultas.component';
 import { SurtirComponent } from './components/surtir/surtir.component';
-import { InventarioComponent } from './components/inventario/inventario.component';
 import { DetallesProductoComponent } from './components/detalles-producto/detalles-producto.component';
+import { ProductosPromocionComponent } from './productos-promocion/productos-promocion.component';
 
 export const routes: Routes = [
     {path: '', component: UserComponent},
@@ -24,5 +24,6 @@ export const routes: Routes = [
     {path:'producto', component:ProductoComponent},
     {path:'consultas', component:ConsultasComponent},
     {path:'surtir', component:SurtirComponent},
-    {path:'detalle-producto/:id', component:DetallesProductoComponent}
+    {path:'detalle-producto/:id', component:DetallesProductoComponent},
+    {path:'promocion', component:ProductosPromocionComponent}
 ];

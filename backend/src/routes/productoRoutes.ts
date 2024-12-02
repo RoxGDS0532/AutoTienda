@@ -1,7 +1,7 @@
 import { Router} from "express";
 import productoController from "../controllers/productoControllers";
 import multer from "multer";
-
+import { enviarCorreoProveedor } from "../controllers/correoProveedorControllers";
 
 class ProductoRoutes{
     public router:Router=Router();
@@ -20,6 +20,7 @@ class ProductoRoutes{
         this.router.delete('/:Id',productoController.delete);
         this.router.put('/:Id',productoController.update);
         this.router.get('/promocion', productoController.getProductosEnPromocion);
+        this.router.post('/enviar', enviarCorreoProveedor);
 
         
     }

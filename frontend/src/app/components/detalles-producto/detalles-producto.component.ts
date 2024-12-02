@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Producto, ProductoService } from '../../services/producto.service';
-import { ProductoSimilar } from '../../services/producto.service'; 
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common'
 import { Agotado } from '../../state-producto/agotado.estado'
@@ -41,6 +40,7 @@ export class DetallesProductoComponent implements OnInit {
   mostrarSugerencias = false;
   sugerenciass: any[] = []; 
   mensaje: string = '';
+  productoSeleccionado: ProductoRecomendado | null = null;
 
   
   constructor(
@@ -154,6 +154,7 @@ export class DetallesProductoComponent implements OnInit {
       console.error('No se pudo generar una sugerencia');
     }
   }
+  
 
 
   aceptarSugerencia(sugerencia: any): void {
@@ -206,9 +207,6 @@ export class DetallesProductoComponent implements OnInit {
     return categoria ? categoria.Nombre : 'Categoría no encontrada';
   }
 
-  
-  
-
   limpiarFormulario() {
     this.producto = { Id: 0, ImagenURL: '', Nombre: '', Precio: 0, CantidadDisponible: 0, CategoriaId: 0, CodigoBarras: '' };
   }
@@ -260,6 +258,55 @@ export class DetallesProductoComponent implements OnInit {
           this.toastr.error('Hubo un error al agregar el producto.', '¡Error!');
         }
       });
+
     }
   }
+
+enviarCorreo(): void {
+  if (!this.productoR) {  
+    console.error('Producto no está definido.');
+    return;
+  }
+
+  // Verificar si 'productoR' tiene los datos del proveedor
+  if (!this.productoR.CategoriaId) {  
+    console.error('Proveedor no disponible para el producto.');
+    return;
+  }
+
+  // Obtener el proveedor correspondiente al producto seleccionado
+  const proveedor = this.proveedores.find(p => p.Id === this.productoR.CategoriaId);
+
+  if (!proveedor || !proveedor.Email) {  // Verificar si el proveedor existe y tiene correo
+    console.error('Proveedor no encontrado o correo no disponible.');
+    this.toastr.error('El proveedor no tiene un correo válido.', '¡Error!');
+    return;
+  }
+
+  // Crear los detalles del producto seleccionado para incluirlos en el correo
+  const detallesProducto = {
+    nombre: this.productoR.Nombre,
+    precio: this.productoR.Precio,
+    cantidad:this.productoR.CantidadDisponible,
+    categoria: this.getCategoriaNombre(this.productoR.CategoriaId),
+    codigoBarras: this.productoR.CodigoBarras,
+    imagenURL: this.productoR.ImagenURL
+  };
+
+  // Verifica los detalles antes de enviar el correo
+  console.log('Detalles del producto para enviar:', detallesProducto);
+  console.log('Enviando correo al proveedor:', proveedor.Email);
+
+  // Llamar al servicio de envío de correos, enviando la información del producto seleccionado al proveedor
+  this.productoService.enviarCorreoProveedor(proveedor.Email, detallesProducto).subscribe({
+    next: (respuesta) => {
+      console.log('Correo enviado al proveedor:', respuesta);
+      this.toastr.success('Correo enviado al proveedor con la información del producto.', '¡Éxito!');
+    },
+    error: (error) => {
+      console.error('Error al enviar el correo:', error);
+      this.toastr.error('Hubo un error al enviar el correo al proveedor.', '¡Error!');
+    }
+  });
+}
 }

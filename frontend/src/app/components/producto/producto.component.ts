@@ -58,8 +58,8 @@ constructor(
   private productoService: ProductoService,
 ) { 
   this.contexto = new ContextoProducto(
-    new Disponible(this.productoService), 
-    this.productosRecomendadosService,  
+    new Disponible(this.productoService),
+    this.productosRecomendadosService,
     this.proveedorService,
     this.productoService,
     this.categoriaService,

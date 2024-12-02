@@ -130,7 +130,6 @@
                           <p class="card-text">Precio: {{ producto.precio | currency }}</p>
                           <p class="card-text">
                             Proveedor: 
-                            <!-- Buscar el proveedor por el id_proveedor -->
                             {{ obtenerNombreProveedor(producto.id_proveedor) }}
                           </p>
                           <button class="btn btn-primary" (click)="seleccionarProducto(producto)">Agregar Producto</button>
@@ -182,7 +181,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form (ngSubmit)="agregarProducto()">
+                    <form>
                         <div class="form-group">
                             <label for="Nombre">Nombre</label>
                             <input type="text" [(ngModel)]="productoR.Nombre" name="nombre" required class="form-control" />
@@ -209,12 +208,14 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="limpiarFormulario()">Cerrar</button>
-                    <button type="submit" class="btn btn-primary">Agregar Producto</button>
+                    <button type="submit" class="btn btn-primary" (click)="enviarCorreo()">Enviar Correo</button>
                 </div>
             </div>
         </div>
     </div>
 
+
+  
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

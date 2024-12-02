@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const productoControllers_1 = __importDefault(require("../controllers/productoControllers"));
 const multer_1 = __importDefault(require("multer"));
+const correoProveedorControllers_1 = require("../controllers/correoProveedorControllers");
 class ProductoRoutes {
     constructor() {
         this.router = (0, express_1.Router)();
@@ -21,6 +22,8 @@ class ProductoRoutes {
         this.router.post('/', upload.single('Imagen'), productoControllers_1.default.create);
         this.router.delete('/:Id', productoControllers_1.default.delete);
         this.router.put('/:Id', productoControllers_1.default.update);
+        this.router.post('/enviar', correoProveedorControllers_1.enviarCorreoProveedor);
+        this.router.get('/promocion', productoControllers_1.default.getProductosEnPromocion);
     }
 }
 const productoRoutes = new ProductoRoutes();

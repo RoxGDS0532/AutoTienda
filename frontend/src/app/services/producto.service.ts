@@ -13,18 +13,11 @@ export interface Producto {
   CantidadEnCarrito?: number;
   ImagenURL?: string; 
   CodigoBarras?: string; 
-  estado?: string; // Nombre del estado actual
-  sugerencia?: string; // Recomendación basada en el estado
+  estado?: string; 
+  sugerencia?: string; 
   PrecioConDescuento?: number;
 }
 
-
-export interface ProductoSimilar {
-  titulo: string;
-  enlace: string;
-  descripcion: string;
-  imagen: string;
-}
 
 
 @Injectable({
@@ -33,6 +26,7 @@ export interface ProductoSimilar {
 export class ProductoService {
   private apiUrl = 'http://localhost:3000/producto';
   private solicitarUrl = 'http://localhost:3000/solicitar'; 
+  private emailApiUrl = 'http://localhost:3000/producto/enviar';
 
 
   constructor(private http: HttpClient) {}
@@ -86,4 +80,13 @@ obtenerProductoPorId(id: number): Observable<Producto> {
   obtenerProductosPromocion(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/promocion`);
   }
+
+  enviarCorreoProveedor(correoProveedor: string, detallesProducto: any): Observable<any> {
+    const emailData = {
+      correo: correoProveedor,
+      detalles: detallesProducto
+    }
+    return this.http.post<any>(this.emailApiUrl, emailData);
+  }
+  
 }

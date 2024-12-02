@@ -49,12 +49,14 @@ export class DetallesProductoComponent implements OnInit {
     private sugerenciasService: SugerenciasService,
     private categoriaService: CategoriaService,
     private proveedorService: ProveedorService,
-    private productosRecomendadosService: ProductosRecomendadosService,
+    private productosRecomendadosService: ProductosRecomendadosService
   ) {
     this.contexto = new ContextoProducto(
-      new Disponible(this.productoService),  // EstadoProducto (como 'Disponible')
-      this.productoService,
-      this.productosRecomendadosService
+      new Disponible(this.productoService), 
+      this.productoService,                
+      this.productosRecomendadosService.actualizarProducto,
+      this.proveedorService,
+      this.sugerenciasService
     );
   }
 
@@ -126,7 +128,7 @@ export class DetallesProductoComponent implements OnInit {
           this.mostrarSugerencias = false;
         }
       } else {
-        this.sugerencia = this.contexto.sugerirAccion();
+        //this.sugerencia = this.contexto.sugerirAccion(producto);
         this.mostrarRecomendaciones = false;
       }
     } else {
@@ -150,7 +152,7 @@ export class DetallesProductoComponent implements OnInit {
     console.log('Sugerencia aceptada:', sugerencia);
   
     // Actualizar estado del producto
-    this.contexto.setEstado(new Disponible());
+    this.contexto.setEstado(new Disponible(this.productoService));
     this.mostrarSugerencias = false;
     this.sugerencias = []; // Limpiar sugerencias
   

@@ -48,22 +48,24 @@ verDetalleProducto(id: number | undefined): void {
   }
 }
 
-  constructor(
-    private productoService: ProductoService,
-    private categoriaService: CategoriaService,
-    private toastr: ToastrService,
-    private router:Router,
-    private proveedorService: ProveedorService,
-    private productosRecomendadosService: ProductosRecomendadosService,
-    private sugerenciasService: SugerenciasService
-    
-  ) { this.contexto = new ContextoProducto(
+constructor(
+  private categoriaService: CategoriaService,
+  private toastr: ToastrService,
+  private router: Router,
+  private proveedorService: ProveedorService,
+  private productosRecomendadosService: ProductosRecomendadosService,
+  private sugerenciasService: SugerenciasService,
+  private productoService: ProductoService,
+) { 
+  this.contexto = new ContextoProducto(
     new Disponible(this.productoService), 
     this.productoService,
-    this.productosRecomendadosService,
+    this.productosRecomendadosService.obtenerRecomendaciones,  
     this.proveedorService,
     this.categoriaService
-  );}
+  );
+}
+
 
   ngOnInit(): void {
     this.cargarProductos();

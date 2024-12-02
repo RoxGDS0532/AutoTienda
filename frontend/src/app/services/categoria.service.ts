@@ -11,7 +11,7 @@ export interface Categoria {
   providedIn: 'root'
 })
 export class CategoriaService {
-  private apiUrl = 'http://localhost:3000/categoria'; // Cambia la URL según tu API
+  private apiUrl = 'http://localhost:3000/categoria'; 
 
   constructor(private http: HttpClient) {}
 

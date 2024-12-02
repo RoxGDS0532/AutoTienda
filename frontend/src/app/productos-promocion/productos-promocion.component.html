@@ -1,0 +1,19 @@
+<div class="productos-promocion">
+    <h2>Productos en Promoción</h2>
+    
+    <div *ngIf="productosEnPromocion.length > 0; else noProductosPromocion">
+      <ul>
+        <li *ngFor="let producto of productosEnPromocion">
+          <img [src]="producto.ImagenURL" alt="{{producto.Nombre}}" width="100"/>
+          <h3>{{producto.Nombre}}</h3>
+          <p>Precio original: ${{producto.Precio}}</p>
+          <p>Precio con descuento: ${{producto.PrecioConDescuento}}</p>
+        </li>
+      </ul>
+    </div>
+  
+    <ng-template #noProductosPromocion>
+      <p>No hay productos en promoción actualmente.</p>
+    </ng-template>
+  </div>
+  

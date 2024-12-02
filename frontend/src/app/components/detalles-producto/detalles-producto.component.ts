@@ -51,7 +51,10 @@ export class DetallesProductoComponent implements OnInit {
     private proveedorService: ProveedorService,
     private productosRecomendadosService: ProductosRecomendadosService,
   ) {
-    this.contexto = new ContextoProducto(new Disponible());
+    this.contexto = new ContextoProducto(
+      new Disponible(this.productoService),  // EstadoProducto (como 'Disponible')
+      this.productoService                  // ProductoService
+    );
   }
 
   ngOnInit(): void {

@@ -50,7 +50,10 @@ verDetalleProducto(id: number | undefined): void {
     private toastr: ToastrService,
     private router:Router,
     
-  ) {this.contexto = new ContextoProducto(new Disponible())}
+  ) { this.contexto = new ContextoProducto(
+    new Disponible(this.productoService),  // EstadoProducto (como 'Disponible')
+    this.productoService                  // ProductoService
+  );}
 
   ngOnInit(): void {
     this.cargarProductos();
@@ -63,11 +66,11 @@ verDetalleProducto(id: number | undefined): void {
     } else if (producto.CantidadDisponible > 0 && producto.CantidadDisponible <= 5) {
       this.contexto.setEstado(new PorAgotarse());
     } else {
-      this.contexto.setEstado(new Disponible());
+      this.contexto.setEstado(new Disponible(this.productoService));
     }
     this.contexto.verificarEstado(producto);
     producto.estado = this.contexto['estado'].constructor.name;
-    producto.sugerencia = this.contexto.sugerirAccion();
+    //producto.sugerencia = this.contexto.sugerirAccion(producto);
   }
   
 

@@ -147,6 +147,22 @@ class ProductoController {
         }
       }
       
+      public async getProductosEnPromocion(req: Request, resp: Response): Promise<void> {
+        try {
+            const [productos] = await pool.query('SELECT * FROM Productos WHERE EnPromocion = TRUE');
+            
+            // Verificar si 'productos' es un arreglo
+            if (Array.isArray(productos)) {
+                resp.json(productos);  // Solo devolver si es un arreglo
+            } else {
+                resp.status(500).json({ message: 'Los datos obtenidos no son un arreglo' });
+            }
+        } catch (error) {
+            console.error('Error al obtener productos en promoción:', error);
+            resp.status(500).json({ message: 'Error al obtener productos en promoción', error });
+        }
+    }
+    
 }
 
 const productoController = new ProductoController();

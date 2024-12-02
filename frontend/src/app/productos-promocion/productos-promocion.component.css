@@ -1,0 +1,31 @@
+.productos-promocion {
+    padding: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  .productos-promocion ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .productos-promocion li {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+  }
+  
+  .productos-promocion img {
+    margin-right: 15px;
+  }
+  
+  .productos-promocion h3 {
+    margin: 0;
+  }
+  
+  .productos-promocion p {
+    margin: 5px 0;
+  }
+  

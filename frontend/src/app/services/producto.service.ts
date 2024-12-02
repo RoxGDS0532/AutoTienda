@@ -15,6 +15,7 @@ export interface Producto {
   CodigoBarras?: string; 
   estado?: string; // Nombre del estado actual
   sugerencia?: string; // Recomendación basada en el estado
+  PrecioConDescuento?: number;
 }
 
 
@@ -76,5 +77,9 @@ obtenerProductoPorId(id: number): Observable<Producto> {
 
   solicitarProductos(solicitudes: any[]): Observable<any> { 
     return this.http.post(this.solicitarUrl, solicitudes);
+  }
+
+  obtenerProductosPromocion(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/promocion`);
   }
 }

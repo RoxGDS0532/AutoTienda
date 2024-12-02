@@ -165,6 +165,24 @@ class ProductoController {
             }
         });
     }
+    getProductosEnPromocion(req, resp) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const [productos] = yield database_1.default.query('SELECT * FROM Productos WHERE EnPromocion = TRUE');
+                // Verificar si 'productos' es un arreglo
+                if (Array.isArray(productos)) {
+                    resp.json(productos); // Solo devolver si es un arreglo
+                }
+                else {
+                    resp.status(500).json({ message: 'Los datos obtenidos no son un arreglo' });
+                }
+            }
+            catch (error) {
+                console.error('Error al obtener productos en promoción:', error);
+                resp.status(500).json({ message: 'Error al obtener productos en promoción', error });
+            }
+        });
+    }
 }
 const productoController = new ProductoController();
 exports.default = productoController;

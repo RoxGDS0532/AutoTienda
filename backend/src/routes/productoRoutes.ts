@@ -15,10 +15,13 @@ class ProductoRoutes{
         const upload = multer({ storage });
         this.router.get('/codigo/:codigoBarras', productoController.getOneByCodigoBarras);
         this.router.get('/',productoController.list);
-        this.router.get('/:Id', productoController.getOne);
+       // this.router.get('/:Id', productoController.getOne);
         this.router.post('/',upload.single('Imagen'),productoController.create);
         this.router.delete('/:Id',productoController.delete);
         this.router.put('/:Id',productoController.update);
+        this.router.get('/promocion', productoController.getProductosEnPromocion);
+
+        
     }
 }
 const productoRoutes=new ProductoRoutes();

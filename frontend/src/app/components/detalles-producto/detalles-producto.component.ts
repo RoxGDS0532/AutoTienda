@@ -33,7 +33,7 @@ export class DetallesProductoComponent implements OnInit {
   categorias: Categoria[] = [];
   proveedores: Proveedor[] = []; 
   productosRecomendados: ProductoRecomendado[] = []; 
-  productosDelProveedor: { [proveedorId: number]: ProductoRecomendado[] } = {};
+  productosPorProveedor: { [proveedorId: number]: ProductoRecomendado[] } = {};
   contexto: ContextoProducto;
   sugerencia: string | null = null;
   mostrarRecomendaciones = false;
@@ -41,6 +41,7 @@ export class DetallesProductoComponent implements OnInit {
   mostrarSugerencias = false;
   sugerenciass: any[] = []; 
   mensaje: string = '';
+
   
   constructor(
     private productoService: ProductoService,
@@ -93,6 +94,11 @@ export class DetallesProductoComponent implements OnInit {
     });
   }
 
+  obtenerNombreProveedor(id: number): string {
+    const proveedor = this.proveedores.find(p => p.Id === id);
+    return proveedor ? proveedor.Nombre : 'Proveedor no encontrado';
+  }
+
   actualizarEstado(producto: Producto | null): void {
     if (producto !== null) {
       this.contexto.verificarEstado(producto);
@@ -109,8 +115,8 @@ export class DetallesProductoComponent implements OnInit {
               const productosDelProveedor = productosPorProveedor[proveedorId];
               console.log(`Productos recomendados del proveedor ${proveedorId}:`, productosDelProveedor);
               
-              // // Puedes agregar los productos recomendados por proveedor a la lista general
-              // this.productosRecomendados.push(...productosDelProveedor);
+              // Puedes agregar los productos recomendados por proveedor a la lista general
+              this.productosRecomendados.push(...productosDelProveedor);
             }
             this.sugerencia = estadoAgotado.sugerirAccion();
             this.mostrarRecomendaciones = true;
@@ -148,6 +154,7 @@ export class DetallesProductoComponent implements OnInit {
       console.error('No se pudo generar una sugerencia');
     }
   }
+
 
   aceptarSugerencia(sugerencia: any): void {
     console.log('Sugerencia aceptada:', sugerencia);
@@ -198,6 +205,8 @@ export class DetallesProductoComponent implements OnInit {
     const categoria = this.categorias.find(cat => cat.Id === categoriaId);
     return categoria ? categoria.Nombre : 'Categoría no encontrada';
   }
+
+  
   
 
   limpiarFormulario() {

@@ -43,7 +43,7 @@ const sendOrderEmail = (req, res) => __awaiter(void 0, void 0, void 0, function*
             debug: true, // Muestra detalles de la conexión
         });
         const mensajeHtml = `
-      <h1>Pedido de productos</h1>
+      <h1>Pedido de productos de superama</h1>
       <h2>Detalles del pedido:</h2>
       <table style="width: 100%; border-collapse: collapse;">
         <tr>

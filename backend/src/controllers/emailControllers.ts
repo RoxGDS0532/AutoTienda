@@ -36,7 +36,7 @@ const sendOrderEmail = async (req: Request, res: Response): Promise<void> => {
     
 
     const mensajeHtml = `
-      <h1>Pedido de productos</h1>
+      <h1>Pedido de productos de superama</h1>
       <h2>Detalles del pedido:</h2>
       <table style="width: 100%; border-collapse: collapse;">
         <tr>

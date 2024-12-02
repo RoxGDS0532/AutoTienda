@@ -1,4 +1,5 @@
-import { Router } from "express";
+import { Router,Request, Response } from "express";
+
 import proveedorController from "../controllers/proveedorControllers"; // Verifica que esta ruta sea correcta
 
 class ProveedorRoutes {
@@ -13,7 +14,8 @@ class ProveedorRoutes {
         this.router.post('/', proveedorController.create.bind(proveedorController)); // Usar bind
         this.router.delete('/:Id', proveedorController.delete.bind(proveedorController));
         this.router.put('/:Id', proveedorController.update.bind(proveedorController)); // Usar bind
-    }
+
+    }   
 }
 
 const proveedorRoutes = new ProveedorRoutes();

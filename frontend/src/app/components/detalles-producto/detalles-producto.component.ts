@@ -157,16 +157,59 @@ export class DetallesProductoComponent implements OnInit {
   
 
 
+
+
+
+
+  
   aceptarSugerencia(sugerencia: any): void {
-    console.log('Sugerencia aceptada:', sugerencia);
-  
-    // Actualizar estado del producto
-    this.contexto.setEstado(new Disponible(this.productoService));
-    this.mostrarSugerencias = false;
-    this.sugerencias = []; // Limpiar sugerencias
-  
-    
+    if (!sugerencia || !sugerencia.proveedorId || !sugerencia.cantidadPropuesta || !sugerencia.productoId) {
+      console.error('Datos incompletos en la sugerencia:', sugerencia);
+      return;
+    }
+
+    // Obtener el proveedor correspondiente al producto seleccionado
+    const proveedor = this.proveedores.find(p => p.Id === sugerencia.proveedorId);
+
+    if (!proveedor || !proveedor.Email) {  // Verificar si el proveedor existe y tiene correo
+      console.error('Proveedor no encontrado o correo no disponible.');
+      this.toastr.error('El proveedor no tiene un correo válido.', '¡Error!');
+      return;
+    }
+
+    const detallesPedido = {
+      correo: proveedor.Email, // Correo del proveedor
+      nombreProveedor: proveedor.NombreProveedor,
+      proveedorId: proveedor.Id,
+      cantidad: sugerencia.cantidadPropuesta,
+      productoId: sugerencia.productoId,
+      detallesProducto: {
+        nombreProducto: sugerencia.productoNombre ?? 'Producto no especificado',
+      },
+    };
+
+    console.log('Detalles del pedido a enviar:', detallesPedido);
+
+    // Enviar correo al proveedor
+    this.proveedorService.sendOrderEmail(detallesPedido).subscribe({
+      next: (response) => {
+        console.log('Correo enviado al proveedor:', response);
+        this.sugerencias = [];
+        this.mostrarSugerencias = false;
+      },
+      error: (error) => {
+        console.error('Error al enviar el correo al proveedor:', error);
+        this.toastr.error('Hubo un error al enviar el correo.', '¡Error!');
+      },
+    });
+
+
   }
+
+  
+  
+  
+
 
   rechazarSugerencia(sugerencia: any): void {
     const index = this.sugerencias.findIndex((s: any) => s === sugerencia);

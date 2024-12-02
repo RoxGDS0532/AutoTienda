@@ -51,8 +51,8 @@ class ProveedorController {
     }
     getOne(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { Id } = req.params; // `Id` será de tipo string
-            const proveedor = yield database_1.default.query('SELECT * FROM proveedores WHERE Id = ?', [Id]);
+            const { id } = req.params;
+            const proveedor = yield database_1.default.query('SELECT * FROM proveedores WHERE Id = ?', [id]);
             if (proveedor.length > 0) {
                 return res.json(proveedor[0]);
             }

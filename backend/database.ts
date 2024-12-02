@@ -17,4 +17,6 @@ export const getConnection = async (): Promise<PoolConnection> => {
     return await pool.getConnection();
 };
 
+
+
 export default pool;

@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import pool from "../../database"; // Asegúrate de que esta ruta sea correcta
 
+interface Params {
+    Id: string; // o number si estás usando números en la URL
+  }
+
 class ProveedorController {
     public async list(req: Request, res: Response) {
         const proveedor = await pool.query('SELECT * FROM proveedores');
@@ -36,7 +40,17 @@ class ProveedorController {
     }
     
     
+    public async getOne(req: Request<Params>, res: Response): Promise<Response> {
+        const { Id } = req.params;  // `Id` será de tipo string
+        const proveedor = await pool.query('SELECT * FROM proveedores WHERE Id = ?', [Id]);
+      
+        if (proveedor.length > 0) {
+            return res.json(proveedor[0]);
+        }
+        return res.status(404).json({ message: 'El proveedor no existe' });
+    }
     
+      
     
 
     public async update(req: Request, res: Response): Promise<void> {
@@ -70,14 +84,6 @@ class ProveedorController {
 
     
 
-    public async getOne(req: Request, res: Response): Promise<Response> { // Asegúrate de que este método también devuelva una promesa
-        const { id } = req.params;
-        const proveedor = await pool.query('SELECT * FROM proveedores WHERE Id = ?', [id]);
-        if (proveedor.length > 0) {
-            return res.json(proveedor[0]);
-        }
-        return res.status(404).json({ message: 'El proveedor no existe' });
-    }
     
 }
 

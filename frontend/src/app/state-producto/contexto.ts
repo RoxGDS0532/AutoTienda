@@ -43,4 +43,6 @@ export class ContextoProducto {
   sugerirAccion(): string {
     return this.estado.sugerirAccion();
   }
+
+  
 }

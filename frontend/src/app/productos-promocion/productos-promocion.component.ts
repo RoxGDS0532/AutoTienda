@@ -29,23 +29,20 @@ export class ProductosPromocionComponent implements OnInit {
 
       this.productoService.obtenerProductos().subscribe((productos) => {
         this.productos = productos;
-        this.verificarPromociones();
-        this.clasificarPorCategoria();
+        this.productoService.obtenerProductosPromocion().subscribe((productosPromocion) => {
+          this.productosEnPromocion = productosPromocion;
+          this.verificarPromociones();
+          this.clasificarPorCategoria();
+        });
       });
     });
   }
 
   verificarPromociones(): void {
-    const estadoDisponible = new Disponible(this.productoService);
+    const estadoDisponible = new Disponible(this.productoService, this.productosEnPromocion);
 
     this.productos.forEach((producto) => {
       estadoDisponible.sugerirAccion(producto);
-
-      const precioConDescuento = producto.PrecioConDescuento ?? 0;
-
-      if (precioConDescuento < producto.Precio) {
-        this.productosEnPromocion.push(producto);
-      }
     });
   }
 

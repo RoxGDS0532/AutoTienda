@@ -129,17 +129,6 @@ export class DetallesProductoComponent implements OnInit {
   }
   
 
-  generarSugerencia(producto: Producto): void {
-    const nuevaSugerencia = this.sugerenciasService.generateSugerencias(producto);
-    if (nuevaSugerencia) {
-      this.sugerencias = [nuevaSugerencia];
-      this.mostrarSugerencias = true;
-    } else {
-      this.mostrarSugerencias = false;
-      console.error('No se pudo generar una sugerencia');
-    }
-  }
-
   aceptarSugerencia(sugerencia: any): void {
     this.porAgotarse.aceptarSugerencia(sugerencia);
     console.log('Sugerencia aceptada:', sugerencia);
@@ -149,8 +138,6 @@ export class DetallesProductoComponent implements OnInit {
     this.porAgotarse.rechazarSugerencia(sugerencia);
     console.log('Sugerencia rechazada:', sugerencia);
   }
-
-  
 
 
   obtenerProveedorPorCategoria(categoriaId: number): Proveedor | undefined {

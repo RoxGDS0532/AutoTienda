@@ -40,9 +40,6 @@ export class ProductoService {
   }
 
 
-  obtenerProductosSimilares(nombreProducto: string): Observable<ProductoSimilar[]> {
-    return this.http.get<ProductoSimilar[]>(`${this.apiUrl}/similares?nombre=${nombreProducto}`);
-  }
 
 
 

@@ -34,7 +34,7 @@ export class Agotado implements EstadoProducto {
   cargarProductosRecomendados(): Observable<{ [proveedorId: number]: ProductoRecomendado[] }> {
     if (!this.producto) {
       console.error('No se ha establecido un producto para cargar recomendaciones.');
-      return of({}); // Retorna un observable vacío si no se ha establecido un producto
+      return of({}); 
     }
     console.log(`Cargando productos recomendados para la categoría: ${this.producto.CategoriaId}`);
     

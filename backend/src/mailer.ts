@@ -31,22 +31,4 @@ router.post('/send-email', (req: Request, res: Response) => {
   });
 });
 
-// Endpoint para enviar correos
-router.post('/enviar', (req: Request, res: Response) => {
-  const { correo, detallesProducto } = req.body;
-
-  const mailOptions = {
-    from: 'rox.renteria1234@gmail.com', // Tu correo electrónico
-    to: correo,
-    subject: 'Detalles del producto solicitado',
-    text: `Aquí están los detalles de tu pedido:\n${JSON.stringify(detallesProducto, null, 2)}`,
-  };
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return res.status(500).send(error.toString());
-    }
-    res.status(200).send('Correo enviado: ' + info.response);
-  });
-});
 export default router;

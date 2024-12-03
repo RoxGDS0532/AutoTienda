@@ -40,10 +40,6 @@ export class ProductoService {
   }
 
 
-
-
-
-
   // Obtener un producto por su ID
 obtenerProductoPorId(id: number): Observable<Producto> {
   return this.http.get<Producto>(`${this.apiUrl}/${id}`);
@@ -78,12 +74,20 @@ obtenerProductoPorId(id: number): Observable<Producto> {
     return this.http.get<any[]>(`${this.apiUrl}/promocion`);
   }
 
-  enviarCorreoProveedor(correoProveedor: string, detallesProducto: any): Observable<any> {
-    const emailData = {
-      correo: correoProveedor,
-      detalles: detallesProducto
-    }
-    return this.http.post<any>(this.emailApiUrl, emailData);
+  enviarCorreoProveedor(pedido: any, proveedorCorreo: string): Observable<any> {
+    const payload = {
+      producto: {
+        nombre: pedido.nombre,
+        cantidad: pedido.cantidad,
+        categoria: pedido.categoria,
+        codigoBarras: pedido.codigoBarras,
+        precio: pedido.precio
+      },
+      proveedorCorreo: proveedorCorreo
+    };
+    console.log("Enviando detalles al backend:", payload);
+    return this.http.post<any>(this.emailApiUrl, payload);
   }
+  
   
 }

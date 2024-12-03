@@ -155,12 +155,6 @@ export class DetallesProductoComponent implements OnInit {
     }
   }
   
-
-
-
-
-
-
   
   aceptarSugerencia(sugerencia: any): void {
     if (!sugerencia || !sugerencia.proveedorId || !sugerencia.cantidadPropuesta || !sugerencia.productoId) {
@@ -206,10 +200,6 @@ export class DetallesProductoComponent implements OnInit {
   }
 
   
-  
-  
-
-
   rechazarSugerencia(sugerencia: any): void {
     const index = this.sugerencias.findIndex((s: any) => s === sugerencia);
 
@@ -310,37 +300,34 @@ enviarCorreo(): void {
     return;
   }
 
-  // Verificar si 'productoR' tiene los datos del proveedor
   if (!this.productoR.CategoriaId) {  
     console.error('Proveedor no disponible para el producto.');
     return;
   }
 
-  // Obtener el proveedor correspondiente al producto seleccionado
+  // Obtener el proveedor correspondiente
   const proveedor = this.proveedores.find(p => p.Id === this.productoR.CategoriaId);
-
-  if (!proveedor || !proveedor.Email) {  // Verificar si el proveedor existe y tiene correo
+  if (!proveedor || !proveedor.Email) {
     console.error('Proveedor no encontrado o correo no disponible.');
     this.toastr.error('El proveedor no tiene un correo válido.', '¡Error!');
     return;
   }
 
-  // Crear los detalles del producto seleccionado para incluirlos en el correo
+  // Detalles del producto a enviar
   const detallesProducto = {
     nombre: this.productoR.Nombre,
+    cantidad: this.productoR.CantidadDisponible,
     precio: this.productoR.Precio,
-    cantidad:this.productoR.CantidadDisponible,
     categoria: this.getCategoriaNombre(this.productoR.CategoriaId),
     codigoBarras: this.productoR.CodigoBarras,
     imagenURL: this.productoR.ImagenURL
   };
 
-  // Verifica los detalles antes de enviar el correo
-  console.log('Detalles del producto para enviar:', detallesProducto);
+  console.log('Detalles del producto:', detallesProducto);
   console.log('Enviando correo al proveedor:', proveedor.Email);
 
-  // Llamar al servicio de envío de correos, enviando la información del producto seleccionado al proveedor
-  this.productoService.enviarCorreoProveedor(proveedor.Email, detallesProducto).subscribe({
+  // Llamar al servicio de correo
+  this.productoService.enviarCorreoProveedor(detallesProducto,proveedor.Email).subscribe({
     next: (respuesta) => {
       console.log('Correo enviado al proveedor:', respuesta);
       this.toastr.success('Correo enviado al proveedor con la información del producto.', '¡Éxito!');

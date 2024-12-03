@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Producto, ProductoService } from '../../services/producto.service';
-import { ProductoSimilar } from '../../services/producto.service'; 
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common'
 import { Agotado } from '../../state-producto/agotado.estado'
@@ -41,6 +40,7 @@ export class DetallesProductoComponent implements OnInit {
   mostrarSugerencias = false;
   sugerenciass: any[] = []; 
   mensaje: string = '';
+  productoSeleccionado: ProductoRecomendado | null = null;
 
   
   constructor(
@@ -154,19 +154,52 @@ export class DetallesProductoComponent implements OnInit {
       console.error('No se pudo generar una sugerencia');
     }
   }
-
-
+  
+  
   aceptarSugerencia(sugerencia: any): void {
-    console.log('Sugerencia aceptada:', sugerencia);
-  
-    // Actualizar estado del producto
-    this.contexto.setEstado(new Disponible(this.productoService));
-    this.mostrarSugerencias = false;
-    this.sugerencias = []; // Limpiar sugerencias
-  
-    
+    if (!sugerencia || !sugerencia.proveedorId || !sugerencia.cantidadPropuesta || !sugerencia.productoId) {
+      console.error('Datos incompletos en la sugerencia:', sugerencia);
+      return;
+    }
+
+    // Obtener el proveedor correspondiente al producto seleccionado
+    const proveedor = this.proveedores.find(p => p.Id === sugerencia.proveedorId);
+
+    if (!proveedor || !proveedor.Email) {  // Verificar si el proveedor existe y tiene correo
+      console.error('Proveedor no encontrado o correo no disponible.');
+      this.toastr.error('El proveedor no tiene un correo válido.', '¡Error!');
+      return;
+    }
+
+    const detallesPedido = {
+      correo: proveedor.Email,
+      detallesPedido: [
+        {
+          nombreProducto: sugerencia.productoNombre ?? 'Producto no especificado',
+          cantidad: sugerencia.cantidadPropuesta
+        }
+      ]
+    };
+
+    console.log('Detalles del pedido a enviar:', detallesPedido);
+
+    // Enviar correo al proveedor
+    this.proveedorService.sendOrderEmail(detallesPedido).subscribe({
+      next: (response) => {
+        console.log('Correo enviado al proveedor:', response);
+        this.sugerencias = [];
+        this.mostrarSugerencias = false;
+      },
+      error: (error) => {
+        console.error('Error al enviar el correo al proveedor:', error);
+        this.toastr.error('Hubo un error al enviar el correo.', '¡Error!');
+      },
+    });
+
+
   }
 
+  
   rechazarSugerencia(sugerencia: any): void {
     const index = this.sugerencias.findIndex((s: any) => s === sugerencia);
 
@@ -205,9 +238,6 @@ export class DetallesProductoComponent implements OnInit {
     const categoria = this.categorias.find(cat => cat.Id === categoriaId);
     return categoria ? categoria.Nombre : 'Categoría no encontrada';
   }
-
-  
-  
 
   limpiarFormulario() {
     this.producto = { Id: 0, ImagenURL: '', Nombre: '', Precio: 0, CantidadDisponible: 0, CategoriaId: 0, CodigoBarras: '' };
@@ -260,6 +290,52 @@ export class DetallesProductoComponent implements OnInit {
           this.toastr.error('Hubo un error al agregar el producto.', '¡Error!');
         }
       });
+
     }
   }
+
+enviarCorreo(): void {
+  if (!this.productoR) {  
+    console.error('Producto no está definido.');
+    return;
+  }
+
+  if (!this.productoR.CategoriaId) {  
+    console.error('Proveedor no disponible para el producto.');
+    return;
+  }
+
+  // Obtener el proveedor correspondiente
+  const proveedor = this.proveedores.find(p => p.Id === this.productoR.CategoriaId);
+  if (!proveedor || !proveedor.Email) {
+    console.error('Proveedor no encontrado o correo no disponible.');
+    this.toastr.error('El proveedor no tiene un correo válido.', '¡Error!');
+    return;
+  }
+
+  // Detalles del producto a enviar
+  const detallesProducto = {
+    nombre: this.productoR.Nombre,
+    cantidad: this.productoR.CantidadDisponible,
+    precio: this.productoR.Precio,
+    categoria: this.getCategoriaNombre(this.productoR.CategoriaId),
+    codigoBarras: this.productoR.CodigoBarras,
+    imagenURL: this.productoR.ImagenURL
+  };
+
+  console.log('Detalles del producto:', detallesProducto);
+  console.log('Enviando correo al proveedor:', proveedor.Email);
+
+  // Llamar al servicio de correo
+  this.productoService.enviarCorreoProveedor(detallesProducto,proveedor.Email).subscribe({
+    next: (respuesta) => {
+      console.log('Correo enviado al proveedor:', respuesta);
+      this.toastr.success('Correo enviado al proveedor con la información del producto.', '¡Éxito!');
+    },
+    error: (error) => {
+      console.error('Error al enviar el correo:', error);
+      this.toastr.error('Hubo un error al enviar el correo al proveedor.', '¡Error!');
+    }
+  });
+}
 }

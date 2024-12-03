@@ -11,7 +11,7 @@ const envioCorreo = (req, resp) => {
         host: 'smtp.gmail.com',
         port: 587,
         auth: {
-            user: 'rox.renteria1234@gmail.com', // Tu correo electrónico
+            user: 'rox.renteria1234@gmail.com',
             pass: 'mlgz edcj tdxo axqv', // Contraseña o token de acceso
         },
     });
@@ -60,7 +60,7 @@ const envioCorreo = (req, resp) => {
         from: 'Superama <rox.renteria1234@gmail.com>',
         to: correo,
         subject: 'Detalle de Venta',
-        html: mensajeHtml, // Cambiado a HTML
+        html: mensajeHtml,
     };
     config.sendMail(opciones, (error, result) => {
         if (error)

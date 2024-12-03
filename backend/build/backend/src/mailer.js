@@ -8,7 +8,7 @@ const nodemailer_1 = __importDefault(require("nodemailer"));
 const router = express_1.default.Router();
 // Configuración de nodemailer
 const transporter = nodemailer_1.default.createTransport({
-    service: 'gmail',
+    service: 'gmail', // Cambia esto si usas otro servicio
     auth: {
         user: 'rox.renteria1234@gmail.com', // Tu correo electrónico
         pass: 'mlgz edcj tdxo axqv', // Tu contraseña o un token de acceso

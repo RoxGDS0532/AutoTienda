@@ -9,6 +9,7 @@ import ventasRoutes from './routes/ventasRoutes';
 import categoriaRoutes from './routes/categoriaRoutes';
 import surtirRoutes from './routes/surtirRoutes';
 import productoRecomRoutes from './routes/productoRecomRoutes';
+import emailRoutes from './routes/emailRoutes'
 
 class Server{
     public app: Application;
@@ -34,7 +35,8 @@ class Server{
         this.app.use('/categoria',categoriaRoutes )
         this.app.use('/solicitar',surtirRoutes)
         this.app.use('/consulta',consultasRoutes)
-        
+
+        this.app.use('/email',emailRoutes)
 
     }
     start() : void{

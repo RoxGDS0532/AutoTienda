@@ -1,18 +1,20 @@
-import { Request, Response } from 'express';
-import nodemailer from 'nodemailer';
-
-const envioCorreo = (req: Request, resp: Response): void => {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.envioCorreo = void 0;
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const envioCorreo = (req, resp) => {
     const { correo, detalles } = req.body;
-
-    const config = nodemailer.createTransport({
+    const config = nodemailer_1.default.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         auth: {
-            user: 'rox.renteria1234@gmail.com',
+            user: 'rox.renteria1234@gmail.com', // Tu correo electrónico
             pass: 'mlgz edcj tdxo axqv', // Contraseña o token de acceso
         },
     });
-
     // Formatear el mensaje de correo en HTML
     let mensajeHtml = `
         <h1>¡Gracias por tu compra!</h1>
@@ -34,8 +36,7 @@ const envioCorreo = (req: Request, resp: Response): void => {
                 <th style="border: 1px solid #ddd; padding: 8px;">Cantidad</th>
             </tr>
     `;
-
-    detalles.forEach((detalle: { nombre: string; cantidad: number; precio_unitario: number; total_pago: number }) => {
+    detalles.forEach((detalle) => {
         mensajeHtml += `
             <tr>
                 <td style="border: 1px solid #ddd; padding: 8px;">${detalle.nombre}</td>
@@ -51,22 +52,19 @@ const envioCorreo = (req: Request, resp: Response): void => {
             </tr>
         `;
     });
-
     mensajeHtml += `
         </table>
         <p>¡Esperamos verte pronto!</p>
     `;
-
     const opciones = {
         from: 'Superama <rox.renteria1234@gmail.com>',
         to: correo,
         subject: 'Detalle de Venta',
-        html: mensajeHtml, 
+        html: mensajeHtml, // Cambiado a HTML
     };
-
     config.sendMail(opciones, (error, result) => {
-        if (error) return resp.json({ ok: false, msg: error });
-
+        if (error)
+            return resp.json({ ok: false, msg: error });
         return resp.json({
             ok: true,
             msg: 'Correo enviado exitosamente',
@@ -74,12 +72,4 @@ const envioCorreo = (req: Request, resp: Response): void => {
         });
     });
 };
-
-export { envioCorreo };
-
-
-
-
-
-
-
+exports.envioCorreo = envioCorreo;

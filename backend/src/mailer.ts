@@ -5,7 +5,7 @@ const router = express.Router();
 
 // Configuración de nodemailer
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // Cambia esto si usas otro servicio
+  service: 'gmail', 
   auth: {
     user: 'rox.renteria1234@gmail.com', // Tu correo electrónico
     pass: 'mlgz edcj tdxo axqv', // Tu contraseña o un token de acceso

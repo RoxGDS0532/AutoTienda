@@ -16,15 +16,16 @@ export class Disponible implements EstadoProducto {
         const estaEnPromocion = this.productosEnPromocion.some(
           (p) => p.Id === producto.Id
         );
+        if (estaEnPromocion) {
+          console.log('El producto está en promoción');
+        } else {
+          console.log('El producto no está en promoción');
+        }
       }
     }
   }
 
   verificarEstado(producto: Producto): boolean {
     return producto.CantidadDisponible > 5; 
-  }
-
-  private destacarProducto(producto: Producto): void {
-    console.log(`Destacando producto: ${producto.Nombre}`);
   }
 }

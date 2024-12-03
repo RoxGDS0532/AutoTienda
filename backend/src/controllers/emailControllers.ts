@@ -21,18 +21,22 @@ const sendOrderEmail = async (req: Request, res: Response): Promise<void> => {
 
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
-      port: 587,
+      port: 465,  // Cambié el puerto a 465
+      secure: true,  // Habilité el SSL
       auth: {
         user: 'rox.renteria1234@gmail.com',
-        pass: 'mlgz edcj tdxo axqv',
+        pass: 'mlgz edcj tdxo axqv',  // Asegúrate de usar la contraseña de aplicación si tienes 2FA habilitada
       },
-      logger: true, // Activar log de la conexión
+      tls: {
+        rejectUnauthorized: false, // Esto puede ser útil si tienes problemas con la verificación del certificado SSL
+      },
+      logger: true,  // Activar log de la conexión
       debug: true,  // Muestra detalles de la conexión
     });
     
 
     const mensajeHtml = `
-      <h1>Pedido de productos</h1>
+      <h1>Pedido de productos de superama</h1>
       <h2>Detalles del pedido:</h2>
       <table style="width: 100%; border-collapse: collapse;">
         <tr>

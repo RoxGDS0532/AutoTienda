@@ -172,14 +172,13 @@ export class DetallesProductoComponent implements OnInit {
     }
 
     const detallesPedido = {
-      correo: proveedor.Email, // Correo del proveedor
-      nombreProveedor: proveedor.NombreProveedor,
-      proveedorId: proveedor.Id,
-      cantidad: sugerencia.cantidadPropuesta,
-      productoId: sugerencia.productoId,
-      detallesProducto: {
-        nombreProducto: sugerencia.productoNombre ?? 'Producto no especificado',
-      },
+      correo: proveedor.Email,
+      detallesPedido: [
+        {
+          nombreProducto: sugerencia.productoNombre ?? 'Producto no especificado',
+          cantidad: sugerencia.cantidadPropuesta
+        }
+      ]
     };
 
     console.log('Detalles del pedido a enviar:', detallesPedido);

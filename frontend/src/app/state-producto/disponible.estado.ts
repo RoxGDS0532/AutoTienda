@@ -16,7 +16,6 @@ export class Disponible implements EstadoProducto {
         const estaEnPromocion = this.productosEnPromocion.some(
           (p) => p.Id === producto.Id
         );
-        // lógica...
       }
     }
   }

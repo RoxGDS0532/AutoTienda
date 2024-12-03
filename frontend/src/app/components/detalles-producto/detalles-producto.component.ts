@@ -108,14 +108,10 @@ export class DetallesProductoComponent implements OnInit {
         estadoAgotado.setProducto(producto);
         estadoAgotado.cargarProductosRecomendados().subscribe(
           productosPorProveedor => {
-            // Ahora 'productosPorProveedor' es un objeto con la estructura { proveedorId: Producto[] }
-            this.productosRecomendados = []; // Reinicia la lista de productos recomendados
-            // Iteramos sobre los proveedores y sus productos
+            this.productosRecomendados = [];
             for (const proveedorId in productosPorProveedor) {
               const productosDelProveedor = productosPorProveedor[proveedorId];
-              console.log(`Productos recomendados del proveedor ${proveedorId}:`, productosDelProveedor);
-              
-              // Puedes agregar los productos recomendados por proveedor a la lista general
+              console.log(`Productos recomendados del proveedor ${proveedorId}:`, productosDelProveedor);              
               this.productosRecomendados.push(...productosDelProveedor);
             }
             this.sugerencia = estadoAgotado.sugerirAccion();
@@ -135,7 +131,6 @@ export class DetallesProductoComponent implements OnInit {
           this.mostrarSugerencias = false;
         }
       } else {
-        //this.sugerencia = this.contexto.sugerirAccion(producto);
         this.mostrarRecomendaciones = false;
       }
     } else {
@@ -165,7 +160,7 @@ export class DetallesProductoComponent implements OnInit {
     // Obtener el proveedor correspondiente al producto seleccionado
     const proveedor = this.proveedores.find(p => p.Id === sugerencia.proveedorId);
 
-    if (!proveedor || !proveedor.Email) {  // Verificar si el proveedor existe y tiene correo
+    if (!proveedor || !proveedor.Email) { 
       console.error('Proveedor no encontrado o correo no disponible.');
       this.toastr.error('El proveedor no tiene un correo válido.', '¡Error!');
       return;
@@ -326,7 +321,6 @@ enviarCorreo(): void {
   console.log('Detalles del producto:', detallesProducto);
   console.log('Enviando correo al proveedor:', proveedor.Email);
 
-  // Llamar al servicio de correo
   this.productoService.enviarCorreoProveedor(detallesProducto,proveedor.Email).subscribe({
     next: (respuesta) => {
       console.log('Correo enviado al proveedor:', respuesta);

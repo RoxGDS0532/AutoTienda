@@ -15,7 +15,7 @@ export class Agotado implements EstadoProducto {
   }
 
   verificarEstado(producto: Producto): boolean {
-    this.setProducto(producto); // Guardar el producto
+    this.setProducto(producto); 
     console.log(`El producto "${producto.Nombre}" está agotado.`);
     return producto.CantidadDisponible === 0;
   }

@@ -41,7 +41,7 @@ export class SurtirComponent implements OnInit {
     this.cargarProductos();
     this.cargarProveedores();
     this.cargarCategorias();
-    
+
   }
 
   /*valuarEstado(producto: Producto): void {
@@ -111,12 +111,12 @@ export class SurtirComponent implements OnInit {
     const solicitudes = this.productos
       .filter(producto => producto.cantidadSolicitada > 0)
       .map(producto => ({
-        productoId: producto.Id, // Asegúrate de que 'Id' es la propiedad correcta
+        productoId: producto.Id, 
         proveedorId: producto.proveedorId,
         cantidad: producto.cantidadSolicitada
       }));
 
-    console.log('Solicitudes a enviar:', solicitudes); // Log para verificar la estructura
+    console.log('Solicitudes a enviar:', solicitudes); 
     this.productoService.solicitarProductos(solicitudes).subscribe({
       next: (response) => {
         console.log('Productos solicitados', response);

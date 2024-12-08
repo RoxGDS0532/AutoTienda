@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 
 // Modelo de Producto
@@ -28,7 +28,6 @@ export class ProductoService {
   private solicitarUrl = 'http://localhost:3000/solicitar'; 
   private emailApiUrl = 'http://localhost:3000/producto/enviar';
 
-
   constructor(private http: HttpClient) {}
 
   // Obtener todos los productos
@@ -38,10 +37,8 @@ export class ProductoService {
   obtenerCategorias(): Observable<any[]> {
     return this.http.get<any[]>('http://localhost:3000/categoria'); 
   }
-
-
   // Obtener un producto por su ID
-obtenerProductoPorId(id: number): Observable<Producto> {
+  obtenerProductoPorId(id: number): Observable<Producto> {
   return this.http.get<Producto>(`${this.apiUrl}/${id}`);
 }
 

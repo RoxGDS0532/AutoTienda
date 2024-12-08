@@ -285,7 +285,6 @@ export class DetallesProductoComponent implements OnInit {
           this.toastr.error('Hubo un error al agregar el producto.', '¡Error!');
         }
       });
-
     }
   }
 
@@ -321,10 +320,18 @@ enviarCorreo(): void {
   console.log('Detalles del producto:', detallesProducto);
   console.log('Enviando correo al proveedor:', proveedor.Email);
 
-  this.productoService.enviarCorreoProveedor(detallesProducto,proveedor.Email).subscribe({
+  this.productoService.enviarCorreoProveedor(detallesProducto, proveedor.Email).subscribe({
     next: (respuesta) => {
       console.log('Correo enviado al proveedor:', respuesta);
-      this.toastr.success('Correo enviado al proveedor con la información del producto.', '¡Éxito!');
+      this.toastr.success('Correo enviado al proveedor', '¡Éxito!');
+      
+
+      // Cerrar el modal
+      const modalElement = document.getElementById('agregarProductoModal');
+      if (modalElement) {
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        modalInstance?.hide();
+      }
     },
     error: (error) => {
       console.error('Error al enviar el correo:', error);

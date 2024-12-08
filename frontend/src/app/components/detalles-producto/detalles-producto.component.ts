@@ -324,7 +324,6 @@ enviarCorreo(): void {
     next: (respuesta) => {
       console.log('Correo enviado al proveedor:', respuesta);
       this.toastr.success('Correo enviado al proveedor', '¡Éxito!');
-      
 
       // Cerrar el modal
       const modalElement = document.getElementById('agregarProductoModal');

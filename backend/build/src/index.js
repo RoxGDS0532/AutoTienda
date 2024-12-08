@@ -15,6 +15,7 @@ const categoriaRoutes_1 = __importDefault(require("./routes/categoriaRoutes"));
 const surtirRoutes_1 = __importDefault(require("./routes/surtirRoutes"));
 const productoRecomRoutes_1 = __importDefault(require("./routes/productoRecomRoutes"));
 const emailRoutes_1 = __importDefault(require("./routes/emailRoutes"));
+const productoSurtirRoutes_1 = __importDefault(require("./routes/productoSurtirRoutes"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -31,6 +32,7 @@ class Server {
     routes() {
         this.app.use('/producto', productoRoutes_1.default);
         this.app.use('/productoRecomendado', productoRecomRoutes_1.default);
+        this.app.use('/productosSurtir', productoSurtirRoutes_1.default);
         this.app.use('/ventas', ventasRoutes_1.default);
         this.app.use('/proveedor', proveedorRoutes_1.default);
         this.app.use('/usuario', usuariosRoutes_1.default);

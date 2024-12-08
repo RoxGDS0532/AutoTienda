@@ -15,7 +15,7 @@ class ProductoSurtiCrontroller {
     }
 
     public async create(req: Request, resp: Response): Promise<void> {
-        const { nombre, precio , cantidadSolicitada , CodigoBarras, categoria_id, imagenUrl  } = req.body;
+        const { nombre, precio , cantidadSolicitada , CodigoBarras, categoria_id, proveedor_id,  imagenUrl  } = req.body;
 
         // Validación de campos obligatorios
         if (!nombre || precio  === undefined || cantidadSolicitada  === undefined || categoria_id === undefined || !imagenUrl ) {
@@ -25,7 +25,7 @@ class ProductoSurtiCrontroller {
 
         try {
             await pool.query('INSERT INTO productos_Surtir SET ?', [
-                { nombre, precio , cantidadSolicitada , imagenUrl , CodigoBarras, categoria_id }
+                { nombre, precio , cantidadSolicitada , imagenUrl , CodigoBarras, categoria_id,  proveedor_id}
             ]);
             resp.json({ message: 'Producto guardado' });
         } catch (error) {
@@ -49,6 +49,7 @@ class ProductoSurtiCrontroller {
         }
     }
 
+    //Mal, checar campos del productoSurtir
     public async update(req: Request, resp: Response): Promise<void> {
         const { Id } = req.params;
         const { Nombre, Precio, CantidadDisponible, CodigoBarras, CategoriaId, ImagenURL } = req.body;

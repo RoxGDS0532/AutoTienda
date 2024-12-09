@@ -78,7 +78,7 @@
                                   <strong>Producto en stock</strong>
                               </div>
                               <div>
-                                <button *ngIf="producto.cantidadSolicitada > 0 && producto.proveedorId" class="btn btn-primary mt-3">
+                                <button *ngIf="producto.cantidadSolicitada > 0 && producto.proveedorId" class="btn btn-primary mt-3" (click)="agregarProductoSurtir(producto)">
                                   Realizar Pedido
                                 </button>
                               </div>

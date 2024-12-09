@@ -133,6 +133,17 @@ export class SurtirComponent implements OnInit {
     });
   }
 
+  agregarProductoSurtir(producto: any): void {
+    if (producto.cantidadSolicitada > 0 && producto.proveedorId) {
+      const productoSurtir = { ...producto }; 
+      this.productosSurtir.push(productoSurtir);
+      producto.cantidadSolicitada = 0;
+      producto.proveedorId = null;
+    } else {
+      alert('Debe seleccionar un proveedor y una cantidad válida.');
+    }
+  }
+
 
   solicitarProductos() {
     const solicitudes = this.productos

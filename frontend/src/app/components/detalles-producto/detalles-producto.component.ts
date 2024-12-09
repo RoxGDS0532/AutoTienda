@@ -126,6 +126,7 @@ export class DetallesProductoComponent implements OnInit {
         if (sugerencia) {
           this.sugerencias = [sugerencia];
           this.mostrarSugerencias = true;
+          
         } else {
           console.error('No se pudo generar sugerencias iniciales');
           this.mostrarSugerencias = false;
@@ -137,6 +138,58 @@ export class DetallesProductoComponent implements OnInit {
       console.error('Producto es null');
     }
   }
+
+
+  
+
+  mandarAProductorSurtir(sugerencia: any): void {
+    if (!sugerencia || !sugerencia.productoId || !sugerencia.proveedorId) {
+      console.error('Sugerencia inválida o datos incompletos:', sugerencia);
+      this.toastr.error('Sugerencia inválida o incompleta.', '¡Error!');
+      return;
+    }
+  
+    // Eliminar sugerencia de la lista
+    this.sugerenciasService.eliminarSugerencia(sugerencia.productoId).subscribe({
+      next: () => {
+        console.log('Sugerencia eliminada de la lista.');
+  
+        // Crear el objeto para la tabla de productos a surtir
+        const productoSurtir: ProductoSurtir = {
+          id: sugerencia.productoId,
+          CodigoBarras: sugerencia.CodigoBarras || '',
+          nombre: sugerencia.productoNombre || '',
+          categoria_id: sugerencia.categoriaId || 0,
+          id_proveedor: sugerencia.proveedorId,
+          cantidadSolicitada: sugerencia.cantidadPropuesta || 0,
+          precio: sugerencia.precio || 0,
+          imagenUrl: sugerencia.imagenUrl || ''
+        };
+  
+        // Agregar el producto a la tabla de productos a surtir
+        this.productosSurtirService.agregarProducto(productoSurtir).subscribe({
+          next: () => {
+            console.log('Producto agregado a productos a surtir.');
+            this.toastr.success('Producto añadido a la lista de surtir.', '¡Éxito!');
+            this.sugerencias = this.sugerencias.filter((s: any) => s !== sugerencia);
+            this.mostrarSugerencias = this.sugerencias.length > 0;
+          },
+          error: (error: any) => {
+            console.error('Error al agregar el producto a productos a surtir:', error);
+            this.toastr.error('Hubo un error al agregar el producto a surtir.', '¡Error!');
+          }
+        });
+      },
+      error: (error: any) => {
+        console.error('Error al eliminar la sugerencia de la lista:', error);
+        this.toastr.error('Hubo un error al eliminar la sugerencia de la lista.', '¡Error!');
+      }
+    });
+  }
+  
+
+  
+  
   
 
   generarSugerencia(producto: Producto): void {
@@ -152,6 +205,7 @@ export class DetallesProductoComponent implements OnInit {
   
   
   aceptarSugerencia(sugerencia: any): void {
+   
     if (!sugerencia || !sugerencia.proveedorId || !sugerencia.cantidadPropuesta || !sugerencia.productoId) {
       console.error('Datos incompletos en la sugerencia:', sugerencia);
       return;
@@ -179,8 +233,7 @@ export class DetallesProductoComponent implements OnInit {
         this.sugerencias = [];
         this.mostrarSugerencias = false;
 
-
-        
+        this.mandarAProductorSurtir(sugerencia);
       },
       error: (error) => {
         console.error('Error al enviar el correo al proveedor:', error);

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ProductoService, Producto } from '../services/producto.service'; 
 import { ProveedorService, Proveedor } from '../services/proveedor.service';
-
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +23,15 @@ export class SugerenciasService {
   // Método para obtener los proveedores de la categoría del producto
   obtenerProveedorPorCategoria(categoriaId: number): Proveedor | undefined {
     return this.proveedores.find(proveedor => proveedor.CategoriaId === categoriaId);
+  }
+
+  eliminarSugerencia(productoId: number): Observable<void> {
+    const index = this.sugerencias.findIndex(s => s.productoId === productoId);
+    if (index !== -1) {
+      this.sugerencias.splice(index, 1); // Eliminar la sugerencia localmente
+      console.log(`Sugerencia con ID ${productoId} eliminada.`);
+    }
+    return of(); // Simula una respuesta exitosa
   }
 
   // Obtener la lista de proveedores

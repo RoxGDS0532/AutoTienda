@@ -189,45 +189,55 @@ export class DetallesProductoComponent implements OnInit {
   
   
   aceptarSugerencia(sugerencia: any): void {
-  if (!sugerencia || !sugerencia.proveedorId || !sugerencia.cantidadPropuesta || !sugerencia.productoId) {
-    console.error('Datos incompletos en la sugerencia:', sugerencia);
-    return;
-  }
-
-  const proveedor = this.proveedores.find(p => p.Id === sugerencia.proveedorId);
-
-  if (!proveedor || !proveedor.Email) {
-    console.error('Proveedor no encontrado o correo no disponible.');
-    this.toastr.error('El proveedor no tiene un correo válido.', '¡Error!');
-    return;
-  }
-
-  const detallesPedido = {
-    correo: proveedor.Email,
-    detallesPedido: [
-      {
-        nombreProducto: sugerencia.productoNombre ?? 'Producto no especificado',
-        cantidad: sugerencia.cantidadPropuesta
-      }
-    ]
-  };
-
-  console.log('Detalles del pedido a enviar:', detallesPedido);
-
-  this.proveedorService.sendOrderEmail(detallesPedido).subscribe({
-    next: (response) => {
-      console.log('Correo enviado al proveedor:', response);
-      this.sugerencias = [];
-      this.mostrarSugerencias = false;
-      console.log('Preparándose para mandar a productor surtir:', sugerencia);
-      this.mandarAProductorSurtir(sugerencia);
-    },
-    error: (error) => {
-      console.error('Error al enviar el correo al proveedor:', error);
-      this.toastr.error('Hubo un error al enviar el correo.', '¡Error!');
+    if (!sugerencia || !sugerencia.proveedorId || !sugerencia.cantidadPropuesta || !sugerencia.productoId) {
+      console.error('Datos incompletos en la sugerencia:', sugerencia);
+      return;
     }
-  });
-}
+  
+    const proveedor = this.proveedores.find(p => p.Id === sugerencia.proveedorId);
+  
+    if (!proveedor || !proveedor.Email) {
+      console.error('Proveedor no encontrado o correo no disponible.');
+      this.toastr.error('El proveedor no tiene un correo válido.', '¡Error!');
+      return;
+    }
+  
+    const detallesPedido = {
+      correo: proveedor.Email,
+      detallesPedido: [
+        {
+          nombreProducto: sugerencia.productoNombre ?? 'Producto no especificado',
+          cantidad: sugerencia.cantidadPropuesta
+        }
+      ]
+    };
+  
+    console.log('Detalles del pedido a enviar:', detallesPedido);
+  
+    this.proveedorService.sendOrderEmail(detallesPedido).subscribe({
+      next: (response) => {
+        console.log('Correo enviado al proveedor:', response);
+        
+        // Aquí ocultamos las sugerencias y mostramos un mensaje de que el pedido está en proceso
+        this.sugerencias = [];
+        this.mostrarSugerencias = false;
+        
+        // Mostrar tarjeta de "Producto en proceso de surtir"
+        this.mensajePedidoEnProceso = `El pedido para ${sugerencia.productoNombre} está siendo enviado al proveedor.`;
+        console.log('Preparándose para mandar a productor surtir:', sugerencia);
+  
+        this.mandarAProductorSurtir(sugerencia);
+      },
+      error: (error) => {
+        console.error('Error al enviar el correo al proveedor:', error);
+        this.toastr.error('Hubo un error al enviar el correo.', '¡Error!');
+      }
+    });
+  }
+  
+  // Propiedad para mostrar el mensaje del pedido en proceso
+  mensajePedidoEnProceso: string | null = null;
+  
 
 
  

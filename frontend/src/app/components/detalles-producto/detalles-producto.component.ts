@@ -13,10 +13,6 @@ import { Categoria, CategoriaService } from '../../services/categoria.service';
 import { SugerenciasService } from '../../services/sugerencias.service';
 import { ProveedorService, Proveedor } from '../../services/proveedor.service';
 import { ProductosRecomendadosService, ProductoRecomendado } from '../../services/productos-recomendados.service';
-
-import { HttpClientModule } from '@angular/common/http';
-import { EstadoProducto } from '../../state-producto/producto.interface';
-import { CategoryFilterPipe } from '../../category-filter.pipe'; 
 import { ProductosSurtirService, ProductoSurtir } from '../../services/productos-surtir.service';
 
 
@@ -182,6 +178,9 @@ export class DetallesProductoComponent implements OnInit {
         console.log('Correo enviado al proveedor:', response);
         this.sugerencias = [];
         this.mostrarSugerencias = false;
+
+
+        
       },
       error: (error) => {
         console.error('Error al enviar el correo al proveedor:', error);

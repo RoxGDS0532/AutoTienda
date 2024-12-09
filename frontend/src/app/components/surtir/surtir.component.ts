@@ -13,6 +13,7 @@ import { EstadoProducto } from '../../state-producto/producto.interface';
 import { CategoryFilterPipe } from '../../category-filter.pipe'; // Asegúrate de importar tu pipe
 import { ContextoProducto } from '../../state-producto/contexto';
 import { SugerenciasService } from '../../services/sugerencias.service';
+import { ProductosSurtirService, ProductoSurtir } from '../../services/productos-surtir.service';
 
 @Component({
   selector: 'app-surtir',
@@ -27,6 +28,8 @@ export class SurtirComponent implements OnInit {
   categorias: any[] = []; 
   selectedCategoriaId: number = 0;
   productosFiltrados: (Producto & { cantidadSolicitada: number; proveedorId: number | null })[] = []; 
+  productosSurtir: any[]= [];
+  productosFiltradosSurtir: (ProductoSurtir & { cantidadSolicitada: number; proveedorId: number | null })[] = [];
   sugerencias: any[] = []; 
   contexto: ContextoProducto;
 
@@ -35,7 +38,8 @@ export class SurtirComponent implements OnInit {
     private proveedorService: ProveedorService,
     private categoriaService: CategoriaService,
     private productosRecomendadosService: ProductosRecomendadosService,
-    private sugerenciasService: SugerenciasService
+    private sugerenciasService: SugerenciasService,
+    private productosSurtirService: ProductosSurtirService,
 
   )
   {this.contexto = new ContextoProducto(
@@ -51,14 +55,12 @@ export class SurtirComponent implements OnInit {
     this.cargarProductos();
     this.cargarProveedores();
     this.cargarCategorias();
-
+    this.cargarProductosSurtir();
   }
 
   valuarEstado(producto: Producto): void {
     this.contexto.verificarEstado(producto);
-  
     let estado: EstadoProducto;
-  
     if (this.contexto.estado instanceof Agotado) {
       estado = new Agotado(this.productosRecomendadosService);
     } else if (this.contexto.estado instanceof PorAgotarse) {
@@ -70,9 +72,6 @@ export class SurtirComponent implements OnInit {
     this.contexto.estado = estado;
     producto.estado = estado.constructor.name;
   }
-  
-  
-  
 
   obtenerProveedorPorCategoria(categoriaId: number): Proveedor | undefined {
     return this.proveedores.find(proveedor => proveedor.Id === categoriaId);
@@ -111,6 +110,19 @@ export class SurtirComponent implements OnInit {
       this.categorias = categorias;
     });
   }
+  cargarProductosSurtir() {
+    this.productosSurtirService.obtenerProductos().subscribe((productosSurtir) => {
+      console.log('Productos a surtir obtenidos:', productosSurtir);
+      this.productosSurtir = productosSurtir.map((productoSurtir) => {
+        return productoSurtir;  
+      });
+    }, error => {
+      console.error('Error al cargar productos a surtir', error); 
+    });
+  }
+  
+  
+  
 
   solicitarProductos() {
     const solicitudes = this.productos
@@ -131,4 +143,5 @@ export class SurtirComponent implements OnInit {
       }
     });
   }
+
 }

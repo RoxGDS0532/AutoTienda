@@ -266,23 +266,7 @@ export class DetallesProductoComponent implements OnInit {
   
     this.abrirModalAgregar(productoTransformado);
   }
-  
-  agregarProducto(): void {
-    if (this.productoR) {
-      console.log('Producto a agregar:', this.productoR);
-      this.productoService.agregarProducto(this.productoR).subscribe({
-        next: () => {
-          const agregarModal = bootstrap.Modal.getInstance(document.getElementById('agregarProductoModal')!);
-          agregarModal?.hide();
-          this.toastr.success('Producto agregado correctamente.', '¡Éxito!');
-        },
-        error: (error) => {
-          console.error('Error al agregar el producto:', error);
-          this.toastr.error('Hubo un error al agregar el producto.', '¡Error!');
-        }
-      });
-    }
-  }
+
 
 enviarCorreo(): void {
   if (!this.productoR) {  

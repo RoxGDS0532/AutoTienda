@@ -23,19 +23,29 @@ import { SugerenciasService } from '../../services/sugerencias.service';
 })
 export class SurtirComponent implements OnInit {
   productos: (Producto & { cantidadSolicitada: number; proveedorId: number | null })[] = [];
-  proveedores: Proveedor[] = []; // Lista de proveedores
-  categorias: any[] = []; // Para almacenar las categorías
+  proveedores: Proveedor[] = []; 
+  categorias: any[] = []; 
   selectedCategoriaId: number = 0;
-  productosFiltrados: (Producto & { cantidadSolicitada: number; proveedorId: number | null })[] = []; // Agregado
-  sugerencias: any[] = []; // Almacena las sugerencias generadas para productos
-  //contexto: ContextoProducto;
+  productosFiltrados: (Producto & { cantidadSolicitada: number; proveedorId: number | null })[] = []; 
+  sugerencias: any[] = []; 
+  contexto: ContextoProducto;
 
   constructor(
     private productoService: ProductoService,
     private proveedorService: ProveedorService,
     private categoriaService: CategoriaService,
-  ) {}
-  //{this.contexto = new ContextoProducto(new Disponible());}
+    private productosRecomendadosService: ProductosRecomendadosService,
+    private sugerenciasService: SugerenciasService
+
+  )
+  {this.contexto = new ContextoProducto(
+    new Disponible(this.productoService),
+    this.productosRecomendadosService,
+    this.proveedorService,
+    this.productoService,
+    this.categoriaService,
+  );
+}
 
   ngOnInit(): void {
     this.cargarProductos();
@@ -44,27 +54,25 @@ export class SurtirComponent implements OnInit {
 
   }
 
-  /*valuarEstado(producto: Producto): void {
-  this.contexto.verificarEstado(producto);
-  let estado: EstadoProducto;
-
-  if (this.contexto['estado'] instanceof Agotado) {
-    estado = new Agotado(this.productosRecomendadosService);
-  } else if (this.contexto['estado'] instanceof PorAgotarse) {
-    estado = new PorAgotarse(this.proveedorService, this.sugerenciasService);
-  } else {
-    estado = new Disponible();
+  valuarEstado(producto: Producto): void {
+    this.contexto.verificarEstado(producto);
+  
+    let estado: EstadoProducto;
+  
+    if (this.contexto.estado instanceof Agotado) {
+      estado = new Agotado(this.productosRecomendadosService);
+    } else if (this.contexto.estado instanceof PorAgotarse) {
+      estado = new PorAgotarse(this.proveedorService, this.sugerenciasService);
+    } else {
+      estado = new Disponible(this.productoService);
+    }
+  
+    this.contexto.estado = estado;
+    producto.estado = estado.constructor.name;
   }
-  const contexto = new ContextoProducto(
-    estado,
-    this.productosRecomendadosService,
-    this.proveedorService,
-    this.categoriaService
-  );  
-
-    producto.estado = estado.constructor.name; // Almacena el estado actual
-    producto.sugerencia = contexto.sugerirAccion();
-  }*/
+  
+  
+  
 
   obtenerProveedorPorCategoria(categoriaId: number): Proveedor | undefined {
     return this.proveedores.find(proveedor => proveedor.Id === categoriaId);
@@ -75,7 +83,7 @@ export class SurtirComponent implements OnInit {
       this.proveedores = proveedores;
       this.productoService.obtenerProductos().subscribe(productos => {
         this.productos = productos.map(producto => {
-          //this.valuarEstado(producto);
+          this.valuarEstado(producto);
           return { ...producto, cantidadSolicitada: 0, proveedorId: null };
         });
         this.productosFiltrados = [...this.productos];
@@ -104,9 +112,6 @@ export class SurtirComponent implements OnInit {
     });
   }
 
-
-
-
   solicitarProductos() {
     const solicitudes = this.productos
       .filter(producto => producto.cantidadSolicitada > 0)
@@ -126,6 +131,4 @@ export class SurtirComponent implements OnInit {
       }
     });
   }
-
-  
 }

@@ -140,57 +140,103 @@ export class DetallesProductoComponent implements OnInit {
   }
 
 
-  
+
+
 
   mandarAProductorSurtir(sugerencia: any): void {
-    if (!sugerencia || !sugerencia.productoId || !sugerencia.proveedorId) {
+    console.log('Inicio de mandarAProductorSurtir, sugerencia:', sugerencia);
+  
+    // Validar campos mínimos requeridos
+    if (!sugerencia || !sugerencia.productoId || !sugerencia.proveedorId || !sugerencia.cantidadPropuesta) {
       console.error('Sugerencia inválida o datos incompletos:', sugerencia);
       this.toastr.error('Sugerencia inválida o incompleta.', '¡Error!');
       return;
     }
   
-    // Eliminar sugerencia de la lista
-    this.sugerenciasService.eliminarSugerencia(sugerencia.productoId).subscribe({
-      next: () => {
-        console.log('Sugerencia eliminada de la lista.');
+    // Construcción del objeto ProductoSurtir usando los datos del producto actual
+    const productoSurtir: ProductoSurtir = {
+      id: sugerencia.productoId,
+      CodigoBarras: this.producto?.CodigoBarras || '0000000000000', // Código de barras del producto actual
+      nombre: this.producto?.Nombre || 'Producto desconocido', // Nombre del producto actual
+      categoria_id: this.producto?.CategoriaId || 0, // Categoría del producto actual
+      id_proveedor: sugerencia.proveedorId,
+      cantidadSolicitada: sugerencia.cantidadPropuesta || 1,
+      precio: this.producto?.Precio || 0.0, // Precio del producto actual
+      imagenUrl: this.producto?.ImagenURL || 'https://example.com/default-image.png' // Imagen del producto actual
+    };
   
-        // Crear el objeto para la tabla de productos a surtir
-        const productoSurtir: ProductoSurtir = {
-          id: sugerencia.productoId,
-          CodigoBarras: sugerencia.CodigoBarras || '',
-          nombre: sugerencia.productoNombre || '',
-          categoria_id: sugerencia.categoriaId || 0,
-          id_proveedor: sugerencia.proveedorId,
-          cantidadSolicitada: sugerencia.cantidadPropuesta || 0,
-          precio: sugerencia.precio || 0,
-          imagenUrl: sugerencia.imagenUrl || ''
-        };
+    console.log('Producto preparado para surtir:', productoSurtir);
   
-        // Agregar el producto a la tabla de productos a surtir
-        this.productosSurtirService.agregarProducto(productoSurtir).subscribe({
-          next: () => {
-            console.log('Producto agregado a productos a surtir.');
-            this.toastr.success('Producto añadido a la lista de surtir.', '¡Éxito!');
-            this.sugerencias = this.sugerencias.filter((s: any) => s !== sugerencia);
-            this.mostrarSugerencias = this.sugerencias.length > 0;
-          },
-          error: (error: any) => {
-            console.error('Error al agregar el producto a productos a surtir:', error);
-            this.toastr.error('Hubo un error al agregar el producto a surtir.', '¡Error!');
-          }
-        });
+    // Agregar el producto a la tabla de productos a surtir
+    this.productosSurtirService.agregarProducto(productoSurtir).subscribe({
+      next: (response) => {
+        console.log('Producto agregado a productos a surtir. Respuesta del servidor:', response);
+        this.toastr.success('Producto añadido a la lista de surtir.', '¡Éxito!');
       },
       error: (error: any) => {
-        console.error('Error al eliminar la sugerencia de la lista:', error);
-        this.toastr.error('Hubo un error al eliminar la sugerencia de la lista.', '¡Error!');
+        console.error('Error al agregar el producto a productos a surtir:', error);
+        this.toastr.error('Hubo un error al agregar el producto a surtir.', '¡Error!');
       }
     });
   }
   
+  
+  
+  
+  
+
 
   
   
+  aceptarSugerencia(sugerencia: any): void {
+  if (!sugerencia || !sugerencia.proveedorId || !sugerencia.cantidadPropuesta || !sugerencia.productoId) {
+    console.error('Datos incompletos en la sugerencia:', sugerencia);
+    return;
+  }
+
+  const proveedor = this.proveedores.find(p => p.Id === sugerencia.proveedorId);
+
+  if (!proveedor || !proveedor.Email) {
+    console.error('Proveedor no encontrado o correo no disponible.');
+    this.toastr.error('El proveedor no tiene un correo válido.', '¡Error!');
+    return;
+  }
+
+  const detallesPedido = {
+    correo: proveedor.Email,
+    detallesPedido: [
+      {
+        nombreProducto: sugerencia.productoNombre ?? 'Producto no especificado',
+        cantidad: sugerencia.cantidadPropuesta
+      }
+    ]
+  };
+
+  console.log('Detalles del pedido a enviar:', detallesPedido);
+
+  this.proveedorService.sendOrderEmail(detallesPedido).subscribe({
+    next: (response) => {
+      console.log('Correo enviado al proveedor:', response);
+      this.sugerencias = [];
+      this.mostrarSugerencias = false;
+      console.log('Preparándose para mandar a productor surtir:', sugerencia);
+      this.mandarAProductorSurtir(sugerencia);
+    },
+    error: (error) => {
+      console.error('Error al enviar el correo al proveedor:', error);
+      this.toastr.error('Hubo un error al enviar el correo.', '¡Error!');
+    }
+  });
+}
+
+
+ 
   
+
+
+
+
+
 
   generarSugerencia(producto: Producto): void {
     const nuevaSugerencia = this.sugerenciasService.generateSugerencias(producto);
@@ -203,48 +249,8 @@ export class DetallesProductoComponent implements OnInit {
     }
   }
   
-  
-  aceptarSugerencia(sugerencia: any): void {
-   
-    if (!sugerencia || !sugerencia.proveedorId || !sugerencia.cantidadPropuesta || !sugerencia.productoId) {
-      console.error('Datos incompletos en la sugerencia:', sugerencia);
-      return;
-    }
-    const proveedor = this.proveedores.find(p => p.Id === sugerencia.proveedorId);
-
-    if (!proveedor || !proveedor.Email) { 
-      console.error('Proveedor no encontrado o correo no disponible.');
-      this.toastr.error('El proveedor no tiene un correo válido.', '¡Error!');
-      return;
-    }
-    const detallesPedido = {
-      correo: proveedor.Email,
-      detallesPedido: [
-        {
-          nombreProducto: sugerencia.productoNombre ?? 'Producto no especificado',
-          cantidad: sugerencia.cantidadPropuesta
-        }
-      ]
-    };
-    console.log('Detalles del pedido a enviar:', detallesPedido);
-    this.proveedorService.sendOrderEmail(detallesPedido).subscribe({
-      next: (response) => {
-        console.log('Correo enviado al proveedor:', response);
-        this.sugerencias = [];
-        this.mostrarSugerencias = false;
-
-        this.mandarAProductorSurtir(sugerencia);
-      },
-      error: (error) => {
-        console.error('Error al enviar el correo al proveedor:', error);
-        this.toastr.error('Hubo un error al enviar el correo.', '¡Error!');
-      },
-    });
 
 
-  }
-
-  
   rechazarSugerencia(sugerencia: any): void {
     const index = this.sugerencias.findIndex((s: any) => s === sugerencia);
 

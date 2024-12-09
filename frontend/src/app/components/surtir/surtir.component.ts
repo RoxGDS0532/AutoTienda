@@ -77,6 +77,11 @@ export class SurtirComponent implements OnInit {
     return this.proveedores.find(proveedor => proveedor.Id === categoriaId);
   }
 
+
+
+
+
+
   cargarProductos() {
     this.proveedorService.listarProveedores().subscribe(proveedores => {
       this.proveedores = proveedores;
@@ -89,7 +94,6 @@ export class SurtirComponent implements OnInit {
       });
     });
   }
-  
 
   cargarProveedores() {
     this.proveedorService.listarProveedores().subscribe(proveedores => {
@@ -97,6 +101,11 @@ export class SurtirComponent implements OnInit {
     });
   }
 
+
+
+
+
+  
   filtrarPorCategoria() {
     if (this.selectedCategoriaId) {
       this.productosFiltrados = this.productos.filter(producto => producto.CategoriaId === this.selectedCategoriaId);

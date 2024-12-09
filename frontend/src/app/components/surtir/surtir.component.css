@@ -229,3 +229,8 @@ html, body {
   footer {
     height: 60px; /* Altura fija para el footer */
   }
+  .border-danger { border-color: #dc3545 !important; }
+  .border-warning { border-color: #ffc107 !important; }
+  .border-success { border-color: #28a745 !important; }
+  .product-card { transition: box-shadow 0.3s; }
+  .product-card:hover { box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); }

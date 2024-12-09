@@ -7,7 +7,7 @@ import { ProductosRecomendadosService } from '../services/productos-recomendados
 import { ProveedorService } from '../services/proveedor.service';
 
 export class ContextoProducto {
-  private estado: EstadoProducto;
+  public estado: EstadoProducto;
   private productosRecomendadosService: ProductosRecomendadosService;
   private proveedorService: ProveedorService;
   private sugerenciasService: any;

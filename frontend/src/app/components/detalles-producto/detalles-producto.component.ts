@@ -14,6 +14,11 @@ import { SugerenciasService } from '../../services/sugerencias.service';
 import { ProveedorService, Proveedor } from '../../services/proveedor.service';
 import { ProductosRecomendadosService, ProductoRecomendado } from '../../services/productos-recomendados.service';
 
+import { HttpClientModule } from '@angular/common/http';
+import { EstadoProducto } from '../../state-producto/producto.interface';
+import { CategoryFilterPipe } from '../../category-filter.pipe'; 
+import { ProductosSurtirService, ProductoSurtir } from '../../services/productos-surtir.service';
+
 
 @Component({
   selector: 'app-detalles-producto',
@@ -48,7 +53,8 @@ export class DetallesProductoComponent implements OnInit {
     private sugerenciasService: SugerenciasService,
     private categoriaService: CategoriaService,
     private proveedorService: ProveedorService,
-    private productosRecomendadosService: ProductosRecomendadosService
+    private productosRecomendadosService: ProductosRecomendadosService,
+    private productosSurtirService: ProductosSurtirService,
   ) {
     this.contexto = new ContextoProducto(
       new Disponible(this.productoService), 
@@ -262,23 +268,7 @@ export class DetallesProductoComponent implements OnInit {
   
     this.abrirModalAgregar(productoTransformado);
   }
-  
-  agregarProducto(): void {
-    if (this.productoR) {
-      console.log('Producto a agregar:', this.productoR);
-      this.productoService.agregarProducto(this.productoR).subscribe({
-        next: () => {
-          const agregarModal = bootstrap.Modal.getInstance(document.getElementById('agregarProductoModal')!);
-          agregarModal?.hide();
-          this.toastr.success('Producto agregado correctamente.', '¡Éxito!');
-        },
-        error: (error) => {
-          console.error('Error al agregar el producto:', error);
-          this.toastr.error('Hubo un error al agregar el producto.', '¡Error!');
-        }
-      });
-    }
-  }
+
 
 enviarCorreo(): void {
   if (!this.productoR) {  
@@ -317,6 +307,43 @@ enviarCorreo(): void {
       console.log('Correo enviado al proveedor:', respuesta);
       this.toastr.success('Correo enviado al proveedor', '¡Éxito!');
 
+      if (this.productoR.Id === undefined) {
+        console.error('El ID del producto no está definido.');
+        this.toastr.error('No se puede eliminar el producto porque el ID no está definido.', '¡Error!');
+        return;
+      }
+      
+      this.productosRecomendadosService.eliminarProducto(this.productoR.Id).subscribe({
+        next: () => {
+          console.log('Producto eliminado de productos recomendados.');
+        
+          const productoSurtir: ProductoSurtir = {
+            id: this.productoR.Id!,
+            CodigoBarras: this.productoR.CodigoBarras || '', 
+            nombre: this.productoR.Nombre || '', 
+            categoria_id: this.productoR.CategoriaId || 0, 
+            id_proveedor: this.obtenerProveedorPorCategoria(this.productoR.CategoriaId)?.Id,
+            cantidadSolicitada: this.productoR.CantidadDisponible || 0,
+            precio: this.productoR.Precio || 0, 
+            imagenUrl: this.productoR.ImagenURL || '' 
+        };
+          // Agregar el producto a la tabla de productos a surtir
+          this.productosSurtirService.agregarProducto(productoSurtir).subscribe({
+            next: () => {
+              console.log('Producto agregado a productos a surtir.');
+            },
+            error: (error:any) => {
+              console.error('Error al agregar el producto a productos a surtir:', error);
+              this.toastr.error('Hubo un error al agregar el producto a surtir.', '¡Error!');
+            }
+          });
+        },
+        error: (error:any) => {
+          console.error('Error al eliminar el producto de productos recomendados:', error);
+          this.toastr.error('Hubo un error al eliminar el producto de productos recomendados.', '¡Error!');
+        }
+      });
+      
       // Cerrar el modal
       const modalElement = document.getElementById('agregarProductoModal');
       if (modalElement) {

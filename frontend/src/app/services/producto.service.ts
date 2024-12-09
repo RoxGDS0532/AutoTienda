@@ -13,12 +13,10 @@ export interface Producto {
   CantidadEnCarrito?: number;
   ImagenURL?: string; 
   CodigoBarras?: string; 
-  estado?: string; 
   sugerencia?: string; 
   PrecioConDescuento?: number;
+  estado?: string;
 }
-
-
 
 @Injectable({
   providedIn: 'root'

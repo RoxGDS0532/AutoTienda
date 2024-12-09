@@ -70,11 +70,6 @@
                                       <option *ngFor="let proveedor of proveedores" [value]="proveedor.Id">{{ proveedor.Nombre }}</option>
                                   </select>
                               </div>
-
-
-
-
-
                               
                               <div *ngIf="producto.estado === 'Agotado'" class="alert alert-danger">
                                   <strong>¡Producto agotado!</strong>
@@ -86,7 +81,7 @@
                                   <strong>Producto en stock</strong>
                               </div>
                               <div>
-                                <button *ngIf="producto.cantidadSolicitada > 0 && producto.proveedorId" class="btn btn-primary mt-3" (click)="agregarProductoSurtir(producto)">
+                                <button *ngIf="producto.cantidadSolicitada > 0 && producto.proveedorId" class="btn btn-primary mt-3">
                                   Realizar Pedido
                                 </button>
                               </div>

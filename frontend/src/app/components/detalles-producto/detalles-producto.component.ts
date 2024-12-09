@@ -156,8 +156,6 @@ export class DetallesProductoComponent implements OnInit {
       console.error('Datos incompletos en la sugerencia:', sugerencia);
       return;
     }
-
-    // Obtener el proveedor correspondiente al producto seleccionado
     const proveedor = this.proveedores.find(p => p.Id === sugerencia.proveedorId);
 
     if (!proveedor || !proveedor.Email) { 
@@ -165,7 +163,6 @@ export class DetallesProductoComponent implements OnInit {
       this.toastr.error('El proveedor no tiene un correo válido.', '¡Error!');
       return;
     }
-
     const detallesPedido = {
       correo: proveedor.Email,
       detallesPedido: [
@@ -175,10 +172,7 @@ export class DetallesProductoComponent implements OnInit {
         }
       ]
     };
-
     console.log('Detalles del pedido a enviar:', detallesPedido);
-
-    // Enviar correo al proveedor
     this.proveedorService.sendOrderEmail(detallesPedido).subscribe({
       next: (response) => {
         console.log('Correo enviado al proveedor:', response);

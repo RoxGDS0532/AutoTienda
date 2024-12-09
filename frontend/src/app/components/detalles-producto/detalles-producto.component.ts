@@ -281,7 +281,7 @@ enviarCorreo(): void {
     return;
   }
 
-  // Obtener el proveedor correspondiente
+  // Obtener el proveedor correspondient
   const proveedor = this.proveedores.find(p => p.Id === this.productoR.CategoriaId);
   if (!proveedor || !proveedor.Email) {
     console.error('Proveedor no encontrado o correo no disponible.');
@@ -299,7 +299,7 @@ enviarCorreo(): void {
     imagenURL: this.productoR.ImagenURL
   };
 
-  console.log('Detalles del producto:', detallesProducto);
+  console.log('Detalles del product:', detallesProducto);
   console.log('Enviando correo al proveedor:', proveedor.Email);
 
   this.productoService.enviarCorreoProveedor(detallesProducto, proveedor.Email).subscribe({
@@ -308,7 +308,7 @@ enviarCorreo(): void {
       this.toastr.success('Correo enviado al proveedor', '¡Éxito!');
 
       if (this.productoR.Id === undefined) {
-        console.error('El ID del producto no está definido.');
+        console.error('El ID del producto no está definido');
         this.toastr.error('No se puede eliminar el producto porque el ID no está definido.', '¡Error!');
         return;
       }

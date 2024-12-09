@@ -368,7 +368,8 @@ enviarCorreo(): void {
       this.productosRecomendadosService.eliminarProducto(this.productoR.Id).subscribe({
         next: () => {
           console.log('Producto eliminado de productos recomendados.');
-        
+          location.reload();
+          this.toastr.success('Producto solicitado al proveedor, Revisa surtir', '¡Éxito!');
           const productoSurtir: ProductoSurtir = {
             id: this.productoR.Id!,
             CodigoBarras: this.productoR.CodigoBarras || '', 

@@ -120,9 +120,19 @@ export class SurtirComponent implements OnInit {
       console.error('Error al cargar productos a surtir', error); 
     });
   }
-  
-  
-  
+
+  eliminarProductoSurtir(producto: any): void {
+    this.productosSurtirService.eliminarProducto(producto.id).subscribe({
+      next: () => {
+        this.productosSurtir = this.productosSurtir.filter(p => p.id !== producto.id);
+        console.log(`Producto con ID ${producto.id} eliminado correctamente`);
+      },
+      error: (err) => {
+        console.error('Error al eliminar el producto del servicio productosSurtir:', err);
+      }
+    });
+  }
+
 
   solicitarProductos() {
     const solicitudes = this.productos

@@ -28,7 +28,7 @@ class ProductoSurtiCrontroller {
     }
     create(req, resp) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { nombre, precio, cantidadSolicitada, CodigoBarras, categoria_id, proveedor_id, imagenUrl } = req.body;
+            const { nombre, precio, cantidadSolicitada, CodigoBarras, categoria_id, id_proveedor, imagenUrl } = req.body;
             // Validación de campos obligatorios
             if (!nombre || precio === undefined || cantidadSolicitada === undefined || categoria_id === undefined || !imagenUrl) {
                 resp.status(400).json({ message: 'Todos los campos son requeridos' });
@@ -36,7 +36,7 @@ class ProductoSurtiCrontroller {
             }
             try {
                 yield database_1.default.query('INSERT INTO productos_Surtir SET ?', [
-                    { nombre, precio, cantidadSolicitada, imagenUrl, CodigoBarras, categoria_id, proveedor_id }
+                    { nombre, precio, cantidadSolicitada, imagenUrl, CodigoBarras, categoria_id, id_proveedor }
                 ]);
                 resp.json({ message: 'Producto guardado' });
             }

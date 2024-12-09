@@ -13,9 +13,7 @@ import { Categoria, CategoriaService } from '../../services/categoria.service';
 import { SugerenciasService } from '../../services/sugerencias.service';
 import { ProveedorService, Proveedor } from '../../services/proveedor.service';
 import { ProductosRecomendadosService, ProductoRecomendado } from '../../services/productos-recomendados.service';
-import { HttpClientModule } from '@angular/common/http';
-import { EstadoProducto } from '../../state-producto/producto.interface';
-import { CategoryFilterPipe } from '../../category-filter.pipe'; 
+
 
 @Component({
   selector: 'app-detalles-producto',

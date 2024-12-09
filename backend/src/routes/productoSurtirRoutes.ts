@@ -18,6 +18,7 @@ class ProductoSurtirController{
         this.router.post('/',upload.single('Imagen'),productoSurtirController.create);
         this.router.delete('/:Id',productoSurtirController.delete);
         this.router.put('/:Id',productoSurtirController.update);
+        
     }
 }
 const productoSurtirRoutes=new ProductoSurtirController();

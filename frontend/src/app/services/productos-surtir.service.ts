@@ -7,7 +7,7 @@ export interface ProductoSurtir {
   CodigoBarras?: string; 
   nombre: string;
   categoria_id: number; 
-  proveedor_id:number;
+  id_proveedor:number;
   cantidadSolicitada: number;
   precio: number;
   imagenUrl?: string; 

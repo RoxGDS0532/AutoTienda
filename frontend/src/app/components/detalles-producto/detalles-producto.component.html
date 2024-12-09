@@ -73,6 +73,13 @@
               </div>
               
               
+              <div *ngIf="mensajePedidoEnProceso" class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Pedido en proceso</h5>
+                  <p class="card-text">{{ mensajePedidoEnProceso }}</p>
+                </div>
+              </div>
+              
 
             <div class="container mt-5" *ngIf="mostrarSugerencias">
                 <h5 class="mb-4">Sugerencias para pedido</h5>
@@ -91,6 +98,7 @@
                   </div>
                 </div>
                 <p *ngIf="mensaje" class="alert alert-info mt-3">{{ mensaje }}</p>
+                
               </div>
               
 

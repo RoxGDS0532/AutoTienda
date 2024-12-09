@@ -51,9 +51,9 @@ export class Agotado implements EstadoProducto {
         const productosPorProveedor = productosFiltrados.reduce((agrupados, producto) => {
           const proveedorId = producto.id_proveedor; 
           if (!agrupados[proveedorId]) {
-            agrupados[proveedorId] = []; // Si no existe una entrada para este proveedor, creamos una nueva lista
+            agrupados[proveedorId] = []; 
           }
-          agrupados[proveedorId].push(producto); // Agregamos el producto a la lista correspondiente
+          agrupados[proveedorId].push(producto); // Agrega el producto a la lista correspondiente
           return agrupados;
         }, {} as { [proveedorId: number]: ProductoRecomendado[] });
         
@@ -62,7 +62,7 @@ export class Agotado implements EstadoProducto {
       }),
       catchError(error => {
         console.error('Error al obtener productos recomendados:', error);
-        return of({}); // Retorna un objeto vacío en caso de error
+        return of({}); 
       })
     );
   }
